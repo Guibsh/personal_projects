@@ -13,9 +13,8 @@
 <meta property="og:description" content="Mais de 10.000 mulheres acompanhadas na jornada de reencontrar o próprio valor.">
 <meta property="og:image" content="images/hero.webp">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/jost-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -70,28 +69,31 @@
         <a class="btn btn--ghost" data-wa data-wa-msg="Olá Greissi! Gostaria de conversar sobre as mentorias.">Conversar com a equipe</a>
       </div>
       <dl class="stats reveal" data-delay="4">
-        <div><dt>+10.000</dt><dd>mulheres acompanhadas</dd></div>
-        <div><dt>+400 mil</dt><dd>seguidores</dd></div>
-        <div><dt>13</dt><dd>materiais e jornadas</dd></div>
+        <div><dt data-count="10000" data-prefix="+">+10.000</dt><dd>mulheres acompanhadas</dd></div>
+        <div><dt data-count="400" data-prefix="+" data-suffix=" mil">+400 mil</dt><dd>seguidores</dd></div>
+        <div><dt data-count="13">13</dt><dd>materiais e jornadas</dd></div>
       </dl>
     </div>
 
     <div class="hero__media reveal" data-delay="2">
-      <div class="hero__frame">
-        <img src="images/hero.webp" alt="Greissi de Matos" width="443" height="596" fetchpriority="high" decoding="async">
+      <div class="hero__stage" id="heroStage">
+        <span class="hero__halo" data-depth="14" aria-hidden="true"></span>
+        <div class="hero__frame" data-depth="-8">
+          <img src="images/hero.webp" alt="Greissi de Matos" width="443" height="596" fetchpriority="high" decoding="async">
+        </div>
+        <svg class="hero__sprig" viewBox="0 0 120 200" data-depth="34" aria-hidden="true">
+          <path d="M60 195 C58 150 56 110 60 60" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path class="js-wind" style="--origin:59px 150px" d="M59 150 C40 146 30 134 26 120 C44 120 56 130 59 150Z" fill="currentColor" opacity=".45"/>
+          <path class="js-wind" style="--origin:60px 120px" d="M60 120 C79 116 89 104 93 90 C75 90 63 100 60 120Z" fill="currentColor" opacity=".45"/>
+          <g class="js-wind" style="--origin:60px 60px; --amp:2.4">
+            <circle cx="60" cy="48" r="11" fill="currentColor" opacity=".55"/>
+            <ellipse cx="60" cy="33" rx="9" ry="14" fill="currentColor" opacity=".35"/>
+            <ellipse cx="46" cy="48" rx="14" ry="9" fill="currentColor" opacity=".35"/>
+            <ellipse cx="74" cy="48" rx="14" ry="9" fill="currentColor" opacity=".35"/>
+            <ellipse cx="60" cy="62" rx="9" ry="13" fill="currentColor" opacity=".3"/>
+          </g>
+        </svg>
       </div>
-      <svg class="hero__sprig" viewBox="0 0 120 200" aria-hidden="true">
-        <path d="M60 195 C58 150 56 110 60 60" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M59 150 C40 146 30 134 26 120 C44 120 56 130 59 150Z" fill="currentColor" opacity=".45"/>
-        <path d="M60 120 C79 116 89 104 93 90 C75 90 63 100 60 120Z" fill="currentColor" opacity=".45"/>
-        <g class="hero__bloom">
-          <circle cx="60" cy="48" r="11" fill="currentColor" opacity=".55"/>
-          <ellipse cx="60" cy="33" rx="9" ry="14" fill="currentColor" opacity=".35"/>
-          <ellipse cx="46" cy="48" rx="14" ry="9" fill="currentColor" opacity=".35"/>
-          <ellipse cx="74" cy="48" rx="14" ry="9" fill="currentColor" opacity=".35"/>
-          <ellipse cx="60" cy="62" rx="9" ry="13" fill="currentColor" opacity=".3"/>
-        </g>
-      </svg>
     </div>
   </div>
   <a href="#dores" class="scroll-hint" aria-label="Continuar"><span></span></a>
@@ -120,7 +122,7 @@
   <div class="wrap about">
     <div class="about__media reveal">
       <img src="images/sobre.webp" alt="Greissi de Matos" width="421" height="593" loading="lazy" decoding="async">
-      <span class="about__tag">Greissi de Matos</span>
+      <span class="signature" aria-hidden="true">Greissi de Matos</span>
     </div>
     <div class="about__text">
       <p class="eyebrow reveal">Sobre mim</p>
@@ -147,6 +149,7 @@
 
 <!-- ============ BUQUÊ ============ -->
 <section class="bouquet" id="jornada">
+  <svg class="divider" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg>
   <div class="wrap bouquet__inner">
     <div class="bouquet__text">
       <p class="eyebrow reveal">A jornada</p>
@@ -163,81 +166,104 @@
       </ol>
     </div>
 
-    <div class="bouquet__art" id="bouquetArt">
-      <svg viewBox="0 0 340 400" role="img" aria-label="Ilustração de um buquê que floresce em quatro etapas">
-        <g class="stems" fill="none" stroke-linecap="round">
-          <path class="stem" d="M170 378 C154 312 126 250 92 196" data-s="1"/>
-          <path class="stem" d="M170 378 C170 310 168 236 166 166" data-s="2"/>
-          <path class="stem" d="M170 378 C188 312 216 252 248 200" data-s="3"/>
-          <path class="stem" d="M170 378 C174 322 194 288 218 268" data-s="4"/>
-        </g>
-        <g class="leaves">
-          <path class="leaf" d="M160 312 C130 308 112 291 104 271 C136 272 156 289 160 312Z" data-s="1"/>
-          <path class="leaf" d="M180 288 C211 283 229 266 237 246 C205 248 185 265 180 288Z" data-s="3"/>
-          <path class="leaf" d="M158 258 C134 251 121 237 116 222 C140 225 155 239 158 258Z" data-s="2"/>
-          <path class="leaf" d="M182 340 C205 333 217 319 222 304 C199 308 185 322 182 340Z" data-s="4"/>
-        </g>
-        <g class="flowers">
-          <g class="flower" data-s="1" style="--x:92px; --y:196px; --sc:1">
-            <g class="petals-out">
-              <ellipse cy="-18" rx="9" ry="19"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(60)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(120)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(180)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(240)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(300)"/>
-            </g>
-            <g class="petals-in">
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(36)"/><ellipse cy="-10" rx="6.5" ry="12" transform="rotate(108)"/>
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(180)"/><ellipse cy="-10" rx="6.5" ry="12" transform="rotate(252)"/>
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(324)"/>
-            </g>
-            <circle r="5.5" class="core"/>
-          </g>
+    <div class="portrait" id="portrait">
+      <svg viewBox="0 0 400 560" role="img" aria-label="Ilustração de um rosto feminino de perfil com flores que desabrocham nos cabelos a cada etapa da jornada">
+        <path class="portrait__mass" d="M214 95 C282 88 332 140 332 208 C332 278 308 332 278 368 L258 338 C288 298 306 250 304 198 C302 140 268 100 214 95Z"/>
 
-          <g class="flower flower--lg" data-s="2" style="--x:166px; --y:166px; --sc:1.28">
-            <g class="petals-out">
-              <ellipse cy="-18" rx="9" ry="19"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(60)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(120)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(180)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(240)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(300)"/>
-            </g>
-            <g class="petals-in">
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(36)"/><ellipse cy="-10" rx="6.5" ry="12" transform="rotate(108)"/>
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(180)"/><ellipse cy="-10" rx="6.5" ry="12" transform="rotate(252)"/>
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(324)"/>
-            </g>
-            <circle r="5.5" class="core"/>
-          </g>
-
-          <g class="flower" data-s="3" style="--x:248px; --y:200px; --sc:1.05">
-            <g class="petals-out">
-              <ellipse cy="-18" rx="9" ry="19"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(60)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(120)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(180)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(240)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(300)"/>
-            </g>
-            <g class="petals-in">
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(36)"/><ellipse cy="-10" rx="6.5" ry="12" transform="rotate(108)"/>
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(180)"/><ellipse cy="-10" rx="6.5" ry="12" transform="rotate(252)"/>
-              <ellipse cy="-10" rx="6.5" ry="12" transform="rotate(324)"/>
-            </g>
-            <circle r="5.5" class="core"/>
-          </g>
-
-          <g class="flower flower--sm" data-s="4" style="--x:218px; --y:268px; --sc:.72">
-            <g class="petals-out">
-              <ellipse cy="-18" rx="9" ry="19"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(72)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(144)"/><ellipse cy="-18" rx="9" ry="19" transform="rotate(216)"/>
-              <ellipse cy="-18" rx="9" ry="19" transform="rotate(288)"/>
-            </g>
-            <circle r="5.5" class="core"/>
-          </g>
+        <g class="portrait__lines" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path class="draw" d="M214 96 C176 96 150 124 147 160 C146 172 152 178 150 187 C148 197 132 205 131 214 C130 222 141 224 148 223 C152 223 151 231 147 234 C154 237 154 242 147 245 C141 248 145 254 149 258 C154 264 162 275 177 280 C196 286 214 281 226 270"/>
+          <path class="draw" d="M212 94 C282 88 332 140 332 208 C332 278 308 332 278 368"/>
+          <path class="draw" d="M214 96 C268 96 302 136 304 192 C306 246 290 300 262 340"/>
+          <path class="draw" d="M244 116 C276 140 286 178 282 216 C279 252 268 288 252 316"/>
+          <path class="draw" d="M278 368 C274 380 268 390 260 398"/>
+          <path class="draw" d="M200 284 C199 306 198 322 196 340"/>
+          <path class="draw" d="M118 412 C158 364 184 350 196 342 C214 350 248 366 288 412"/>
+          <path class="draw portrait__brow" d="M156 168 C166 162 178 162 188 166"/>
+          <path class="draw portrait__brow" d="M155 181 C163 177 173 178 180 183"/>
         </g>
-        <g class="ribbon">
-          <rect x="155" y="349" width="30" height="11" rx="5" opacity=".5"/>
-          <path d="M155 355 C143 347 133 350 129 359 C140 364 150 362 155 355Z"/>
-          <path d="M185 355 C197 347 207 350 211 359 C200 364 190 362 185 355Z"/>
-          <path d="M162 360 C158 370 154 378 149 384" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".45"/>
-          <path d="M178 360 C182 370 186 378 191 384" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".45"/>
+
+        <g class="portrait__flowers">
+          <g class="bloom js-wind" data-s="1" style="--x:250px; --y:100px; --sc:.85; --origin:0 0">
+            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(60)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(120)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(180)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(240)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(300)"/>
+            <circle r="5" class="core"/>
+          </g>
+          <g class="bloom js-wind" data-s="2" style="--x:288px; --y:126px; --sc:1.06; --origin:0 0">
+            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(60)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(120)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(180)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(240)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(300)"/>
+            <circle r="5" class="core"/>
+          </g>
+          <g class="bloom js-wind" data-s="3" style="--x:314px; --y:172px; --sc:.95; --origin:0 0">
+            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(60)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(120)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(180)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(240)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(300)"/>
+            <circle r="5" class="core"/>
+          </g>
+          <g class="bloom js-wind" data-s="4" style="--x:314px; --y:224px; --sc:.8; --origin:0 0">
+            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(72)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(144)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(216)"/>
+            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(288)"/>
+            <circle r="5" class="core"/>
+          </g>
+          <g class="leafling" data-s="2" style="--x:272px; --y:108px"><path d="M0 0 C16 -4 26 -14 30 -26 C14 -24 3 -13 0 0Z"/></g>
+          <g class="leafling" data-s="3" style="--x:306px; --y:148px"><path d="M0 0 C16 4 27 14 31 26 C15 24 3 13 0 0Z"/></g>
+          <g class="leafling" data-s="4" style="--x:312px; --y:200px"><path d="M0 0 C17 -3 28 -12 33 -24 C16 -23 4 -13 0 0Z"/></g>
         </g>
       </svg>
-      <p class="bouquet__hint">Role para ver florescer</p>
+      <p class="portrait__hint">Role para vê-la florescer</p>
+    </div>
+
+  </div>
+<svg class="divider divider--up" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg></section>
+
+<!-- ============ QUIZ ============ -->
+<section class="section quiz" id="quiz">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow reveal">Por onde começar</p>
+    <h2 class="reveal" data-delay="1">Três perguntas para encontrar o seu caminho</h2>
+    <p class="section__lead reveal" data-delay="2">
+      São catorze materiais, e nem todos são para o seu momento. Responda abaixo e eu indico
+      por onde faz mais sentido você começar.
+    </p>
+
+    <div class="quiz__box reveal" data-delay="3">
+      <div class="quiz__head">
+        <div class="quiz__bar"><span></span></div>
+        <p class="quiz__count">1 de 3</p>
+      </div>
+
+      <div class="quiz__step">
+        <h3>Onde você está agora?</h3>
+        <div class="quiz__opts">
+          <button class="quiz__opt" type="button" data-score="atracao:2,desafio:1">Sozinha, e quero me preparar</button>
+          <button class="quiz__opt" type="button" data-score="mulher:3,frases:2">Conversando com alguém, mas não evolui</button>
+          <button class="quiz__opt" type="button" data-score="escolhida:3,mulher:1">Num relacionamento que esfriou</button>
+          <button class="quiz__opt" type="button" data-score="reconquista:3,desapego:2">Terminou, e ainda dói</button>
+        </div>
+      </div>
+
+      <div class="quiz__step">
+        <h3>O que mais te trava hoje?</h3>
+        <div class="quiz__opts">
+          <button class="quiz__opt" type="button" data-score="mulher:3,frases:2">Não sei o que dizer nem como conduzir</button>
+          <button class="quiz__opt" type="button" data-score="escolhida:3,imersao:2">Dou demais e acabo me anulando</button>
+          <button class="quiz__opt" type="button" data-score="desapego:3,reconquista:1">Não consigo desapegar</button>
+          <button class="quiz__opt" type="button" data-score="bloqueios:3,desafio:2">Me sinto travada em tudo, não só no amor</button>
+        </div>
+      </div>
+
+      <div class="quiz__step">
+        <h3>Como você quer ser acompanhada?</h3>
+        <div class="quiz__opts">
+          <button class="quiz__opt" type="button" data-score="mulher:2,desapego:2,atracao:2,bloqueios:2,frases:2">No meu tempo, com um material para ler</button>
+          <button class="quiz__opt" type="button" data-score="escolhida:4,imersao:3">Em grupo, com aulas ao vivo</button>
+          <button class="quiz__opt" type="button" data-score="reconquista:4,imersao:1">Individual, com atenção exclusiva</button>
+        </div>
+      </div>
+
+      <div class="quiz__result" hidden></div>
     </div>
   </div>
 </section>
@@ -567,6 +593,7 @@
   <span>Falar comigo</span>
 </a>
 
+<script src="vendor/lenis.min.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
