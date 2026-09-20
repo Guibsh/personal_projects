@@ -155,48 +155,135 @@ const WHATSAPP = '5500000000000';
   const heroImg = document.querySelector('.hero__frame img');
   const hero = { tx: 0, ty: 0, cx: 0, cy: 0 };
 
-  /* ---- retrato: desenho e florada conduzidos pelo scroll ---- */
-  const portrait = document.getElementById('portrait');
-  const steps = [...document.querySelectorAll('.bouquet__steps li')];
-  let drawPaths = [];
-  let blooms = [];
-  if (portrait) {
-    drawPaths = [...portrait.querySelectorAll('.draw')].map(el => {
-      const len = Math.ceil(el.getTotalLength());
-      el.style.setProperty('--len', len);
-      return el;
+  /* ---- buquê que ganha uma flor a cada seção ---- */
+  const MARCOS = ['dores', 'sobre', 'jornada', 'quiz', 'produtos', 'depoimentos', 'duvidas'];
+  const posy = document.getElementById('posy');
+  const posyBlooms = posy?.querySelector('.posy__blooms');
+  // pontas dos caules, na mesma ordem em que eles aparecem no SVG
+  const PONTAS = [[60, 46], [34, 58], [86, 58], [22, 84], [98, 84], [36, 102], [84, 102]];
+  const NS = 'http://www.w3.org/2000/svg';
+  let colhidas = 0;
+
+  if (posy) {
+    PONTAS.forEach(([x, y], n) => {
+      const g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'posy__bloom');
+      g.style.setProperty('--x', x + 'px');
+      g.style.setProperty('--y', y + 'px');
+      g.style.setProperty('--sc', (n === 0 ? 1.15 : n < 3 ? 1 : 0.85).toFixed(2));
+      for (let a = 0; a < 6; a++) {
+        const e = document.createElementNS(NS, 'ellipse');
+        e.setAttribute('cy', '-7.5');
+        e.setAttribute('rx', '4.4');
+        e.setAttribute('ry', '8');
+        e.setAttribute('transform', `rotate(${a * 60})`);
+        g.appendChild(e);
+      }
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('r', '3');
+      c.setAttribute('class', 'core');
+      g.appendChild(c);
+      posyBlooms.appendChild(g);
     });
-    blooms = [...portrait.querySelectorAll('.bloom, .leafling')];
   }
-  const mass = portrait?.querySelector('.portrait__mass');
 
-  // a seção inteira conduz o progresso, e não o retrato: no celular ele fica
-  // abaixo das etapas, e amarrado a si mesmo só floresceria depois da leitura
-  const stage = document.getElementById('jornada');
+  const contador = posy?.querySelector('.posy__count b');
+  // abre tudo até n: quem chega por um link de âncora ou rola rápido pode pular
+  // seções, e o buquê não pode ficar com buracos no meio
+  const abrirFlor = n => {
+    if (!posyBlooms || n < colhidas) return;
+    for (let k = colhidas; k <= n; k++) {
+      posyBlooms.children[k]?.classList.add('is-open');
+    }
+    colhidas = n + 1;
+    if (contador) contador.textContent = colhidas;
+    posy.classList.add('is-puff');
+    setTimeout(() => posy.classList.remove('is-puff'), 700);
+    const r = posy.getBoundingClientRect();
+    soprar(r.left + r.width * 0.5, r.top + r.height * 0.35);
+  };
 
-  const paintPortrait = () => {
-    if (!portrait || !stage) return;
-    const r = stage.getBoundingClientRect();
-    // começa quando o topo da seção toca a base da tela e termina conforme ela sobe,
-    // para o traço aparecer sendo desenhado em telas largas e estreitas
-    const p = clamp((innerHeight - r.top) / (innerHeight * 0.55 + r.height * 0.45), 0, 1);
-    portrait.classList.toggle('is-started', p > 0.02);
+  MARCOS.forEach((id, n) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        abrirFlor(n);
+        obs.unobserve(e.target);
+      });
+    }, { rootMargin: '-35% 0px -35% 0px' }).observe(el);
+  });
 
-    // as linhas se desenham na primeira metade do percurso
-    const dp = clamp(p / 0.5, 0, 1);
-    const per = 1 / drawPaths.length;
-    drawPaths.forEach((el, i) => {
-      el.style.setProperty('--p', clamp((dp - i * per * 0.55) / (per * 1.6), 0, 1));
+  /* ---- pétalas conduzidas pelo scroll ---- */
+  const campo = document.getElementById('petals');
+  const petalas = [];
+  const QTD = innerWidth < 700 ? 9 : 16;
+
+  if (campo && !reduced) {
+    for (let i = 0; i < QTD; i++) {
+      const el = document.createElement('span');
+      el.className = 'petal';
+      campo.appendChild(el);
+      petalas.push({
+        el,
+        x: Math.random() * innerWidth,
+        y: Math.random() * innerHeight,
+        vy: 0.25 + Math.random() * 0.45,
+        vx: (Math.random() - 0.5) * 0.35,
+        rot: Math.random() * 360,
+        spin: (Math.random() - 0.5) * 1.1,
+        esc: 0.65 + Math.random() * 0.6,
+        vida: 1
+      });
+    }
+  }
+
+  // sopro extra quando uma flor nasce
+  function soprar(ox, oy) {
+    if (reduced) return;
+    petalas.filter(p => p.vida >= 1).slice(0, 5).forEach((p, i) => {
+      p.x = ox + (Math.random() - 0.5) * 30;
+      p.y = oy + (Math.random() - 0.5) * 20;
+      p.vx = (Math.random() - 0.2) * 2.4;
+      p.vy = -1.2 - Math.random() * 1.2;
+      p.spin = (Math.random() - 0.5) * 6;
+      p.vida = 0.001 + i * 0.001;
     });
-    if (mass) mass.style.setProperty('--mass', dp);
+  }
 
-    // as flores abrem na segunda metade, uma por etapa
-    const bp = clamp((p - 0.4) / 0.55, 0, 1);
-    blooms.forEach(el => {
-      const s = Number(el.dataset.s) - 1;
-      el.style.setProperty('--b', clamp((bp - s * 0.2) / 0.3, 0, 1));
-    });
-    steps.forEach((li, i) => li.classList.toggle('is-lit', bp > 0.18 + i * 0.2));
+  const moverPetalas = kick => {
+    for (const p of petalas) {
+      if (p.vida < 1) {
+        p.vida = Math.min(1, p.vida + 0.012);
+        p.vy += 0.045;
+      }
+      p.y += p.vy + kick * 0.22;
+      p.x += p.vx + Math.sin((p.y + p.rot) / 120) * 0.5;
+      p.rot += p.spin + kick * 0.1;
+
+      if (p.y > innerHeight + 40) { p.y = -40; p.x = Math.random() * innerWidth; p.vida = 1; }
+      if (p.y < -60) { p.y = innerHeight + 30; }
+      if (p.x > innerWidth + 40) p.x = -30;
+      if (p.x < -40) p.x = innerWidth + 30;
+
+      p.el.style.transform =
+        `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg) scale(${p.esc.toFixed(2)})`;
+    }
+  };
+
+  /* ---- linha do tempo da jornada ---- */
+  const journey = document.getElementById('journey');
+  const vine = journey?.querySelector('.journey__stem');
+  const marcos = journey ? [...journey.querySelectorAll('.journey__steps li')] : [];
+  if (vine) vine.style.setProperty('--len', Math.ceil(vine.getTotalLength()));
+
+  const pintarJornada = () => {
+    if (!journey) return;
+    const r = journey.getBoundingClientRect();
+    const p = clamp((innerHeight * 0.82 - r.top) / (r.height + innerHeight * 0.25), 0, 1);
+    if (vine) vine.style.setProperty('--p', p.toFixed(3));
+    marcos.forEach((li, i) => li.classList.toggle('is-lit', p > 0.12 + i * 0.2));
   };
 
   /* ---- laço principal ---- */
@@ -246,7 +333,9 @@ const WHATSAPP = '5500000000000';
       }
     }
 
-    paintPortrait();
+    posy?.classList.toggle('is-visible', scrollY > innerHeight * 0.55);
+    moverPetalas(kick);
+    pintarJornada();
   };
   requestAnimationFrame(frame);
 
@@ -465,5 +554,53 @@ const WHATSAPP = '5500000000000';
     });
 
     show(0);
+  }
+
+  /* ---- dores: a visitante marca o que reconhece ---- */
+  const pains = [...document.querySelectorAll('.pain')];
+  const echo = document.getElementById('painsEcho');
+  if (pains.length && echo) {
+    const score = echo.querySelector('.pains__score b');
+    const msg = echo.querySelector('.pains__msg');
+    const RESPOSTAS = [
+      '',
+      'Um já é o bastante para valer a pena olhar com atenção.',
+      'Dois padrões reconhecidos. Reconhecer é sempre o primeiro passo.',
+      'Três. Não é coincidência, é padrão — e padrão se reescreve.',
+      'Quatro. Você está carregando mais do que deveria sozinha.',
+      'Cinco. Nada disso é falta de amor: é excesso dele, no endereço errado.',
+      'Todas. E, se dói ler, é porque alguma parte de você já sabe que é hora.'
+    ];
+
+    pains.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const on = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', String(!on));
+        btn.classList.toggle('is-on', !on);
+
+        const n = pains.filter(b => b.classList.contains('is-on')).length;
+        echo.hidden = n === 0;
+        if (!n) return;
+        score.textContent = n;
+        msg.textContent = RESPOSTAS[n];
+        if (!on) {
+          const r = btn.getBoundingClientRect();
+          soprar(r.left + r.width * 0.12, r.top + r.height * 0.5);
+        }
+      });
+    });
+  }
+
+  /* ---- botões magnéticos ---- */
+  if (fine && !reduced) {
+    document.querySelectorAll('.btn, .wa-float').forEach(btn => {
+      btn.addEventListener('pointermove', e => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+        btn.style.transform = `translate(${(dx * 8).toFixed(1)}px, ${(dy * 5).toFixed(1)}px)`;
+      });
+      btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+    });
   }
 })();

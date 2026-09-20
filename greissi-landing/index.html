@@ -21,11 +21,34 @@
 
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 
-<!-- pétalas ambiente -->
-<div class="petals" aria-hidden="true">
-  <span class="petal"></span><span class="petal"></span><span class="petal"></span>
-  <span class="petal"></span><span class="petal"></span><span class="petal"></span>
-</div>
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<!-- buquê que ganha uma flor a cada seção percorrida -->
+<aside class="posy" id="posy" aria-hidden="true">
+  <svg viewBox="0 0 120 170">
+    <g class="posy__sway">
+      <g class="posy__stems" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+        <path d="M60 150 C60 120 60 86 60 46"/>
+        <path d="M60 150 C56 118 46 88 34 58"/>
+        <path d="M60 150 C64 118 74 88 86 58"/>
+        <path d="M60 150 C54 122 40 102 22 84"/>
+        <path d="M60 150 C66 122 80 102 98 84"/>
+        <path d="M60 150 C57 126 48 112 36 102"/>
+        <path d="M60 150 C63 126 72 112 84 102"/>
+      </g>
+      <g class="posy__leaves">
+        <path d="M58 118 C44 114 36 104 33 94 C47 96 56 106 58 118Z"/>
+        <path d="M63 104 C77 100 85 90 88 80 C74 82 65 92 63 104Z"/>
+      </g>
+      <g class="posy__blooms"></g>
+    </g>
+    <g class="posy__wrap">
+      <path d="M48 146 h24 l-4 20 h-16Z"/>
+      <rect x="46" y="142" width="28" height="8" rx="4"/>
+    </g>
+  </svg>
+  <span class="posy__count"><b>0</b>/7</span>
+</aside>
 
 <header class="nav" id="nav">
   <div class="wrap nav__inner">
@@ -106,14 +129,50 @@
     <p class="section__lead reveal" data-delay="1">
       Não é fraqueza. É um padrão — e todo padrão pode ser compreendido e reescrito.
     </p>
+    <p class="pains__hint reveal" data-delay="1">Toque no que você reconhece em você.</p>
     <ul class="pains">
-      <li class="reveal" data-delay="1">Você relê a mensagem dez vezes antes de enviar e ainda assim não sente que é a certa.</li>
-      <li class="reveal" data-delay="2">As conversas começam bem e vão esfriando, sem você entender onde se perderam.</li>
-      <li class="reveal" data-delay="3">Você dá muito mais do que recebe — e chama isso de amor.</li>
-      <li class="reveal" data-delay="4">Um relacionamento terminou e você sente que perdeu, junto com ele, o próprio eixo.</li>
-      <li class="reveal" data-delay="5">Você sabe o que quer, mas trava na hora de dizer "não" sem culpa.</li>
-      <li class="reveal" data-delay="6">Já tentou de tudo — menos voltar a atenção para você mesma.</li>
+      <li class="reveal" data-delay="1">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Você relê a mensagem dez vezes antes de enviar e ainda assim não sente que é a certa.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="2">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">As conversas começam bem e vão esfriando, sem você entender onde se perderam.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="3">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Você dá muito mais do que recebe — e chama isso de amor.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="4">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Um relacionamento terminou e você sente que perdeu, junto com ele, o próprio eixo.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="5">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Você sabe o que quer, mas trava na hora de dizer "não" sem culpa.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="6">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Já tentou de tudo — menos voltar a atenção para você mesma.</span>
+        </button>
+      </li>
     </ul>
+    <div class="pains__echo" id="painsEcho" hidden>
+      <p class="pains__score"><b>0</b> de 6</p>
+      <p class="pains__msg"></p>
+      <a class="btn" href="#quiz">Descobrir por onde começar</a>
+    </div>
   </div>
 </section>
 
@@ -150,70 +209,51 @@
 <!-- ============ BUQUÊ ============ -->
 <section class="bouquet" id="jornada">
   <svg class="divider" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg>
-  <div class="wrap bouquet__inner">
-    <div class="bouquet__text">
+  <div class="wrap journey__inner">
+    <div class="journey__intro">
       <p class="eyebrow reveal">A jornada</p>
       <h2 class="reveal" data-delay="1">Toda transformação floresce por etapas</h2>
       <p class="reveal" data-delay="2">
         Ninguém desabrocha em um dia. O caminho que proponho tem ritmo, ordem e cuidado —
         cada flor deste buquê é uma etapa que você atravessa.
       </p>
-      <ol class="bouquet__steps">
-        <li class="reveal" data-delay="3" data-step="1"><strong>Reconhecer</strong>O diagnóstico honesto do que você está vivendo — sem culpa e sem rodeios.</li>
-        <li class="reveal" data-delay="4" data-step="2"><strong>Reconectar</strong>Voltar para você: sua energia, sua autoestima, seu encanto.</li>
-        <li class="reveal" data-delay="5" data-step="3"><strong>Comunicar</strong>Aprender a expressar valor, limite e desejo com a mesma naturalidade.</li>
-        <li class="reveal" data-delay="6" data-step="4"><strong>Florescer</strong>Ser escolhida porque você se escolheu primeiro.</li>
+    </div>
+
+    <div class="journey" id="journey">
+      <svg class="journey__vine" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">
+        <path class="journey__stem" d="M20 46 C180 10 300 54 480 34 C660 14 780 52 980 26" fill="none"
+              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+
+      <ol class="journey__steps">
+        <li data-step="1">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">01</span>
+          <strong>Reconhecer</strong>
+          O diagnóstico honesto do que você está vivendo — sem culpa e sem rodeios.
+        </li>
+        <li data-step="2">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">02</span>
+          <strong>Reconectar</strong>
+          Voltar para você: sua energia, sua autoestima, seu encanto.
+        </li>
+        <li data-step="3">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">03</span>
+          <strong>Comunicar</strong>
+          Aprender a expressar valor, limite e desejo com a mesma naturalidade.
+        </li>
+        <li data-step="4">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">04</span>
+          <strong>Florescer</strong>
+          Ser escolhida porque você se escolheu primeiro.
+        </li>
       </ol>
     </div>
 
-    <div class="portrait" id="portrait">
-      <svg viewBox="0 0 400 560" role="img" aria-label="Ilustração de um rosto feminino de perfil com flores que desabrocham nos cabelos a cada etapa da jornada">
-        <path class="portrait__mass" d="M214 95 C282 88 332 140 332 208 C332 278 308 332 278 368 L258 338 C288 298 306 250 304 198 C302 140 268 100 214 95Z"/>
-
-        <g class="portrait__lines" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path class="draw" d="M214 96 C176 96 150 124 147 160 C146 172 152 178 150 187 C148 197 132 205 131 214 C130 222 141 224 148 223 C152 223 151 231 147 234 C154 237 154 242 147 245 C141 248 145 254 149 258 C154 264 162 275 177 280 C196 286 214 281 226 270"/>
-          <path class="draw" d="M212 94 C282 88 332 140 332 208 C332 278 308 332 278 368"/>
-          <path class="draw" d="M214 96 C268 96 302 136 304 192 C306 246 290 300 262 340"/>
-          <path class="draw" d="M244 116 C276 140 286 178 282 216 C279 252 268 288 252 316"/>
-          <path class="draw" d="M278 368 C274 380 268 390 260 398"/>
-          <path class="draw" d="M200 284 C199 306 198 322 196 340"/>
-          <path class="draw" d="M118 412 C158 364 184 350 196 342 C214 350 248 366 288 412"/>
-          <path class="draw portrait__brow" d="M156 168 C166 162 178 162 188 166"/>
-          <path class="draw portrait__brow" d="M155 181 C163 177 173 178 180 183"/>
-        </g>
-
-        <g class="portrait__flowers">
-          <g class="bloom js-wind" data-s="1" style="--x:250px; --y:100px; --sc:.85; --origin:0 0">
-            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(60)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(120)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(180)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(240)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(300)"/>
-            <circle r="5" class="core"/>
-          </g>
-          <g class="bloom js-wind" data-s="2" style="--x:288px; --y:126px; --sc:1.06; --origin:0 0">
-            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(60)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(120)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(180)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(240)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(300)"/>
-            <circle r="5" class="core"/>
-          </g>
-          <g class="bloom js-wind" data-s="3" style="--x:314px; --y:172px; --sc:.95; --origin:0 0">
-            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(60)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(120)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(180)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(240)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(300)"/>
-            <circle r="5" class="core"/>
-          </g>
-          <g class="bloom js-wind" data-s="4" style="--x:314px; --y:224px; --sc:.8; --origin:0 0">
-            <ellipse cy="-15" rx="7.5" ry="16"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(72)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(144)"/><ellipse cy="-15" rx="7.5" ry="16" transform="rotate(216)"/>
-            <ellipse cy="-15" rx="7.5" ry="16" transform="rotate(288)"/>
-            <circle r="5" class="core"/>
-          </g>
-          <g class="leafling" data-s="2" style="--x:272px; --y:108px"><path d="M0 0 C16 -4 26 -14 30 -26 C14 -24 3 -13 0 0Z"/></g>
-          <g class="leafling" data-s="3" style="--x:306px; --y:148px"><path d="M0 0 C16 4 27 14 31 26 C15 24 3 13 0 0Z"/></g>
-          <g class="leafling" data-s="4" style="--x:312px; --y:200px"><path d="M0 0 C17 -3 28 -12 33 -24 C16 -23 4 -13 0 0Z"/></g>
-        </g>
-      </svg>
-      <p class="portrait__hint">Role para vê-la florescer</p>
-    </div>
+    
 
   </div>
 <svg class="divider divider--up" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg></section>

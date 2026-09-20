@@ -113,22 +113,42 @@ p{margin:0 0 1.1em}
 /* ---------- pétalas ---------- */
 .petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .petal{
-  position:absolute;top:-8vh;width:13px;height:19px;
-  background:var(--terracotta-soft);opacity:.28;
+  position:absolute;top:0;left:0;width:11px;height:16px;
+  background:var(--terracotta-soft);opacity:.34;will-change:transform;
   border-radius:60% 60% 60% 60%/72% 72% 28% 28%;
-  animation:fall linear infinite;
 }
-.petal:nth-child(1){left:8%;animation-duration:24s;animation-delay:0s}
-.petal:nth-child(2){left:26%;animation-duration:31s;animation-delay:-6s;width:9px;height:14px;opacity:.2}
-.petal:nth-child(3){left:47%;animation-duration:27s;animation-delay:-14s}
-.petal:nth-child(4){left:66%;animation-duration:34s;animation-delay:-3s;width:11px;height:16px;opacity:.22}
-.petal:nth-child(5){left:82%;animation-duration:29s;animation-delay:-19s}
-.petal:nth-child(6){left:93%;animation-duration:36s;animation-delay:-10s;width:8px;height:13px;opacity:.18}
-@keyframes fall{
-  0%{transform:translate3d(0,0,0) rotate(0deg)}
-  50%{transform:translate3d(40px,55vh,0) rotate(180deg)}
-  100%{transform:translate3d(-20px,112vh,0) rotate(360deg)}
+
+/* ---------- buquê acumulativo ---------- */
+.posy{
+  position:fixed;left:1.1rem;bottom:1.1rem;z-index:120;width:clamp(76px,8vw,108px);
+  pointer-events:none;color:var(--olive);
+  opacity:0;transform:translateY(16px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
 }
+.posy.is-visible{opacity:1;transform:none}
+.posy svg{width:100%;overflow:visible}
+.posy__sway{
+  transform:rotate(var(--wind,0deg));
+  transform-box:fill-box;transform-origin:60px 150px;
+}
+.posy__stems{stroke:var(--olive-light);opacity:.75}
+.posy__leaves{fill:var(--olive-light);opacity:.5}
+.posy__wrap{fill:var(--olive);opacity:.5}
+.posy__bloom{
+  transform:translate(var(--x),var(--y)) scale(0) rotate(-40deg);
+  transform-box:fill-box;transform-origin:center;opacity:0;
+  transition:transform .8s cubic-bezier(.34,1.56,.64,1),opacity .5s var(--ease);
+}
+.posy__bloom.is-open{transform:translate(var(--x),var(--y)) scale(var(--sc,1)) rotate(0deg);opacity:1}
+.posy__bloom ellipse{fill:var(--terracotta-soft)}
+.posy__bloom .core{fill:var(--cream)}
+.posy__count{
+  display:block;text-align:center;margin-top:.3rem;
+  font-size:.6rem;letter-spacing:.14em;color:var(--olive-light);
+}
+.posy__count b{font-weight:400;color:var(--terracotta)}
+.posy.is-puff{animation:puff .7s var(--ease)}
+@keyframes puff{0%,100%{scale:1}35%{scale:1.09}}
 
 /* ---------- hero ---------- */
 .hero{position:relative;padding:clamp(8rem,16vh,11rem) 0 clamp(4rem,8vw,6rem);z-index:2}
@@ -176,17 +196,6 @@ p{margin:0 0 1.1em}
 .bouquet h2,.bouquet .eyebrow{color:var(--cream)}
 .bouquet .eyebrow{color:rgba(249,244,230,.6)}
 .bouquet h2 em{color:var(--terracotta-soft)}
-.bouquet__inner{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,6vw,4.5rem);align-items:center}
-.bouquet__text p{color:rgba(249,244,230,.78);max-width:46ch}
-.bouquet__steps{list-style:none;counter-reset:s;padding:0;margin:2.5rem 0 0;display:grid;gap:1.5rem}
-.bouquet__steps li{counter-increment:s;padding-left:3.2rem;position:relative;color:rgba(249,244,230,.72);font-size:.97rem}
-.bouquet__steps li::before{
-  content:"0" counter(s);position:absolute;left:0;top:.05em;
-  font-family:"Cormorant Garamond",serif;font-size:1.05rem;color:var(--terracotta-soft);
-  letter-spacing:.08em;
-}
-.bouquet__steps strong{display:block;font-family:"Cormorant Garamond",serif;font-weight:500;font-size:1.3rem;color:var(--cream);margin-bottom:.15rem}
-.bouquet__steps li.is-lit::before{color:var(--cream)}
 
 /* ---------- produtos ---------- */
 .filters{display:flex;flex-wrap:wrap;gap:.6rem;margin:2.5rem 0 3rem}
@@ -366,7 +375,6 @@ p{margin:0 0 1.1em}
   .hero__sprig{right:-34px;bottom:-26px;width:86px}
   .about__media{max-width:360px;margin-inline:auto}
   .cta__media{max-width:300px;margin-inline:auto}
-  .portrait{margin-top:2.5rem}
   .scroll-hint{display:none}
   .stats{flex-wrap:wrap;gap:1.5rem 2.2rem}
   .footer__inner{grid-template-columns:1fr}
@@ -388,31 +396,6 @@ p{margin:0 0 1.1em}
   .reveal{opacity:1;transform:none}
   .petals{display:none}
 }
-
-/* ---------- retrato em line art ---------- */
-.portrait{position:relative;display:flex;flex-direction:column;align-items:center}
-.portrait svg{width:min(100%,430px);overflow:visible;color:rgba(249,244,230,.75)}
-.portrait__mass{fill:currentColor;opacity:calc(var(--mass,0) * .14)}
-.portrait__lines .draw{
-  stroke-dasharray:var(--len,600);
-  stroke-dashoffset:calc(var(--len,600) * (1 - var(--p,0)));
-}
-.portrait__flowers .bloom{
-  transform:translate(var(--x),var(--y)) rotate(var(--wind,0deg)) scale(calc(var(--sc,1) * var(--b,0)));
-  transform-box:fill-box;transform-origin:center;opacity:var(--b,0);
-}
-.portrait__flowers .bloom ellipse{fill:var(--terracotta-soft);opacity:.72}
-.portrait__flowers .bloom .core{fill:var(--cream);opacity:.92}
-.portrait__flowers .leafling{
-  transform:translate(var(--x),var(--y)) scale(var(--b,0));
-  transform-box:fill-box;transform-origin:center;
-  opacity:calc(var(--b,0) * .5);fill:rgba(249,244,230,.5);
-}
-.portrait__hint{
-  font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(249,244,230,.45);margin:1.2rem 0 0;transition:opacity .6s var(--ease);
-}
-.portrait.is-started .portrait__hint{opacity:0}
 
 /* ---------- vento ---------- */
 .js-wind{transform:rotate(var(--wind,0deg));transform-origin:var(--origin,center)}
@@ -509,3 +492,109 @@ p{margin:0 0 1.1em}
   transition:opacity .45s var(--ease);
 }
 .card:hover::after{opacity:1}
+
+/* ---------- dores marcáveis ---------- */
+.pains__hint{
+  margin-top:2.2rem;font-size:.72rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--olive-light);
+}
+.pains{margin-top:1.2rem}
+.pains li{padding-left:0}
+.pains li::before{display:none}
+.pain{
+  display:flex;gap:1rem;align-items:flex-start;width:100%;text-align:left;
+  background:none;border:0;padding:.55rem 0;cursor:pointer;
+  font-family:inherit;font-size:1.02rem;font-weight:300;line-height:1.7;
+  color:var(--ink-soft);transition:color .35s var(--ease);
+}
+.pain__mark{
+  flex:none;width:15px;height:15px;margin-top:.5em;position:relative;
+  border:1px solid rgba(192,112,90,.5);
+  border-radius:60% 60% 60% 60%/72% 72% 28% 28%;
+  transition:background .4s var(--ease),border-color .4s var(--ease),transform .5s var(--ease);
+}
+.pain:hover{color:var(--ink)}
+.pain:hover .pain__mark{border-color:var(--terracotta)}
+.pain.is-on{color:var(--ink)}
+.pain.is-on .pain__mark{
+  background:var(--terracotta);border-color:var(--terracotta);
+  transform:rotate(18deg) scale(1.12);
+}
+.pains__echo{
+  margin-top:2.4rem;padding:1.8rem 2rem;background:var(--white);
+  border-left:2px solid var(--terracotta);border-radius:var(--radius);
+  animation:quizIn .5s var(--ease);
+}
+.pains__score{
+  margin:0 0 .3rem;font-size:.72rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--olive-light);
+}
+.pains__score b{font-weight:400;color:var(--terracotta)}
+.pains__msg{
+  font-family:"Cormorant Garamond",serif;font-size:clamp(1.3rem,2.6vw,1.75rem);
+  font-style:italic;line-height:1.4;color:var(--ink);margin-bottom:1.4rem;
+}
+
+/* ---------- jornada em linha do tempo ---------- */
+.journey__inner{display:block}
+.journey__intro{max-width:56ch}
+.journey__intro p{color:rgba(249,244,230,.78)}
+.journey{position:relative;margin-top:clamp(2.5rem,6vw,4rem)}
+.journey__vine{
+  position:absolute;top:-6px;left:0;width:100%;height:60px;
+  color:rgba(249,244,230,.45);pointer-events:none;
+}
+.journey__stem{
+  stroke-dasharray:var(--len,1200);
+  stroke-dashoffset:calc(var(--len,1200) * (1 - var(--p,0)));
+}
+.journey__steps{
+  list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1rem,2.5vw,2.2rem);
+}
+.journey__steps li{
+  position:relative;padding-top:3.6rem;
+  color:rgba(249,244,230,.62);font-size:.94rem;line-height:1.65;
+  opacity:.4;transform:translateY(14px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease),color .7s var(--ease);
+}
+.journey__steps li.is-lit{opacity:1;transform:none;color:rgba(249,244,230,.78)}
+.journey__mark{
+  position:absolute;top:14px;left:0;width:16px;height:16px;
+  border:1px solid rgba(249,244,230,.45);
+  border-radius:60% 60% 60% 60%/72% 72% 28% 28%;
+  transition:background .6s var(--ease),border-color .6s var(--ease),transform .7s var(--ease);
+}
+.journey__steps li.is-lit .journey__mark{
+  background:var(--terracotta-soft);border-color:var(--terracotta-soft);
+  transform:rotate(20deg) scale(1.15);
+}
+.journey__num{
+  display:block;font-family:"Cormorant Garamond",serif;font-size:.95rem;
+  letter-spacing:.1em;color:var(--terracotta-soft);margin-bottom:.15rem;
+}
+.journey__steps strong{
+  display:block;font-family:"Cormorant Garamond",serif;font-weight:500;
+  font-size:1.4rem;color:var(--cream);margin-bottom:.35rem;
+}
+
+@media (max-width:860px){
+  .journey__steps{grid-template-columns:1fr 1fr;gap:1.8rem}
+  .journey__vine{display:none}
+}
+@media (max-width:520px){
+  .journey__steps{grid-template-columns:1fr;gap:1.4rem}
+  .journey__steps li{padding-top:0;padding-left:2.2rem}
+  .journey__mark{top:6px}
+  /* em tela estreita ele encosta no conteúdo; como não recebe toque,
+     vira marca d'água em vez de disputar espaço */
+  .posy{width:46px;left:.25rem;bottom:.25rem;opacity:0}
+  .posy.is-visible{opacity:.6}
+  .posy__count{font-size:.52rem;margin-top:.15rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  /* sem a animação de scroll, as etapas ficariam presas em opacidade baixa */
+  .journey__steps li{opacity:1;transform:none;color:rgba(249,244,230,.78)}
+  .journey__stem{stroke-dashoffset:0}
+}
