@@ -398,12 +398,37 @@ const WHATSAPP = '5500000000000';
     });
   };
 
+  // uma pessoa varrendo não desliza o rastelo em linha reta: ela alcança,
+  // puxa com força (acelera e desacelera), solta, alcança de novo. Isso vira
+  // uma sequência de golpes — cada um com sua própria curva de tempo — em vez
+  // de um único deslocamento linear.
   const dispararRastelo = () => {
     faseRastelo = 'varrendo';
-    rakeInfo = { inicio: performance.now(), pilha: larguraZona * 0.56, xInicio: larguraZona + 40 };
+    const pilha = larguraZona * 0.56;
+    const xFinal = pilha - 30;
+    const xInicio = larguraZona + 40;
+    const N = 3;
+    const passo = (xInicio - xFinal) / N;
+
+    const golpes = [];
+    let cursor = xInicio;
+    for (let i = 0; i < N; i++) {
+      if (i > 0) {
+        // reposiciona um pouco à direita antes do próximo puxão — o rastelo
+        // "solta" o chão aqui, por isso não arrasta pétalas nesta parte
+        const alcance = cursor + passo * 0.32;
+        golpes.push({ tipo: 'alcance', de: cursor, ate: alcance, dur: 260 });
+        cursor = alcance;
+      }
+      const alvo = i === N - 1 ? xFinal : cursor - passo;
+      golpes.push({ tipo: 'puxada', de: cursor, ate: alvo, dur: 560 });
+      cursor = alvo;
+    }
+
+    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes, pilha, comecou: false };
     if (rastelo) {
       rastelo.style.opacity = '1';
-      rastelo.style.transform = `translate3d(${rakeInfo.xInicio}px, 8px, 0)`;
+      rastelo.style.transform = `translate3d(${xInicio}px, 8px, 0) rotate(6deg)`;
     }
     // o que ainda estiver no ar desce depressa, para o rastelo não varrer
     // um chão pela metade
@@ -415,21 +440,15 @@ const WHATSAPP = '5500000000000';
     const agora = performance.now();
 
     if (faseRastelo === 'varrendo') {
-      const ATRASO = 550, DURACAO = 2400;
-      const passado = agora - rakeInfo.inicio;
-      if (passado < ATRASO) return;
-      const k = clamp((passado - ATRASO) / DURACAO, 0, 1);
-      const rx = rakeInfo.xInicio + (rakeInfo.pilha - 30 - rakeInfo.xInicio) * easeDentroFora(k);
-      rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, 8px, 0)`;
-      for (const p of caidas) {
-        // o que o rastelo alcança é empurrado à frente dele
-        if (p.pousada && p.x > rx && p.x < rx + 150) {
-          p.x += (rx + 40 - p.x) * 0.06;
-          p.rot += 1.4;
-          p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
-        }
+      const ATRASO = 480;
+      if (!rakeInfo.comecou) {
+        if (agora - rakeInfo.inicio < ATRASO) return;
+        rakeInfo.comecou = true;
+        rakeInfo.tGolpe = agora;
       }
-      if (k >= 1) {
+
+      const golpe = rakeInfo.golpes[rakeInfo.indice];
+      if (!golpe) {
         faseRastelo = 'assentando';
         rakeInfo.assentarInicio = agora;
         caidas.filter(p => p.pousada).forEach((p, i) => {
@@ -437,7 +456,31 @@ const WHATSAPP = '5500000000000';
           p.alvoX = rakeInfo.pilha + (Math.random() - 0.5) * 70;
           p.alvoY = chaoY - Math.floor(i / 5) * 6;
         });
+        return;
       }
+
+      const k = clamp((agora - rakeInfo.tGolpe) / golpe.dur, 0, 1);
+      const puxando = golpe.tipo === 'puxada';
+      const ek = puxando ? easeFora(k) : easeDentroFora(k);
+      const rx = golpe.de + (golpe.ate - golpe.de) * ek;
+
+      // durante a puxada o rastelo inclina para trás e afunda no chão;
+      // durante o alcance ele se ergue e inclina para frente, como um pulso
+      const rot = puxando ? -7 + 5 * (1 - ek) : 11 - 5 * ek;
+      const y = puxando ? 2 + 7 * ek : 9 - 7 * ek;
+      rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
+
+      if (puxando) {
+        for (const p of caidas) {
+          if (p.pousada && p.x > rx && p.x < rx + 150) {
+            p.x += (rx + 40 - p.x) * 0.1;
+            p.rot += 1.6;
+            p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+          }
+        }
+      }
+
+      if (k >= 1) { rakeInfo.indice++; rakeInfo.tGolpe = agora; }
     } else if (faseRastelo === 'assentando') {
       const DURACAO = 700;
       const k = clamp((agora - rakeInfo.assentarInicio) / DURACAO, 0, 1);

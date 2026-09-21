@@ -663,6 +663,9 @@ p{margin:0 0 1.1em}
 .fallzone__rake{
   position:absolute;bottom:0;left:0;width:clamp(96px,11vw,150px);
   opacity:0;will-change:transform;
+  /* gira perto do punho (topo do cabo no SVG), não no centro do ícone —
+     senão a rotação parece o rastelo girando sozinho no ar */
+  transform-origin:90% 6%;
 }
 .fallzone__rake svg{width:100%;overflow:visible}
 .rake__handle{fill:none;stroke:#8A6A4E;stroke-width:7;stroke-linecap:round}
