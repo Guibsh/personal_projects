@@ -20,13 +20,21 @@ const WHATSAPP = '5500000000000';
 
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  /* ---- scroll suave (Lenis) ---- */
-  let lenis = null;
+  /* ---- scroll suave, sincronizado com o ScrollTrigger ---- */
+  const temGsap = window.gsap && window.ScrollTrigger;
+  if (temGsap) gsap.registerPlugin(ScrollTrigger);
+
   if (!reduced && window.Lenis) {
-    lenis = new Lenis({ duration: 1.1, smoothWheel: true, touchMultiplier: 1.6 });
-    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
-    requestAnimationFrame(raf);
+    const lenis = new Lenis({ duration: 1.12, smoothWheel: true, touchMultiplier: 1.6 });
     document.documentElement.style.scrollBehavior = 'auto';
+    if (temGsap) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(t => lenis.raf(t * 1000));
+      gsap.ticker.lagSmoothing(0);
+    } else {
+      const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+    }
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const el = document.querySelector(a.getAttribute('href'));
@@ -129,7 +137,7 @@ const WHATSAPP = '5500000000000';
   }
 
   /* ---- motor do vento ---- */
-  const windEls = [...document.querySelectorAll('.js-wind')].map((el, i) => ({
+  const windEls = [...document.querySelectorAll('.js-wind, .stalk')].map((el, i) => ({
     el,
     phase: i * 1.7,
     amp: parseFloat(getComputedStyle(el).getPropertyValue('--amp')) || 3.2,
@@ -149,11 +157,78 @@ const WHATSAPP = '5500000000000';
   addEventListener('scroll', queueMeasure, { passive: true });
   measureWind();
 
-  /* ---- camadas 3D do hero ---- */
-  const heroStage = document.getElementById('heroStage');
-  const layers = heroStage ? [...heroStage.querySelectorAll('[data-depth]')] : [];
-  const heroImg = document.querySelector('.hero__frame img');
-  const hero = { tx: 0, ty: 0, cx: 0, cy: 0 };
+  /* ---- cena da janela: planta o canteiro ---- */
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  // x na jardineira, altura da haste, escala da flor, variação de cor
+  const PLANTIO = [
+    [ 92, 118, .96, 'deep'], [126, 156, 1.08, ''],
+    [158,  96, .84, 'pale'], [196, 178, 1.16, ''],
+    [232, 110, .9,  'pale'], [266, 146, 1.02, 'deep'],
+    [300,  88, .8,  ''    ], [334, 128, .98, 'pale'],
+  ];
+  const canteiro = document.getElementById('stalks');
+
+  if (canteiro) {
+    PLANTIO.forEach(([x, h, sc, variante], i) => {
+      const g = document.createElementNS(SVG_NS, 'g');
+      g.setAttribute('class', 'stalk' + (variante ? ' stalk--' + variante : ''));
+      g.style.setProperty('--x', x + 'px');
+      g.style.setProperty('--y', '116px');
+
+      const curva = (i % 2 ? 1 : -1) * (6 + (i % 3) * 4);
+      const stem = document.createElementNS(SVG_NS, 'path');
+      stem.setAttribute('class', 'stem');
+      stem.setAttribute('d', `M0 0 C${curva} ${-h * .4} ${curva * 1.4} ${-h * .7} 0 ${-h}`);
+      g.appendChild(stem);
+
+      const fy = -h * .45;
+      const lado = i % 2 ? 1 : -1;
+      const folha = document.createElementNS(SVG_NS, 'path');
+      folha.setAttribute('class', 'leaf');
+      folha.setAttribute('d', `M0 ${fy} C${14 * lado} ${fy - 4} ${22 * lado} ${fy - 13} ${24 * lado} ${fy - 22} C${11 * lado} ${fy - 19} ${2 * lado} ${fy - 9} 0 ${fy}Z`);
+      g.appendChild(folha);
+
+      const cabeca = document.createElementNS(SVG_NS, 'g');
+      cabeca.setAttribute('transform', `translate(0 ${-h}) scale(${sc})`);
+      for (let a = 0; a < 6; a++) {
+        const p = document.createElementNS(SVG_NS, 'ellipse');
+        p.setAttribute('class', 'pet');
+        p.setAttribute('cy', '-7.5');
+        p.setAttribute('rx', '4.6');
+        p.setAttribute('ry', '8.4');
+        p.setAttribute('transform', `rotate(${a * 60})`);
+        cabeca.appendChild(p);
+      }
+      const miolo = document.createElementNS(SVG_NS, 'circle');
+      miolo.setAttribute('class', 'core');
+      miolo.setAttribute('r', '3.1');
+      cabeca.appendChild(miolo);
+      g.appendChild(cabeca);
+
+      canteiro.appendChild(g);
+    });
+  }
+
+  /* ---- cena da janela: profundidade e respiro da foto ---- */
+  const cena = document.getElementById('scene');
+  if (cena && temGsap && !reduced) {
+    gsap.utils.toArray('#scene [data-depth]').forEach(el => {
+      const d = Number(el.dataset.depth);
+      gsap.to(el, {
+        y: () => d * (innerWidth < 700 ? .65 : 1),
+        ease: 'none',
+        scrollTrigger: { trigger: cena, start: 'top top', end: 'bottom top', scrub: .8 }
+      });
+    });
+
+    // a foto emerge em vez de simplesmente estar lá, e depois só respira:
+    // um zoom maior dava a impressão de a imagem recuar atrás do vidro
+    gsap.from('#heroPhoto', { scale: 1.06, opacity: 0, filter: 'blur(10px)', duration: 1.7, ease: 'power2.out' });
+    gsap.to('#heroPhoto', {
+      scale: 1.03, ease: 'none',
+      scrollTrigger: { trigger: cena, start: 'top top', end: 'bottom top', scrub: 1.2 }
+    });
+  }
 
   /* ---- buquê que ganha uma flor a cada seção ---- */
   const MARCOS = ['dores', 'sobre', 'jornada', 'quiz', 'produtos', 'depoimentos', 'duvidas'];
@@ -272,6 +347,122 @@ const WHATSAPP = '5500000000000';
     }
   };
 
+
+  /* ---- pétalas que caem, se acumulam e são recolhidas pelo rastelo ---- */
+  const zona = document.getElementById('fallzone');
+  const campoQueda = document.getElementById('fallPetals');
+  const rastelo = document.getElementById('rake');
+  const caidas = [];
+  let chaoY = 0, larguraZona = 0, nascidas = 0, recolhendo = false;
+  const TOTAL_QUEDA = innerWidth < 700 ? 14 : 24;
+
+  const medirZona = () => {
+    if (!zona) return;
+    const r = zona.getBoundingClientRect();
+    larguraZona = r.width;
+    // o chão fica acima da borda inferior, para a pilha não encostar no corte
+    chaoY = r.height - 34;
+  };
+  if (zona) { medirZona(); addEventListener('resize', medirZona, { passive: true }); }
+
+  const nascerPetala = () => {
+    if (!campoQueda) return;
+    const el = document.createElement('span');
+    const tom = Math.random();
+    el.className = 'fallpetal' + (tom > .7 ? ' fallpetal--pale' : tom < .25 ? ' fallpetal--deep' : '');
+    campoQueda.appendChild(el);
+    caidas.push({
+      el,
+      // caem numa faixa estreita da lateral direita, longe da coluna de texto
+      x: larguraZona * (0.62 + Math.random() * 0.33),
+      y: -30 - Math.random() * 60,
+      vy: 1.5 + Math.random() * 1.1,
+      deriva: (Math.random() - 0.5) * 0.7,
+      rot: Math.random() * 360,
+      giro: (Math.random() - 0.5) * 2.4,
+      pousada: false
+    });
+  };
+
+  const moverQueda = () => {
+    if (!caidas.length) return;
+    for (const p of caidas) {
+      if (p.pousada) continue;
+      p.y += p.vy;
+      p.x += p.deriva + Math.sin(p.y / 46) * 0.55;
+      p.rot += p.giro;
+      if (p.y >= chaoY) {
+        p.y = chaoY;
+        p.pousada = true;
+        // deitada no chão, quase na horizontal
+        p.rot = 80 + Math.random() * 20;
+      }
+      p.el.style.transform =
+        `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+    }
+  };
+
+  if (zona && temGsap && !reduced) {
+    // as pétalas nascem conforme a seção é percorrida, não de uma vez
+    ScrollTrigger.create({
+      trigger: '#dores',
+      start: 'top 85%',
+      end: 'bottom 60%',
+      onUpdate: self => {
+        const alvo = Math.round(self.progress * TOTAL_QUEDA);
+        while (nascidas < alvo) { nascerPetala(); nascidas++; }
+      }
+    });
+
+    // no fim da seção o rastelo entra e junta tudo num canto
+    ScrollTrigger.create({
+      trigger: '#dores',
+      start: 'bottom 62%',
+      once: true,
+      onEnter: () => {
+        if (recolhendo) return;
+        recolhendo = true;
+        const pilha = larguraZona * 0.56;
+
+        // o que ainda estiver no ar desce depressa, para o rastelo não
+        // varrer um chão pela metade
+        caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 6); });
+
+        gsap.set(rastelo, { opacity: 1, x: larguraZona + 40, y: 8 });
+        gsap.to(rastelo, {
+          x: pilha - 30, duration: 2.4, delay: .55, ease: 'power1.inOut',
+          onUpdate: () => {
+            const rx = gsap.getProperty(rastelo, 'x');
+            for (const p of caidas) {
+              // o que o rastelo alcança é empurrado à frente dele
+              if (p.pousada && p.x > rx && p.x < rx + 150) {
+                p.x += (rx + 40 - p.x) * 0.06;
+                p.rot += 1.4;
+                p.el.style.transform =
+                  `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+              }
+            }
+          },
+          onComplete: () => {
+            // a pilha se assenta e o rastelo se recolhe
+            caidas.filter(p => p.pousada).forEach((p, i) => {
+              gsap.to(p, {
+                x: pilha + (Math.random() - 0.5) * 70,
+                y: chaoY - Math.floor(i / 5) * 6,
+                duration: .7, ease: 'power2.out',
+                onUpdate: () => {
+                  p.el.style.transform =
+                    `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+                }
+              });
+            });
+            gsap.to(rastelo, { opacity: 0, x: '-=90', duration: 1.1, delay: .5, ease: 'power1.in' });
+          }
+        });
+      }
+    });
+  }
+
   /* ---- linha do tempo da jornada ---- */
   const journey = document.getElementById('journey');
   const vine = journey?.querySelector('.journey__stem');
@@ -308,34 +499,12 @@ const WHATSAPP = '5500000000000';
         w.el.style.setProperty('--wind', w.current.toFixed(2) + 'deg');
       }
 
-      if (layers.length) {
-        const r = heroStage.getBoundingClientRect();
-        const tx = pointer.active
-          ? clamp((pointer.x - (r.left + r.width / 2)) / r.width, -1, 1)
-          : tilt.x;
-        const ty = pointer.active
-          ? clamp((pointer.y - (r.top + r.height / 2)) / r.height, -1, 1)
-          : tilt.y;
-        hero.cx += (tx - hero.cx) * 0.07;
-        hero.cy += (ty - hero.cy) * 0.07;
-        for (const l of layers) {
-          const d = Number(l.dataset.depth);
-          l.style.transform =
-            `translate3d(${(hero.cx * d).toFixed(2)}px, ${(hero.cy * d * 0.6).toFixed(2)}px, 0)`;
-        }
-        heroStage.style.transform =
-          `perspective(900px) rotateY(${(hero.cx * 4).toFixed(2)}deg) rotateX(${(-hero.cy * 3).toFixed(2)}deg)`;
-      }
-
-      if (heroImg) {
-        const y = Math.min(scrollY, innerHeight);
-        heroImg.style.transform = `translate3d(0, ${(y * 0.06).toFixed(1)}px, 0) scale(1.04)`;
-      }
     }
 
     posy?.classList.toggle('is-visible', scrollY > innerHeight * 0.55);
     moverPetalas(kick);
     pintarJornada();
+    moverQueda();
   };
   requestAnimationFrame(frame);
 
