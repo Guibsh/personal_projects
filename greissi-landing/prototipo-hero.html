@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo da janela</title>
+<meta name="theme-color" content="#F9F4E6">
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ---------- protótipo: cena da janela ---------- */
+.proto{min-height:100vh;display:grid;place-items:center;padding:clamp(5rem,10vh,8rem) 0 4rem}
+.proto__inner{
+  display:grid;grid-template-columns:1.05fr .95fr;
+  gap:clamp(2rem,6vw,5rem);align-items:center;
+}
+.proto__note{
+  position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:50;
+  background:rgba(90,99,72,.92);color:var(--cream);
+  padding:.6rem 1.3rem;border-radius:999px;
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  pointer-events:none;
+}
+
+/* a cena vive numa caixa com proporção fixa, para as camadas se alinharem */
+.scene{position:relative;width:min(100%,430px);margin-inline:auto;aspect-ratio:430/620}
+.scene__layer{position:absolute;inset:0;will-change:transform}
+
+/* brilho quente atrás de tudo, como luz entrando pelo vidro */
+.scene__glow{
+  inset:-14% -18% 6% -18%;border-radius:50%;
+  background:radial-gradient(circle at 50% 42%,rgba(216,152,130,.38),transparent 66%);
+}
+
+/* janela: arco no topo, foto atrás do vidro */
+.scene__window{
+  position:absolute;left:6%;right:6%;top:2%;height:74%;
+  border-radius:48% 48% 3px 3px / 32% 32% 3px 3px;
+  overflow:hidden;background:var(--cream-deep);
+  box-shadow:0 26px 60px rgba(46,50,38,.16);
+}
+.scene__photo{position:absolute;inset:0;will-change:transform}
+.scene__photo img{width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+
+/* véu do vidro: um brilho diagonal discreto */
+.scene__glass{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(118deg,
+    rgba(255,253,248,.30) 0%,
+    rgba(255,253,248,.10) 22%,
+    transparent 46%,
+    transparent 74%,
+    rgba(255,253,248,.14) 100%);
+}
+.scene__glass::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(90,99,72,.20),transparent 42%);
+}
+
+/* caixilho: moldura e travessas por cima do vidro */
+.scene__frame{position:absolute;inset:0;pointer-events:none}
+.scene__frame .bar{fill:var(--white)}
+.scene__frame .edge{fill:none;stroke:var(--white);stroke-width:9}
+.scene__frame .shade{fill:none;stroke:rgba(90,99,72,.16);stroke-width:1}
+
+/* peitoril */
+.scene__sill{
+  position:absolute;left:1%;right:1%;top:75.5%;height:3.4%;
+  background:var(--white);border-radius:3px;
+  box-shadow:0 12px 26px rgba(46,50,38,.16);
+}
+
+/* jardineira e flores, a camada mais próxima.
+   top:auto é necessário porque .scene__layer já fixou inset:0, e com top e
+   height definidos juntos o bottom seria ignorado */
+.scene__garden{position:absolute;left:0;right:0;top:auto;bottom:0;height:34%}
+.scene__garden svg{width:100%;height:100%;overflow:visible}
+.planter{fill:var(--olive)}
+.planter--lip{fill:var(--olive-dark)}
+
+/* cada haste gira em torno da própria base: origem em 0 0 e a rotação
+   acontece antes da translação que leva a flor ao seu lugar */
+.stalk{
+  transform-origin:0 0;
+  transform:translate(var(--x),var(--y)) rotate(var(--wind,0deg));
+}
+.stalk .stem{fill:none;stroke:#7C8560;stroke-width:2.4;stroke-linecap:round}
+.stalk .leaf{fill:#7C8560}
+.stalk .pet{fill:var(--terracotta-soft)}
+.stalk .core{fill:var(--cream)}
+.stalk--pale .pet{fill:#E9BCA8}
+.stalk--deep .pet{fill:var(--terracotta)}
+
+@media (max-width:920px){
+  .proto__inner{grid-template-columns:1fr}
+  .scene{order:-1;width:min(100%,340px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .scene__layer{transform:none !important}
+}
+</style>
+</head>
+<body>
+
+<section class="proto">
+  <div class="wrap proto__inner">
+    <div>
+      <p class="eyebrow">Mentora de desenvolvimento pessoal e relacionamentos</p>
+      <h1>Você não precisa <em>provar</em> seu valor.<br>Precisa <em>lembrar</em> dele.</h1>
+      <p class="lead">
+        Há mais de uma década acompanho mulheres que querem se comunicar com segurança,
+        reconhecer o próprio lugar e construir relações em que sejam escolhidas.
+      </p>
+      <div class="hero__cta">
+        <a href="#fim" class="btn">Conhecer os materiais</a>
+      </div>
+    </div>
+
+    <div class="scene" id="scene">
+      <div class="scene__layer scene__glow" data-depth="-34" aria-hidden="true"></div>
+
+      <div class="scene__window" data-depth="-12">
+        <div class="scene__photo" id="photo">
+          <img src="images/hero.webp" alt="Greissi de Matos" width="443" height="596">
+        </div>
+        <div class="scene__glass" aria-hidden="true"></div>
+        <svg class="scene__frame" viewBox="0 0 380 460" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="bar" x="176" y="0" width="9" height="460"/>
+          <rect class="bar" x="0" y="212" width="380" height="9"/>
+          <rect class="edge" x="4.5" y="4.5" width="371" height="451"/>
+          <path class="shade" d="M181 0 V460 M0 217 H380"/>
+        </svg>
+      </div>
+
+      <div class="scene__layer scene__sill" data-depth="16" aria-hidden="true"></div>
+
+      <div class="scene__layer scene__garden" data-depth="42" aria-hidden="true">
+        <svg viewBox="0 0 430 210" id="garden">
+          <g id="stalks"></g>
+          <path class="planter" d="M66 118 H364 L351 186 H79Z"/>
+          <rect class="planter planter--lip" x="56" y="106" width="318" height="16" rx="6"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="fim">
+  <div class="wrap">
+    <h2>Role de volta para cima</h2>
+    <p class="section__lead">
+      Suba e desça algumas vezes: a brisa acompanha a velocidade do scroll, as camadas
+      se movem em profundidades diferentes e a foto respira atrás do vidro.
+    </p>
+  </div>
+</section>
+
+<p class="proto__note">Protótipo da cena de abertura</p>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NS = 'http://www.w3.org/2000/svg';
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  /* ---------- planta o canteiro ---------- */
+  // x ao longo da jardineira, altura da haste, escala da flor, variação de cor
+  const PLANTIO = [
+    [ 92, 118, .96, 'deep'],
+    [126, 156, 1.08, ''   ],
+    [158,  96, .84, 'pale'],
+    [196, 178, 1.16, ''   ],
+    [232, 110, .9,  'pale'],
+    [266, 146, 1.02, 'deep'],
+    [300,  88, .8,  ''    ],
+    [334, 128, .98, 'pale'],
+  ];
+  const BASE_Y = 116;
+  const stalks = document.getElementById('stalks');
+
+  PLANTIO.forEach(([x, h, sc, variante], i) => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'stalk' + (variante ? ' stalk--' + variante : ''));
+    g.style.setProperty('--x', x + 'px');
+    g.style.setProperty('--y', BASE_Y + 'px');
+
+    // a haste curva levemente, alternando o lado para o canteiro não ficar rígido
+    const curva = (i % 2 ? 1 : -1) * (6 + (i % 3) * 4);
+    const stem = document.createElementNS(NS, 'path');
+    stem.setAttribute('class', 'stem');
+    stem.setAttribute('d', `M0 0 C${curva} ${-h * .4} ${curva * 1.4} ${-h * .7} 0 ${-h}`);
+    g.appendChild(stem);
+
+    const folha = document.createElementNS(NS, 'path');
+    folha.setAttribute('class', 'leaf');
+    const fy = -h * .45;
+    const lado = i % 2 ? 1 : -1;
+    folha.setAttribute('d', `M0 ${fy} C${14 * lado} ${fy - 4} ${22 * lado} ${fy - 13} ${24 * lado} ${fy - 22} C${11 * lado} ${fy - 19} ${2 * lado} ${fy - 9} 0 ${fy}Z`);
+    g.appendChild(folha);
+
+    const cabeca = document.createElementNS(NS, 'g');
+    cabeca.setAttribute('transform', `translate(0 ${-h}) scale(${sc})`);
+    for (let a = 0; a < 6; a++) {
+      const p = document.createElementNS(NS, 'ellipse');
+      p.setAttribute('class', 'pet');
+      p.setAttribute('cy', '-7.5');
+      p.setAttribute('rx', '4.6');
+      p.setAttribute('ry', '8.4');
+      p.setAttribute('transform', `rotate(${a * 60})`);
+      cabeca.appendChild(p);
+    }
+    const miolo = document.createElementNS(NS, 'circle');
+    miolo.setAttribute('class', 'core');
+    miolo.setAttribute('r', '3.1');
+    cabeca.appendChild(miolo);
+    g.appendChild(cabeca);
+
+    stalks.appendChild(g);
+  });
+
+  if (reduced) return;
+
+  /* ---------- scroll suave ---------- */
+  const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+  gsap.registerPlugin(ScrollTrigger);
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+
+  /* ---------- parallax: cada camada sobe num ritmo ---------- */
+  gsap.utils.toArray('[data-depth]').forEach(el => {
+    const d = Number(el.dataset.depth);
+    gsap.to(el, {
+      y: () => d * (innerWidth < 700 ? .65 : 1),
+      ease: 'none',
+      scrollTrigger: { trigger: '#scene', start: 'top top', end: 'bottom top', scrub: 0.8 }
+    });
+  });
+
+  /* ---------- a foto emerge em vez de simplesmente estar lá ---------- */
+  gsap.from('#photo', {
+    scale: 1.14, opacity: 0, filter: 'blur(14px)',
+    duration: 1.9, ease: 'power2.out'
+  });
+  // e continua respirando: um zoom lento que nunca volta ao ponto exato
+  gsap.to('#photo', {
+    scale: 1.07, ease: 'none',
+    scrollTrigger: { trigger: '#scene', start: 'top top', end: 'bottom top', scrub: 1.2 }
+  });
+
+  /* ---------- a brisa ---------- */
+  const hastes = [...document.querySelectorAll('.stalk')].map((el, i) => ({
+    el,
+    fase: i * 1.35,
+    // as flores mais altas balançam mais, como na vida real
+    // as hastes mais altas balançam mais, como na vida real
+    amp: 2.2 + (i % 4) * 0.9,
+    vel: 0.7 + (i % 3) * 0.16,
+    atual: 0
+  }));
+
+  let rajada = 0;
+  ScrollTrigger.create({
+    onUpdate: self => { rajada = clamp(self.getVelocity() / 90, -26, 26); }
+  });
+
+  let t = 0;
+  gsap.ticker.add(() => {
+    t += 0.016;
+    rajada *= 0.94;
+    for (const h of hastes) {
+      const alvo = Math.sin(t * h.vel + h.fase) * h.amp + rajada;
+      h.atual += (alvo - h.atual) * 0.08;
+      h.el.style.setProperty('--wind', h.atual.toFixed(2) + 'deg');
+    }
+  });
+})();
+</script>
+</body>
+</html>
