@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campo de flores — demonstração Three.js + GSAP</title>
+<meta name="theme-color" content="#F1E9D6">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F9F4E6; --cream-deep:#F1E9D6; --olive:#5A6348; --olive-dark:#434B36;
+    --terracotta:#C0705A; --terracotta-soft:#D89882; --ink:#2E3226;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--cream-deep);color:var(--ink);font-family:"Jost",sans-serif;font-weight:300}
+  h1,h2{font-family:"Cormorant Garamond",serif;font-weight:400;line-height:1.15;margin:0 0 .5em}
+  em{font-style:italic;color:var(--terracotta)}
+
+  #gl{position:fixed;inset:0;z-index:0;display:block}
+
+  .badge{
+    position:fixed;top:1rem;left:1rem;z-index:40;
+    background:rgba(46,50,38,.82);color:var(--cream);
+    padding:.6rem 1.1rem;border-radius:999px;
+    font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+    max-width:min(90vw,480px);line-height:1.5;
+  }
+  .badge b{color:var(--terracotta-soft);font-weight:400}
+
+  #pista{position:relative;z-index:1}
+  .marco{
+    min-height:100vh;display:flex;flex-direction:column;
+    justify-content:center;padding:0 clamp(1.5rem,8vw,6rem);
+    margin-bottom:30vh;pointer-events:none;
+  }
+  .marco__card{
+    max-width:520px;background:rgba(249,244,230,.86);backdrop-filter:blur(6px);
+    padding:clamp(1.6rem,4vw,2.6rem);border-radius:2px;
+    box-shadow:0 20px 50px rgba(46,50,38,.14);
+  }
+  .marco:last-child{align-items:center;text-align:center}
+  .marco:last-child .marco__card{margin-inline:auto}
+  .eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--olive);margin-bottom:.8rem}
+  h1{font-size:clamp(2rem,4.5vw,3rem)}
+  h2{font-size:clamp(1.6rem,3.5vw,2.3rem)}
+  p{color:#5C6152;font-size:1rem;line-height:1.7;margin:.6rem 0 0}
+
+  .fim{position:relative;z-index:1;background:var(--cream-deep);padding:5rem 1.5rem;text-align:center}
+  .fim p{max-width:52ch;margin-inline:auto}
+
+  @media (prefers-reduced-motion:reduce){ .marco__card{opacity:1 !important;transform:none !important} }
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+
+<div class="badge">
+  Demonstração isolada com <b>Three.js</b> (WebGL real) + <b>GSAP ScrollTrigger</b> —
+  não faz parte do site da Greissi. ~135&nbsp;KB gzip só de biblioteca 3D.
+</div>
+
+<div id="pista">
+  <div class="marco">
+    <div class="marco__card">
+      <p class="eyebrow">Cena em profundidade real</p>
+      <h1>Um campo que você <em>atravessa</em>, não que desliza</h1>
+      <p>Cada flor aqui é um objeto 3D com posição própria no espaço. A câmera se move
+      para frente conforme você rola — perspectiva de verdade, não camadas 2D fingindo
+      profundidade.</p>
+    </div>
+  </div>
+  <div class="marco">
+    <div class="marco__card">
+      <p class="eyebrow">Paralaxe real</p>
+      <h2>As flores próximas passam rápido. As distantes, devagar.</h2>
+      <p>Isso é paralaxe de câmera, não de CSS: cada objeto tem sua própria distância
+      até a lente, e o movimento relativo nasce da geometria — não de números que eu
+      ajusto à mão.</p>
+    </div>
+  </div>
+  <div class="marco">
+    <div class="marco__card">
+      <p class="eyebrow">Luz e sombra</p>
+      <h2>Sombra projetada, neblina de profundidade, luz direcional</h2>
+      <p>O campo escurece ao longe por causa de neblina real, não de um gradiente
+      pintado. As flores projetam sombra umas nas outras.</p>
+    </div>
+  </div>
+  <div class="marco">
+    <div class="marco__card">
+      <p class="eyebrow">O custo</p>
+      <h2>Isso é bonito — e pesado</h2>
+      <p>Só esta cena carrega mais biblioteca do que o site inteiro da Greissi. Para o
+      tom "leve, acolhedor, rápido no celular" que combinamos, o SVG em camadas continua
+      sendo a escolha certa. Isso aqui é para quando profundidade real valer o peso.</p>
+    </div>
+  </div>
+</div>
+
+<section class="fim">
+  <h2>Fim da demonstração</h2>
+  <p>Se algum efeito daqui fizer sentido pontualmente no site principal — sem trocar a
+  base inteira por Three.js — me diga qual, e eu avalio o custo real de trazer só aquele
+  pedaço.</p>
+</section>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="dist/scene.min.js"></script>
+</body>
+</html>
