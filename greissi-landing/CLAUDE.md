@@ -28,6 +28,20 @@ pode se repetir.
   seção — mas o usuário já apontou que o desenho atual (com vaso) ficou
   pesado e pediu redesenho mais elegante. Isso ainda está pendente, não é
   regressão se for refeito.
+- **Moldura da janela é uma borda CSS**, não um `<rect>` de SVG. O rect tinha
+  cantos retos dentro de um arco, e o `overflow:hidden` comia o branco na
+  curva do topo — a foto encostava na borda e não parecia janela.
+- **Abelhinha no canteiro** (`#bee`): voa entre as flores e de tempos em
+  tempos pousa numa delas. Coordenadas no viewBox do canteiro (430x210), com
+  a posição da flor recalculada a cada quadro a partir do ângulo do vento.
+- **Rastelo e pétalas passam POR CIMA da caixa branca de resposta**
+  (`.fallzone` em `z-index:2`, acima do `.wrap`). A linha de pouso é a borda
+  **de cima** da caixa, não a de baixo: pela de baixo, no celular, o rastelo
+  pousava em cima do botão e comia o texto dele.
+- **O rastelo não some mais depois de juntar** — fica encostado no monte
+  (fase `parado`). Sumir desfazia a cena que devia permanecer. E ele volta a
+  varrer sempre que a visitante marca/desmarca um padrão, entrando com um
+  golpe de `volta` (dentes no ar) em vez de teleportar para o começo.
 - **Paleta**: bege/creme, verde-oliva, terracota suave. Ver `:root` em
   `css/style.css`.
 - **Tom de movimento**: sempre suave/delicado, nunca abrupto. Tudo desliga
@@ -73,3 +87,13 @@ pode se repetir.
 
 5. Toda mudança de CSS estrutural: medir em 375, 768 e 1440 **e olhar o
    screenshot do trecho alterado**, não só de outra parte da página.
+
+## Arquivo único para revisão
+
+`python3 build-single.py` gera `greissi-completo.html`: o site inteiro num
+arquivo só, com CSS, JS, fontes e imagens em `data:` URI (~360 KB). Serve para
+abrir sem servidor ou colar numa conversa pedindo opinião. **Não é o formato
+de publicação** — o site de verdade continua sendo `index.html` + `css/` +
+`js/` + assets separados, que é o que carrega rápido no celular. Depois de
+qualquer mudança no site, rodar o script de novo se o arquivo único for
+entregue junto.

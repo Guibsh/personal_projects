@@ -107,9 +107,7 @@
             <img src="images/hero.webp" alt="Greissi de Matos" width="443" height="596" fetchpriority="high" decoding="async">
           </div>
           <div class="scene__glass" aria-hidden="true"></div>
-          <svg class="scene__frame" viewBox="0 0 380 460" preserveAspectRatio="none" aria-hidden="true">
-            <rect class="edge" x="4.5" y="4.5" width="371" height="451"/>
-          </svg>
+          <div class="scene__frame" aria-hidden="true"></div>
         </div>
 
         <div class="scene__layer scene__sill" data-depth="16" aria-hidden="true"></div>
@@ -119,6 +117,20 @@
             <g id="stalks"></g>
             <path class="planter" d="M66 118 H364 L351 186 H79Z"/>
             <rect class="planter planter--lip" x="56" y="106" width="318" height="16" rx="6"/>
+            <!-- a abelhinha: posicionada por JS, voa entre as flores e de vez em
+                 quando pousa numa delas. Fica por último no SVG para passar por
+                 cima das flores e da jardineira. -->
+            <g class="bee" id="bee">
+              <g class="bee__wings">
+                <ellipse class="bee__wing" cx="-1.2" cy="-4.4" rx="5.4" ry="2.7"/>
+                <ellipse class="bee__wing" cx="2.4" cy="-4" rx="4" ry="2.1"/>
+              </g>
+              <ellipse class="bee__body" cx="0" cy="0" rx="5.2" ry="3.5"/>
+              <path class="bee__stripe" d="M-1.8 -3.1 V3.1"/>
+              <path class="bee__stripe" d="M1 -3.4 V3.4"/>
+              <circle class="bee__head" cx="5.3" cy="-.5" r="2.4"/>
+              <path class="bee__ant" d="M6.6 -2.2 C7.9 -3.8 8.4 -4.4 9.2 -5.4"/>
+            </g>
           </svg>
         </div>
       </div>

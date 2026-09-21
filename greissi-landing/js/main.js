@@ -137,6 +137,7 @@ const WHATSAPP = '5500000000000';
     [300,  88, .8,  ''    ], [334, 128, .98, 'pale'],
   ];
   const canteiro = document.getElementById('stalks');
+  const flores = [];
 
   if (canteiro) {
     PLANTIO.forEach(([x, h, sc, variante], i) => {
@@ -176,6 +177,9 @@ const WHATSAPP = '5500000000000';
       g.appendChild(cabeca);
 
       canteiro.appendChild(g);
+      // guardado para a abelha: a base da haste e o comprimento dela bastam
+      // para recalcular onde a flor está a cada quadro, já com o vento
+      flores.push({ el: g, bx: x, by: 116, h, vento: null });
     });
   }
 
@@ -188,10 +192,14 @@ const WHATSAPP = '5500000000000';
     el,
     phase: i * 1.7,
     amp: parseFloat(getComputedStyle(el).getPropertyValue('--amp')) || 3.2,
-    speed: 0.8 + (i % 3) * 0.14,
+    speed: 0.52 + (i % 3) * 0.09,
     current: 0,
     box: null
   }));
+
+  // liga cada flor ao seu registro de vento: a abelha precisa saber para onde
+  // a flor balançou antes de mirar nela, senão pousa no lugar de um quadro atrás
+  flores.forEach(f => { f.vento = windEls.find(w => w.el === f.el) || null; });
 
   const measureWind = () => windEls.forEach(w => { w.box = w.el.getBoundingClientRect(); });
   let measureQueued = false;
@@ -203,6 +211,121 @@ const WHATSAPP = '5500000000000';
   addEventListener('resize', queueMeasure, { passive: true });
   addEventListener('scroll', queueMeasure, { passive: true });
   measureWind();
+
+  /* ---- abelhinha ----
+     Voa entre as flores do canteiro e, de tempos em tempos, pousa numa delas
+     como se recolhesse pólen. É toda em coordenadas do viewBox do canteiro
+     (430x210), então acompanha a cena em qualquer largura sem conta extra.
+
+     O voo não é uma interpolação de A para B: é direção + amortecimento. Ela
+     acelera na direção do alvo, perde velocidade sozinha e ainda leva um
+     tremido de seno por cima — que é o que tira a cara de objeto animado e
+     dá a de bicho. */
+  const abelha = document.getElementById('bee');
+  let voo = null;
+
+  if (abelha && flores.length && !reduced) {
+    // onde a flor está AGORA: a haste gira em torno da base com o vento, então
+    // a cabeça descreve um arco de raio h em volta de (bx, by)
+    const cabecaDaFlor = f => {
+      const ang = (f.vento ? f.vento.current : 0) * Math.PI / 180;
+      return { x: f.bx + Math.sin(ang) * f.h, y: f.by - Math.cos(ang) * f.h };
+    };
+
+    voo = {
+      x: flores[0].bx, y: 40,
+      vx: 0, vy: 0,
+      dir: 1,
+      fase: 'voando',        // voando → descendo → pousada
+      alvo: null,            // flor de destino, ou null para um ponto no ar
+      ar: null,              // ponto solto quando ela só está passeando
+      ate: 0,                // quando a fase atual acaba
+      voltas: 0              // voos soltos antes de procurar outra flor
+    };
+
+    const escolherDestino = agora => {
+      // duas em cada três vezes ela vai para uma flor; a outra é só um giro no
+      // ar, para não virar um metrônomo de flor em flor
+      if (voo.voltas > 0 || Math.random() < .34) {
+        voo.voltas = Math.max(0, voo.voltas - 1);
+        voo.alvo = null;
+        voo.ar = { x: 60 + Math.random() * 310, y: -30 + Math.random() * 90 };
+      } else {
+        voo.voltas = Math.random() < .5 ? 1 : 0;
+        voo.ar = null;
+        let f = flores[(Math.random() * flores.length) | 0];
+        // não repete a flor de onde acabou de sair
+        if (f === voo.ultima && flores.length > 1) {
+          f = flores[(flores.indexOf(f) + 1 + ((Math.random() * (flores.length - 1)) | 0)) % flores.length];
+        }
+        voo.alvo = f;
+      }
+      voo.fase = 'voando';
+      voo.ate = agora + 2600 + Math.random() * 2600;
+    };
+
+    escolherDestino(0);
+
+    const moverAbelha = agora => {
+      const alvoPos = voo.alvo ? cabecaDaFlor(voo.alvo) : voo.ar;
+      const dx = alvoPos.x - voo.x, dy = alvoPos.y - voo.y;
+      const dist = Math.hypot(dx, dy) || 1;
+
+      if (voo.fase === 'pousada') {
+        // colada na flor: acompanha o balanço dela e faz um bico de leve,
+        // como quem cutuca o miolo atrás do pólen
+        const p = cabecaDaFlor(voo.alvo);
+        voo.x = p.x + Math.sin(agora / 520) * 1.1;
+        voo.y = p.y - 4.4 + Math.sin(agora / 300) * .9;
+        if (agora > voo.ate) {
+          abelha.classList.remove('is-still');
+          voo.ultima = voo.alvo;
+          voo.vy = -1.1;
+          escolherDestino(agora);
+        }
+      } else if (voo.fase === 'descendo') {
+        // a aproximação final é direta e lenta — steering aqui faria ela
+        // orbitar a flor sem nunca encostar
+        voo.x += dx * .09;
+        voo.y += (dy - 4.4) * .09;
+        if (dist < 6) {
+          voo.fase = 'pousada';
+          voo.ate = agora + 2200 + Math.random() * 3200;
+          voo.vx = voo.vy = 0;
+          abelha.classList.add('is-still');
+        }
+      } else {
+        // aceleração na direção do alvo, teto de velocidade e atrito:
+        // ela nunca chega em linha reta, sempre num arco
+        const acc = .05;
+        voo.vx += (dx / dist) * acc * Math.min(dist, 60) / 18;
+        voo.vy += (dy / dist) * acc * Math.min(dist, 60) / 18;
+        voo.vx += Math.sin(agora / 240 + voo.y) * .05;
+        voo.vy += Math.cos(agora / 190 + voo.x) * .05;
+        voo.vx *= .935; voo.vy *= .935;
+        const v = Math.hypot(voo.vx, voo.vy);
+        const MAX = 1.5;
+        if (v > MAX) { voo.vx = voo.vx / v * MAX; voo.vy = voo.vy / v * MAX; }
+        voo.x += voo.vx; voo.y += voo.vy;
+
+        if (voo.alvo && dist < 30) voo.fase = 'descendo';
+        else if (!voo.alvo && (dist < 16 || agora > voo.ate)) escolherDestino(agora);
+        else if (agora > voo.ate + 3000) escolherDestino(agora);
+      }
+
+      // vira para o lado do deslocamento, com um limiar para não piscar de
+      // frente para trás quando a velocidade horizontal passa perto de zero
+      if (voo.vx > .28) voo.dir = 1;
+      else if (voo.vx < -.28) voo.dir = -1;
+
+      const inclina = clamp(voo.vy * 7, -16, 16) * voo.dir;
+      abelha.setAttribute('transform',
+        `translate(${voo.x.toFixed(2)} ${voo.y.toFixed(2)}) scale(${(1.5 * voo.dir).toFixed(3)} 1.5) rotate(${inclina.toFixed(1)})`);
+    };
+
+    voo.mover = moverAbelha;
+    setTimeout(() => abelha.classList.add('is-live'), 1400);
+  }
 
   /* ---- cena da janela: profundidade e respiro da foto ---- */
   const cena = document.getElementById('scene');
@@ -375,6 +498,7 @@ const WHATSAPP = '5500000000000';
   const easeFora = k => 1 - (1 - k) ** 3;
 
   const listaPains = document.querySelector('.pains');
+  const caixaEcho = document.getElementById('painsEcho');
 
   const medirZona = () => {
     if (!zona) return;
@@ -386,7 +510,18 @@ const WHATSAPP = '5500000000000';
     // pessoa está lendo. A diferença entre os dois rects é imune ao scroll,
     // porque ambos deslocam junto.
     const lista = listaPains?.getBoundingClientRect();
-    chaoY = lista ? lista.bottom - r.top + 26 : r.height - 34;
+    // Com a caixa branca aberta, a linha desce para dentro dela: as pétalas
+    // pousam por cima do branco e o rastelo varre nessa mesma linha. É por
+    // isso que a .fallzone subiu para z-index 2 — sem isso, tudo passaria
+    // por trás da caixa.
+    const caixa = caixaEcho && !caixaEcho.hidden ? caixaEcho.getBoundingClientRect() : null;
+    // A linha é a FAIXA DE CIMA da caixa, não a de baixo: ali a caixa é só
+    // branco (o "2 de 6" é curto e fica à esquerda do monte), e o cabo do
+    // rastelo sobe para o vão acima dela. Pela borda de baixo, no celular,
+    // o rastelo pousava em cima do botão e comia o texto dele.
+    chaoY = caixa ? caixa.top - r.top + 16
+          : lista ? lista.bottom - r.top + 26
+          : r.height - 34;
   };
   if (zona) {
     medirZona();
@@ -397,6 +532,9 @@ const WHATSAPP = '5500000000000';
 
   const nascerPetala = () => {
     if (!campoQueda) return;
+    // cada nova varrida traz pétalas novas; sem teto, marcar e desmarcar a
+    // lista várias vezes encheria a seção
+    while (caidas.length > 58) { const v = caidas.shift(); v.el.remove(); }
     const el = document.createElement('span');
     const tom = Math.random();
     el.className = 'fallpetal' + (tom > .7 ? ' fallpetal--pale' : tom < .25 ? ' fallpetal--deep' : '');
@@ -418,26 +556,34 @@ const WHATSAPP = '5500000000000';
   // puxa com força (acelera e desacelera), solta, alcança de novo. Isso vira
   // uma sequência de golpes — cada um com sua própria curva de tempo — em vez
   // de um único deslocamento linear.
-  const dispararRastelo = () => {
+  const dispararRastelo = (retomando = false) => {
     faseRastelo = 'varrendo';
-    const pilha = larguraZona * 0.56;
+    const pilha = larguraZona * (larguraZona < 620 ? 0.64 : 0.56);
     const xFinal = pilha - 30;
     const xInicio = larguraZona + 40;
-    const N = 3;
+    const N = 4;
     const passo = (xInicio - xFinal) / N;
 
     const golpes = [];
     let cursor = xInicio;
+    if (retomando && rakeInfo) {
+      // ele ficou encostado no monte da vez anterior. Em vez de teleportar
+      // para o começo, ergue o rastelo e volta caminhando — é o gesto de quem
+      // recomeça a varrer, e de dentes no ar ele não arrasta o que já juntou.
+      golpes.push({ tipo: 'volta', de: rakeInfo.pilha - 34, ate: xInicio, dur: 1150 });
+    }
     for (let i = 0; i < N; i++) {
       if (i > 0) {
         // reposiciona um pouco à direita antes do próximo puxão — o rastelo
         // "solta" o chão aqui, por isso não arrasta pétalas nesta parte
         const alcance = cursor + passo * 0.32;
-        golpes.push({ tipo: 'alcance', de: cursor, ate: alcance, dur: 260 });
+        golpes.push({ tipo: 'alcance', de: cursor, ate: alcance, dur: 420 });
         cursor = alcance;
       }
       const alvo = i === N - 1 ? xFinal : cursor - passo;
-      golpes.push({ tipo: 'puxada', de: cursor, ate: alvo, dur: 560 });
+      // 820ms por puxão, quatro puxões: é o "com calma" que o movimento
+      // anterior não tinha — ele reunia tudo em pouco mais de um segundo
+      golpes.push({ tipo: 'puxada', de: cursor, ate: alvo, dur: 820 });
       cursor = alvo;
     }
 
@@ -481,20 +627,27 @@ const WHATSAPP = '5500000000000';
 
       const k = clamp((agora - rakeInfo.tGolpe) / golpe.dur, 0, 1);
       const puxando = golpe.tipo === 'puxada';
+      const voltando = golpe.tipo === 'volta';
       const ek = puxando ? easeFora(k) : easeDentroFora(k);
       const rx = golpe.de + (golpe.ate - golpe.de) * ek;
 
       // durante a puxada o rastelo inclina para trás e afunda no chão;
-      // durante o alcance ele se ergue e inclina para frente, como um pulso
-      const rot = puxando ? -7 + 5 * (1 - ek) : 11 - 5 * ek;
-      const y = rakeInfo.baseY + (puxando ? 2 + 7 * ek : 9 - 7 * ek);
+      // durante o alcance ele se ergue e inclina para frente, como um pulso.
+      // na volta ele fica erguido o caminho todo, num arco de seno.
+      const rot = voltando ? 20 - 4 * Math.sin(Math.PI * k)
+                : puxando ? -7 + 5 * (1 - ek)
+                : 11 - 5 * ek;
+      const y = rakeInfo.baseY + (voltando ? -13 - 9 * Math.sin(Math.PI * k)
+                                : puxando ? 2 + 7 * ek
+                                : 9 - 7 * ek);
       rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
 
       if (puxando) {
         for (const p of caidas) {
           if (p.pousada && p.x > rx && p.x < rx + 150) {
-            p.x += (rx + 40 - p.x) * 0.1;
-            p.rot += 1.6;
+            // 0.06: a pétala cede devagar em vez de grudar no rastelo
+            p.x += (rx + 40 - p.x) * 0.06;
+            p.rot += 0.9;
             p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
           }
         }
@@ -502,7 +655,7 @@ const WHATSAPP = '5500000000000';
 
       if (k >= 1) { rakeInfo.indice++; rakeInfo.tGolpe = agora; }
     } else if (faseRastelo === 'assentando') {
-      const DURACAO = 700;
+      const DURACAO = 900;
       const k = clamp((agora - rakeInfo.assentarInicio) / DURACAO, 0, 1);
       const ek = easeFora(k);
       for (const p of caidas) {
@@ -511,16 +664,49 @@ const WHATSAPP = '5500000000000';
         p.y = p.origY + (p.alvoY - p.origY) * ek;
         p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
       }
-      if (k >= 1) { faseRastelo = 'escondendo'; rakeInfo.esconderInicio = agora; }
-    } else if (faseRastelo === 'escondendo') {
-      const ATRASO = 500, DURACAO = 1100;
-      const passado = agora - rakeInfo.esconderInicio;
-      if (passado < ATRASO) return;
-      const k = clamp((passado - ATRASO) / DURACAO, 0, 1);
-      rastelo.style.opacity = String(1 - k);
-      rastelo.style.transform = `translate3d(${(rakeInfo.pilha - 30 - 90 * k).toFixed(1)}px, ${(rakeInfo.baseY + 8).toFixed(1)}px, 0)`;
-      if (k >= 1) faseRastelo = 'fim';
+      if (k >= 1) faseRastelo = 'parado';
+    } else if (faseRastelo === 'parado') {
+      // Ele não some mais. Fica encostado ao lado do monte que juntou, com um
+      // respiro mínimo — desaparecer depois do trabalho feito desfazia a cena
+      // inteira, e era justamente a imagem que devia permanecer.
+      const b = Math.sin(agora / 1500) * 1.1;
+      rastelo.style.opacity = '1';
+      rastelo.style.transform =
+        `translate3d(${(rakeInfo.pilha - 34).toFixed(1)}px, ${(rakeInfo.baseY + 9 + b).toFixed(1)}px, 0) rotate(${(5 + b * .7).toFixed(1)}deg)`;
     }
+  };
+
+  /* Refaz a varrida quando a caixa branca aparece ou muda de tamanho.
+     O pedido: ao marcar um padrão, o rastelo aparece e varre na linha da
+     caixa, com as pétalas pousando por cima dela. */
+  let tRetomada = 0;
+  const refazerVarrida = () => {
+    if (!zona || reduced) return;
+    clearTimeout(tRetomada);
+    // dois quadros: um para a caixa entrar no layout, outro para o
+    // getBoundingClientRect já enxergar a altura final dela
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      medirZona();
+      // o que já estava pousado acerta a linha nova: se ela desceu, as pétalas
+      // voltam a cair; se subiu (a caixa fechou), sobem junto em vez de ficar
+      // flutuando soltas no fim da seção
+      for (const p of caidas) {
+        if (!p.pousada) continue;
+        p.alvoX = null;
+        if (p.y < chaoY - 2) { p.pousada = false; p.vy = 1.3; }
+        else if (p.y > chaoY + 2) {
+          p.y = chaoY;
+          p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+        }
+      }
+      const extras = innerWidth < 700 ? 5 : 8;
+      for (let i = 0; i < extras; i++) nascerPetala();
+      const retomando = faseRastelo === 'parado' || faseRastelo === 'assentando';
+      // 'pausa' não é fase conhecida do rastelo: ele fica parado enquanto as
+      // pétalas novas descem, e só então a varrida começa
+      faseRastelo = 'pausa';
+      tRetomada = setTimeout(() => dispararRastelo(retomando), 1600);
+    }));
   };
 
   const passoQueda = () => {
@@ -619,20 +805,27 @@ const WHATSAPP = '5500000000000';
 
     velocity *= 0.9;
     const kick = clamp(velocity * 0.35, -22, 22);
+    // o vento tem um empurrão próprio, bem mais curto que o das pétalas: com o
+    // mesmo kick as flores chicoteavam a cada rolagem rápida. Aqui a rolagem
+    // inclina o canteiro de leve e ele volta sozinho.
+    const brisa = clamp(velocity * 0.14, -7, 7);
 
     if (!reduced) {
       for (const w of windEls) {
-        let target = Math.sin(t * w.speed + w.phase) * w.amp + kick + tilt.x * 9;
+        let target = Math.sin(t * w.speed + w.phase) * w.amp + brisa + tilt.x * 6;
         if (pointer.active && w.box) {
           const dx = pointer.x - (w.box.left + w.box.width / 2);
           const dy = pointer.y - (w.box.top + w.box.height / 2);
           const dist = Math.hypot(dx, dy);
-          if (dist < 170) target -= (dx / (dist || 1)) * (1 - dist / 170) * 26;
+          if (dist < 170) target -= (dx / (dist || 1)) * (1 - dist / 170) * 18;
         }
-        w.current += (target - w.current) * 0.09;
+        // 0.045 em vez de 0.09: o dobro de tempo para alcançar o alvo, que é o
+        // que transforma o balanço em respiração
+        w.current += (target - w.current) * 0.045;
         w.el.style.setProperty('--wind', w.current.toFixed(2) + 'deg');
       }
 
+      voo?.mover(performance.now());
     }
 
     posy?.classList.toggle('is-visible', scrollY > innerHeight * 0.55);
@@ -888,9 +1081,10 @@ const WHATSAPP = '5500000000000';
 
         const n = pains.filter(b => b.classList.contains('is-on')).length;
         echo.hidden = n === 0;
-        if (!n) return;
+        if (!n) { refazerVarrida(); return; }
         score.textContent = n;
         msg.textContent = RESPOSTAS[n];
+        refazerVarrida();
         if (!on) {
           const r = btn.getBoundingClientRect();
           soprar(r.left + r.width * 0.12, r.top + r.height * 0.5);

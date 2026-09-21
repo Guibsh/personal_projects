@@ -688,8 +688,15 @@ p{margin:0 0 1.1em}
   content:"";position:absolute;inset:0;
   background:linear-gradient(to top,rgba(90,99,72,.18),transparent 42%);
 }
-.scene__frame{position:absolute;inset:0;pointer-events:none}
-.scene__frame .edge{fill:none;stroke:var(--white);stroke-width:9}
+/* A moldura era um <rect> de SVG: cantos retos dentro de uma janela em arco,
+   então o overflow:hidden comia o branco justamente na curva do topo e a
+   foto encostava na borda — não parecia janela. Agora é uma borda de verdade,
+   com o mesmo raio do arco, que acompanha a curva inteira. */
+.scene__frame{
+  position:absolute;inset:0;pointer-events:none;
+  border:9px solid var(--white);
+  border-radius:48% 48% 3px 3px / 32% 32% 3px 3px;
+}
 .scene__sill{
   position:absolute;left:1%;right:1%;top:75.5%;height:3.4%;
   background:var(--white);border-radius:3px;
@@ -712,10 +719,39 @@ p{margin:0 0 1.1em}
 .stalk--pale .pet{fill:#E9BCA8}
 .stalk--deep .pet{fill:var(--terracotta)}
 
+/* ---------- abelhinha do canteiro ----------
+   Posição e direção vêm do JS (atributo transform no <g>); aqui fica só o
+   desenho e o bater de asas, que é rápido demais para valer um quadro de rAF. */
+.bee{opacity:0}
+.bee.is-live{opacity:1;transition:opacity 600ms var(--ease)}
+.bee__body{fill:#C9913C}
+.bee__stripe{stroke:#3B3524;stroke-width:1.5;stroke-linecap:round}
+.bee__head{fill:#3B3524}
+.bee__ant{fill:none;stroke:#3B3524;stroke-width:.9;stroke-linecap:round}
+.bee__wing{fill:rgba(255,253,248,.72);stroke:rgba(90,99,72,.28);stroke-width:.5}
+.bee__wings{
+  /* fill-box: sem isso a origem cai no centro do viewBox do canteiro e a asa
+     bate a meio metro da abelha — mesma armadilha das flores */
+  transform-box:fill-box;transform-origin:78% 100%;
+  animation:beeWing 90ms linear infinite;
+}
+/* pousada, a asa quase para: o zumbido some junto com o voo */
+.bee.is-still .bee__wings{animation-duration:1.4s;opacity:.5}
+@keyframes beeWing{
+  0%,100%{transform:scaleY(1) rotate(0deg)}
+  50%{transform:scaleY(.26) rotate(-9deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .bee{display:none}
+}
+
 /* ---------- pétalas que caem e se acumulam ---------- */
 #dores{position:relative;overflow:hidden}
 #dores > .wrap{position:relative;z-index:1}
-.fallzone{position:absolute;inset:0;pointer-events:none;z-index:0}
+/* z-index 2 (acima do .wrap, que é 1): as pétalas pousam e o rastelo varre
+   POR CIMA da caixa branca de resposta, em vez de sumirem atrás dela.
+   pointer-events:none mantém os botões da lista clicáveis através da camada. */
+.fallzone{position:absolute;inset:0;pointer-events:none;z-index:2}
 .fallzone__petals{position:absolute;inset:0}
 .fallpetal{
   position:absolute;top:0;left:0;width:13px;height:18px;
