@@ -1,0 +1,175 @@
+/* ---------------------------------------------------------------------------
+   tokens.css — base do design system
+   Copie para o projeto e troque os VALORES pelos definidos no design.md.
+   Depois disso, nenhum valor mágico no CSS das seções: tudo referencia um token.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Cor — substitua pela paleta do design.md */
+  --color-bg: #faf9f6;
+  --color-surface: #ffffff;
+  --color-border: #e4e2dd;
+  --color-text: #111012;
+  --color-text-muted: #6b6862;
+  --color-brand: #1b4d3e;
+  --color-brand-hover: #163f33;
+  --color-brand-contrast: #ffffff;
+  --color-accent: #e4572e;
+
+  /* Tipografia */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+
+  --text-xs: 0.75rem;    /* 12 */
+  --text-sm: 0.875rem;   /* 14 */
+  --text-base: 1rem;     /* 16 */
+  --text-lg: 1.3125rem;  /* 21 */
+  --text-xl: 1.75rem;    /* 28 */
+  --text-2xl: 2.3125rem; /* 37 */
+  --text-3xl: 3.125rem;  /* 50 */
+  --text-4xl: clamp(2.5rem, 7vw, 4.125rem);  /* 40 → 66 */
+  --text-hero: clamp(2.75rem, 9vw, 5.5rem);  /* 44 → 88 */
+
+  --leading-tight: 1.02;
+  --leading-snug: 1.2;
+  --leading-body: 1.65;
+  --tracking-tight: -0.03em;
+  --tracking-wide: 0.08em;
+
+  /* Espaçamento (base 4px) */
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-6: 1.5rem;   --space-8: 2rem;
+  --space-12: 3rem;    --space-16: 4rem;    --space-24: 6rem;
+  --space-32: 8rem;    --space-40: 10rem;
+
+  --section-y: clamp(4.5rem, 10vw, 8rem);
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+  --content-max: 1200px;
+  --reading-max: 68ch;
+
+  /* Forma */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 999px;
+  --border: 1px solid var(--color-border);
+  --shadow-1: 0 1px 2px rgba(17, 16, 18, 0.06);
+  --shadow-2: 0 8px 24px rgba(17, 16, 18, 0.08);
+
+  /* Movimento */
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 600ms;
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- Reset enxuto ------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden; /* rede de segurança; ainda assim corrija a causa do overflow */
+}
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+p, h1, h2, h3, h4 { overflow-wrap: break-word; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+h1 { font-size: var(--text-hero); line-height: var(--leading-tight); }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-xl); }
+p  { text-wrap: pretty; }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+/* --- Layout ------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section { padding-block: var(--section-y); }
+
+.eyebrow {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+}
+
+/* --- Botões ------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;             /* alvo de toque confortável */
+  padding: var(--space-3) var(--space-8);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+.btn:hover { background: var(--color-brand-hover); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.btn--ghost:hover { background: var(--color-surface); }
+
+/* --- Reveal (pareado com scroll-kit.js) --------------------------------- */
+/* Só esconde quando o JS está ativo: sem JS, o conteúdo aparece normalmente. */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--dur-slow) var(--ease-reveal),
+              transform var(--dur-slow) var(--ease-reveal);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js [data-reveal].is-revealed { opacity: 1; transform: none; }
+
+/* --- Acessibilidade de movimento ---------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
