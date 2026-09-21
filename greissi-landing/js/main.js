@@ -20,21 +20,12 @@ const WHATSAPP = '5500000000000';
 
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  /* ---- scroll suave, sincronizado com o ScrollTrigger ---- */
-  const temGsap = window.gsap && window.ScrollTrigger;
-  if (temGsap) gsap.registerPlugin(ScrollTrigger);
-
+  /* ---- scroll suave ---- */
   if (!reduced && window.Lenis) {
     const lenis = new Lenis({ duration: 1.12, smoothWheel: true, touchMultiplier: 1.6 });
     document.documentElement.style.scrollBehavior = 'auto';
-    if (temGsap) {
-      lenis.on('scroll', ScrollTrigger.update);
-      gsap.ticker.add(t => lenis.raf(t * 1000));
-      gsap.ticker.lagSmoothing(0);
-    } else {
-      const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
-      requestAnimationFrame(raf);
-    }
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const el = document.querySelector(a.getAttribute('href'));
@@ -211,24 +202,39 @@ const WHATSAPP = '5500000000000';
 
   /* ---- cena da janela: profundidade e respiro da foto ---- */
   const cena = document.getElementById('scene');
-  if (cena && temGsap && !reduced) {
-    gsap.utils.toArray('#scene [data-depth]').forEach(el => {
-      const d = Number(el.dataset.depth);
-      gsap.to(el, {
-        y: () => d * (innerWidth < 700 ? .65 : 1),
-        ease: 'none',
-        scrollTrigger: { trigger: cena, start: 'top top', end: 'bottom top', scrub: .8 }
-      });
-    });
+  const camadasCena = cena ? [...cena.querySelectorAll('[data-depth]')] : [];
+  const heroPhoto = document.getElementById('heroPhoto');
+  // a altura da cena só muda em resize; guardá-la evita medir o layout a
+  // cada quadro — mas .top é lido fresco em pintarCena(), a cada chamada,
+  // porque essa parte muda a cada scroll
+  let alturaCena = 0;
+  const medirCena = () => { if (cena) alturaCena = cena.getBoundingClientRect().height; };
+  if (cena) { medirCena(); addEventListener('resize', medirCena, { passive: true }); }
 
-    // a foto emerge em vez de simplesmente estar lá, e depois só respira:
-    // um zoom maior dava a impressão de a imagem recuar atrás do vidro
-    gsap.from('#heroPhoto', { scale: 1.06, opacity: 0, filter: 'blur(10px)', duration: 1.7, ease: 'power2.out' });
-    gsap.to('#heroPhoto', {
-      scale: 1.03, ease: 'none',
-      scrollTrigger: { trigger: cena, start: 'top top', end: 'bottom top', scrub: 1.2 }
-    });
+  // a foto emerge em vez de simplesmente estar lá
+  if (heroPhoto && !reduced) {
+    heroPhoto.style.transition = 'opacity 1.1s ease-out, filter 1.1s ease-out, transform 1.1s ease-out';
+    heroPhoto.style.opacity = '0';
+    heroPhoto.style.filter = 'blur(10px)';
+    heroPhoto.style.transform = 'scale(1.06)';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      heroPhoto.style.opacity = '1';
+      heroPhoto.style.filter = 'blur(0px)';
+      heroPhoto.style.transform = 'scale(1.015)';
+    }));
   }
+
+  const pintarCena = () => {
+    if (!cena || reduced) return;
+    const topoCena = cena.getBoundingClientRect().top;
+    // 0 no topo da página, 1 quando a cena já saiu de vista rolando para baixo
+    const p = clamp(-topoCena / (alturaCena || 1), 0, 1.6);
+    for (const l of camadasCena) {
+      const d = Number(l.dataset.depth) * (innerWidth < 700 ? .65 : 1);
+      l.style.transform = `translate3d(0, ${(p * d).toFixed(1)}px, 0)`;
+    }
+    if (heroPhoto) heroPhoto.style.transform = `scale(${(1.015 + p * 0.02).toFixed(3)})`;
+  };
 
   /* ---- buquê que ganha uma flor a cada seção ---- */
   const MARCOS = ['dores', 'sobre', 'jornada', 'quiz', 'produtos', 'depoimentos', 'duvidas'];
@@ -348,13 +354,21 @@ const WHATSAPP = '5500000000000';
   };
 
 
-  /* ---- pétalas que caem, se acumulam e são recolhidas pelo rastelo ---- */
+  /* ---- pétalas que caem, se acumulam e são recolhidas pelo rastelo ----
+     Tudo aqui roda no requestAnimationFrame já existente, sem depender de
+     nenhuma biblioteca externa: é a mesma tática do motor de vento e do
+     buquê, que já funcionam de forma comprovada no site publicado. ---- */
   const zona = document.getElementById('fallzone');
   const campoQueda = document.getElementById('fallPetals');
   const rastelo = document.getElementById('rake');
+  const doresEl = document.getElementById('dores');
   const caidas = [];
-  let chaoY = 0, larguraZona = 0, nascidas = 0, recolhendo = false;
+  let chaoY = 0, larguraZona = 0, nascidas = 0;
+  let faseRastelo = 'esperando'; // esperando → varrendo → assentando → escondendo → fim
+  let rakeInfo = null;
   const TOTAL_QUEDA = innerWidth < 700 ? 14 : 24;
+  const easeDentroFora = k => (k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
+  const easeFora = k => 1 - (1 - k) ** 3;
 
   const medirZona = () => {
     if (!zona) return;
@@ -384,84 +398,96 @@ const WHATSAPP = '5500000000000';
     });
   };
 
-  const moverQueda = () => {
-    if (!caidas.length) return;
+  const dispararRastelo = () => {
+    faseRastelo = 'varrendo';
+    rakeInfo = { inicio: performance.now(), pilha: larguraZona * 0.56, xInicio: larguraZona + 40 };
+    if (rastelo) {
+      rastelo.style.opacity = '1';
+      rastelo.style.transform = `translate3d(${rakeInfo.xInicio}px, 8px, 0)`;
+    }
+    // o que ainda estiver no ar desce depressa, para o rastelo não varrer
+    // um chão pela metade
+    caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 6); });
+  };
+
+  const atualizarRastelo = () => {
+    if (!rastelo || !rakeInfo) return;
+    const agora = performance.now();
+
+    if (faseRastelo === 'varrendo') {
+      const ATRASO = 550, DURACAO = 2400;
+      const passado = agora - rakeInfo.inicio;
+      if (passado < ATRASO) return;
+      const k = clamp((passado - ATRASO) / DURACAO, 0, 1);
+      const rx = rakeInfo.xInicio + (rakeInfo.pilha - 30 - rakeInfo.xInicio) * easeDentroFora(k);
+      rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, 8px, 0)`;
+      for (const p of caidas) {
+        // o que o rastelo alcança é empurrado à frente dele
+        if (p.pousada && p.x > rx && p.x < rx + 150) {
+          p.x += (rx + 40 - p.x) * 0.06;
+          p.rot += 1.4;
+          p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+        }
+      }
+      if (k >= 1) {
+        faseRastelo = 'assentando';
+        rakeInfo.assentarInicio = agora;
+        caidas.filter(p => p.pousada).forEach((p, i) => {
+          p.origX = p.x; p.origY = p.y;
+          p.alvoX = rakeInfo.pilha + (Math.random() - 0.5) * 70;
+          p.alvoY = chaoY - Math.floor(i / 5) * 6;
+        });
+      }
+    } else if (faseRastelo === 'assentando') {
+      const DURACAO = 700;
+      const k = clamp((agora - rakeInfo.assentarInicio) / DURACAO, 0, 1);
+      const ek = easeFora(k);
+      for (const p of caidas) {
+        if (!p.pousada || p.alvoX == null) continue;
+        p.x = p.origX + (p.alvoX - p.origX) * ek;
+        p.y = p.origY + (p.alvoY - p.origY) * ek;
+        p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+      }
+      if (k >= 1) { faseRastelo = 'escondendo'; rakeInfo.esconderInicio = agora; }
+    } else if (faseRastelo === 'escondendo') {
+      const ATRASO = 500, DURACAO = 1100;
+      const passado = agora - rakeInfo.esconderInicio;
+      if (passado < ATRASO) return;
+      const k = clamp((passado - ATRASO) / DURACAO, 0, 1);
+      rastelo.style.opacity = String(1 - k);
+      rastelo.style.transform = `translate3d(${(rakeInfo.pilha - 30 - 90 * k).toFixed(1)}px, 8px, 0)`;
+      if (k >= 1) faseRastelo = 'fim';
+    }
+  };
+
+  const passoQueda = () => {
+    if (!zona || !doresEl || reduced) return;
+
     for (const p of caidas) {
       if (p.pousada) continue;
       p.y += p.vy;
       p.x += p.deriva + Math.sin(p.y / 46) * 0.55;
       p.rot += p.giro;
-      if (p.y >= chaoY) {
-        p.y = chaoY;
-        p.pousada = true;
-        // deitada no chão, quase na horizontal
-        p.rot = 80 + Math.random() * 20;
-      }
-      p.el.style.transform =
-        `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+      if (p.y >= chaoY) { p.y = chaoY; p.pousada = true; p.rot = 80 + Math.random() * 20; }
+      p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+    }
+
+    if (faseRastelo === 'esperando') {
+      const r = doresEl.getBoundingClientRect();
+      const inicioViewport = innerHeight * .85;
+      const fimViewport = innerHeight * .60;
+      // distância de scroll entre "o topo entra a 85% da tela" e
+      // "a base sai a 60%": a mesma janela que o ScrollTrigger usava
+      const distancia = r.height + inicioViewport - fimViewport;
+      const progresso = clamp((inicioViewport - r.top) / distancia, 0, 1);
+      const alvo = Math.round(progresso * TOTAL_QUEDA);
+      while (nascidas < alvo) { nascerPetala(); nascidas++; }
+
+      if (r.bottom <= innerHeight * .62) dispararRastelo();
+    } else {
+      atualizarRastelo();
     }
   };
-
-  if (zona && temGsap && !reduced) {
-    // as pétalas nascem conforme a seção é percorrida, não de uma vez
-    ScrollTrigger.create({
-      trigger: '#dores',
-      start: 'top 85%',
-      end: 'bottom 60%',
-      onUpdate: self => {
-        const alvo = Math.round(self.progress * TOTAL_QUEDA);
-        while (nascidas < alvo) { nascerPetala(); nascidas++; }
-      }
-    });
-
-    // no fim da seção o rastelo entra e junta tudo num canto
-    ScrollTrigger.create({
-      trigger: '#dores',
-      start: 'bottom 62%',
-      once: true,
-      onEnter: () => {
-        if (recolhendo) return;
-        recolhendo = true;
-        const pilha = larguraZona * 0.56;
-
-        // o que ainda estiver no ar desce depressa, para o rastelo não
-        // varrer um chão pela metade
-        caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 6); });
-
-        gsap.set(rastelo, { opacity: 1, x: larguraZona + 40, y: 8 });
-        gsap.to(rastelo, {
-          x: pilha - 30, duration: 2.4, delay: .55, ease: 'power1.inOut',
-          onUpdate: () => {
-            const rx = gsap.getProperty(rastelo, 'x');
-            for (const p of caidas) {
-              // o que o rastelo alcança é empurrado à frente dele
-              if (p.pousada && p.x > rx && p.x < rx + 150) {
-                p.x += (rx + 40 - p.x) * 0.06;
-                p.rot += 1.4;
-                p.el.style.transform =
-                  `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
-              }
-            }
-          },
-          onComplete: () => {
-            // a pilha se assenta e o rastelo se recolhe
-            caidas.filter(p => p.pousada).forEach((p, i) => {
-              gsap.to(p, {
-                x: pilha + (Math.random() - 0.5) * 70,
-                y: chaoY - Math.floor(i / 5) * 6,
-                duration: .7, ease: 'power2.out',
-                onUpdate: () => {
-                  p.el.style.transform =
-                    `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
-                }
-              });
-            });
-            gsap.to(rastelo, { opacity: 0, x: '-=90', duration: 1.1, delay: .5, ease: 'power1.in' });
-          }
-        });
-      }
-    });
-  }
 
   /* ---- linha do tempo da jornada ---- */
   const journey = document.getElementById('journey');
@@ -504,7 +530,8 @@ const WHATSAPP = '5500000000000';
     posy?.classList.toggle('is-visible', scrollY > innerHeight * 0.55);
     moverPetalas(kick);
     pintarJornada();
-    moverQueda();
+    pintarCena();
+    passoQueda();
   };
   requestAnimationFrame(frame);
 
