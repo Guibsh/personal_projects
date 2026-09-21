@@ -744,3 +744,20 @@ p{margin:0 0 1.1em}
   .fallzone{display:none}
   .scene__layer,.scene__window{transform:none !important}
 }
+
+/* ---------- pétalas à deriva na jornada ----------
+   Versão calma da queda das dores: elas atravessam e somem, sem acumular
+   nem ser recolhidas — o acúmulo e o rastelo são a assinatura daquela seção
+   e repetir aqui tiraria o peso de lá. */
+.bouquet{position:relative}
+.bouquet > .wrap{position:relative;z-index:1}
+.driftzone{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.driftpetal{
+  position:absolute;top:0;left:0;width:12px;height:17px;
+  background:var(--terracotta-soft);opacity:.5;will-change:transform;
+  border-radius:var(--r-petal);
+}
+.driftpetal--pale{background:#E9BCA8;opacity:.42}
+.driftpetal--cream{background:var(--cream);opacity:.3}
+
+@media (prefers-reduced-motion:reduce){ .driftzone{display:none} }

@@ -127,27 +127,6 @@ const WHATSAPP = '5500000000000';
     }
   }
 
-  /* ---- motor do vento ---- */
-  const windEls = [...document.querySelectorAll('.js-wind, .stalk')].map((el, i) => ({
-    el,
-    phase: i * 1.7,
-    amp: parseFloat(getComputedStyle(el).getPropertyValue('--amp')) || 3.2,
-    speed: 0.8 + (i % 3) * 0.14,
-    current: 0,
-    box: null
-  }));
-
-  const measureWind = () => windEls.forEach(w => { w.box = w.el.getBoundingClientRect(); });
-  let measureQueued = false;
-  const queueMeasure = () => {
-    if (measureQueued) return;
-    measureQueued = true;
-    requestAnimationFrame(() => { measureWind(); measureQueued = false; });
-  };
-  addEventListener('resize', queueMeasure, { passive: true });
-  addEventListener('scroll', queueMeasure, { passive: true });
-  measureWind();
-
   /* ---- cena da janela: planta o canteiro ---- */
   const SVG_NS = 'http://www.w3.org/2000/svg';
   // x na jardineira, altura da haste, escala da flor, variação de cor
@@ -199,6 +178,31 @@ const WHATSAPP = '5500000000000';
       canteiro.appendChild(g);
     });
   }
+
+  /* ---- motor do vento ----
+     Precisa vir depois do plantio: as flores do canteiro são criadas por JS
+     acima, e um querySelectorAll('.stalk') rodado antes delas existirem no
+     DOM as deixa de fora do vento para sempre — foi exatamente o bug que
+     fazia o canteiro parecer estático. */
+  const windEls = [...document.querySelectorAll('.js-wind, .stalk')].map((el, i) => ({
+    el,
+    phase: i * 1.7,
+    amp: parseFloat(getComputedStyle(el).getPropertyValue('--amp')) || 3.2,
+    speed: 0.8 + (i % 3) * 0.14,
+    current: 0,
+    box: null
+  }));
+
+  const measureWind = () => windEls.forEach(w => { w.box = w.el.getBoundingClientRect(); });
+  let measureQueued = false;
+  const queueMeasure = () => {
+    if (measureQueued) return;
+    measureQueued = true;
+    requestAnimationFrame(() => { measureWind(); measureQueued = false; });
+  };
+  addEventListener('resize', queueMeasure, { passive: true });
+  addEventListener('scroll', queueMeasure, { passive: true });
+  measureWind();
 
   /* ---- cena da janela: profundidade e respiro da foto ---- */
   const cena = document.getElementById('scene');
@@ -370,14 +374,26 @@ const WHATSAPP = '5500000000000';
   const easeDentroFora = k => (k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
   const easeFora = k => 1 - (1 - k) ** 3;
 
+  const listaPains = document.querySelector('.pains');
+
   const medirZona = () => {
     if (!zona) return;
     const r = zona.getBoundingClientRect();
     larguraZona = r.width;
-    // o chão fica acima da borda inferior, para a pilha não encostar no corte
-    chaoY = r.height - 34;
+    // O chão acompanha o fim da lista, não o fim da seção. A caixa de resposta
+    // aparece embaixo quando a visitante marca um padrão e faz a seção crescer;
+    // preso à altura total, o rastelo varreria por dentro dela, bem onde a
+    // pessoa está lendo. A diferença entre os dois rects é imune ao scroll,
+    // porque ambos deslocam junto.
+    const lista = listaPains?.getBoundingClientRect();
+    chaoY = lista ? lista.bottom - r.top + 26 : r.height - 34;
   };
-  if (zona) { medirZona(); addEventListener('resize', medirZona, { passive: true }); }
+  if (zona) {
+    medirZona();
+    addEventListener('resize', medirZona, { passive: true });
+    // os reveals entram com translateY; remedir depois deles assentarem
+    addEventListener('load', () => setTimeout(medirZona, 1200));
+  }
 
   const nascerPetala = () => {
     if (!campoQueda) return;
@@ -532,6 +548,51 @@ const WHATSAPP = '5500000000000';
     }
   };
 
+  /* ---- pétalas à deriva na jornada ----
+     Só travessia: nascem acima, cruzam a faixa e reiniciam. Sem pouso e sem
+     rastelo, que ficam sendo o momento exclusivo das dores. */
+  const deriva = document.getElementById('driftzone');
+  const derivando = [];
+
+  if (deriva && !reduced) {
+    const QTD = innerWidth < 700 ? 7 : 13;
+    for (let i = 0; i < QTD; i++) {
+      const el = document.createElement('span');
+      const tom = Math.random();
+      el.className = 'driftpetal' + (tom > .72 ? ' driftpetal--cream' : tom < .3 ? ' driftpetal--pale' : '');
+      deriva.appendChild(el);
+      derivando.push({
+        el,
+        x: Math.random(),                        // fração da largura
+        y: Math.random(),                        // fração da altura
+        vy: .00035 + Math.random() * .0005,      // em frações por quadro
+        vx: (Math.random() - .5) * .0004,
+        rot: Math.random() * 360,
+        giro: (Math.random() - .5) * 1.4
+      });
+    }
+  }
+
+  let caixaDeriva = null;
+  const medirDeriva = () => { if (deriva) caixaDeriva = deriva.getBoundingClientRect(); };
+  if (deriva) { medirDeriva(); addEventListener('resize', medirDeriva, { passive: true }); }
+
+  const moverDeriva = kick => {
+    if (!derivando.length || !caixaDeriva) return;
+    const { width: w, height: h } = caixaDeriva;
+    for (const p of derivando) {
+      p.y += p.vy + kick * .00022;
+      p.x += p.vx + Math.sin(p.y * 7 + p.rot) * .00025;
+      p.rot += p.giro + kick * .05;
+      if (p.y > 1.08) { p.y = -.1; p.x = Math.random(); }
+      if (p.y < -.2) p.y = 1.05;
+      if (p.x > 1.05) p.x = -.03;
+      if (p.x < -.05) p.x = 1.03;
+      p.el.style.transform =
+        `translate3d(${(p.x * w).toFixed(1)}px, ${(p.y * h).toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+    }
+  };
+
   /* ---- linha do tempo da jornada ---- */
   const journey = document.getElementById('journey');
   const vine = journey?.querySelector('.journey__stem');
@@ -574,6 +635,7 @@ const WHATSAPP = '5500000000000';
     moverPetalas(kick);
     pintarJornada();
     pintarCena();
+    moverDeriva(kick);
     passoQueda();
   };
   requestAnimationFrame(frame);
