@@ -725,7 +725,10 @@ p{margin:0 0 1.1em}
 .fallpetal--pale{background:#E9BCA8}
 .fallpetal--deep{background:var(--terracotta)}
 .fallzone__rake{
-  position:absolute;bottom:0;left:0;width:clamp(96px,11vw,150px);
+  /* ancorado no topo, não em bottom:0 — preso ao fundo ele acompanhava a
+     seção crescendo quando a caixa de resposta aparece, e varria por baixo
+     dela. O Y vem do JS, na mesma altura em que as pétalas pousam. */
+  position:absolute;top:0;left:0;width:clamp(96px,11vw,150px);
   opacity:0;will-change:transform;
   /* gira perto do punho (topo do cabo no SVG), não no centro do ícone —
      senão a rotação parece o rastelo girando sozinho no ar */
@@ -761,3 +764,35 @@ p{margin:0 0 1.1em}
 .driftpetal--cream{background:var(--cream);opacity:.3}
 
 @media (prefers-reduced-motion:reduce){ .driftzone{display:none} }
+
+/* ---------- faixas de produto por categoria ----------
+   Quatorze cards iguais em sequência cansam. As faixas alternam fundo claro
+   e escuro, e a cor passa a informar em vez de decorar: escuro é onde há
+   acompanhamento ao vivo, claro é material para ler no próprio tempo. */
+/* o cabeçalho de #produtos (título + filtros) já traz o respiro da seção;
+   as faixas trazem o delas, então o padding de baixo da seção viraria um
+   vão morto entre os filtros e a primeira faixa. */
+#produtos{padding-bottom:0}
+.band{padding:clamp(2.5rem,5vw,4.5rem) 0}
+.band--light{background:var(--cream)}
+.band--tint{background:var(--cream-deep)}
+.band--dark{background:var(--olive)}
+.band.is-hidden{display:none}
+
+.band__head{margin-bottom:var(--sp-6);display:flex;align-items:baseline;gap:var(--sp-4);flex-wrap:wrap}
+.band__title{
+  margin:0;font-size:var(--fs-500);color:var(--ink);
+  letter-spacing:0;
+}
+.band__sub{
+  margin:0;font-size:var(--fs-100);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--olive-light);
+}
+/* nas faixas escuras o título inverte, mas os cards seguem claros:
+   branco sobre oliva destaca sem precisar redesenhar o card inteiro */
+.band--dark .band__title{color:var(--cream)}
+.band--dark .band__sub{color:rgba(249,244,230,.6)}
+
+@media (max-width:560px){
+  .band__head{gap:var(--sp-2)}
+}

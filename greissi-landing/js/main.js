@@ -441,10 +441,14 @@ const WHATSAPP = '5500000000000';
       cursor = alvo;
     }
 
-    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes, pilha, comecou: false };
+    // o Y do rastelo sai do mesmo chão das pétalas: a ponta dos dentes está
+    // a ~131/150 da altura do SVG, então o topo do elemento sobe essa medida
+    const baseY = chaoY - (rastelo?.offsetHeight || 150) * (131 / 150);
+
+    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes, pilha, baseY, comecou: false };
     if (rastelo) {
       rastelo.style.opacity = '1';
-      rastelo.style.transform = `translate3d(${xInicio}px, 8px, 0) rotate(6deg)`;
+      rastelo.style.transform = `translate3d(${xInicio}px, ${(baseY + 8).toFixed(1)}px, 0) rotate(6deg)`;
     }
     // o que ainda estiver no ar desce depressa, para o rastelo não varrer
     // um chão pela metade
@@ -483,7 +487,7 @@ const WHATSAPP = '5500000000000';
       // durante a puxada o rastelo inclina para trás e afunda no chão;
       // durante o alcance ele se ergue e inclina para frente, como um pulso
       const rot = puxando ? -7 + 5 * (1 - ek) : 11 - 5 * ek;
-      const y = puxando ? 2 + 7 * ek : 9 - 7 * ek;
+      const y = rakeInfo.baseY + (puxando ? 2 + 7 * ek : 9 - 7 * ek);
       rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
 
       if (puxando) {
@@ -514,7 +518,7 @@ const WHATSAPP = '5500000000000';
       if (passado < ATRASO) return;
       const k = clamp((passado - ATRASO) / DURACAO, 0, 1);
       rastelo.style.opacity = String(1 - k);
-      rastelo.style.transform = `translate3d(${(rakeInfo.pilha - 30 - 90 * k).toFixed(1)}px, 8px, 0)`;
+      rastelo.style.transform = `translate3d(${(rakeInfo.pilha - 30 - 90 * k).toFixed(1)}px, ${(rakeInfo.baseY + 8).toFixed(1)}px, 0)`;
       if (k >= 1) faseRastelo = 'fim';
     }
   };
@@ -679,9 +683,12 @@ const WHATSAPP = '5500000000000';
   }, { threshold: 0.6 });
   document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
-  /* ---- filtro de produtos ---- */
+  /* ---- filtro de produtos ----
+     Agora os produtos vivem em faixas por categoria, então o filtro esconde
+     a faixa inteira em vez de card a card: sem isso sobrariam cabeçalhos de
+     seção vazios. */
   const filters = [...document.querySelectorAll('.filter')];
-  const cards = [...document.querySelectorAll('.card')];
+  const faixas = [...document.querySelectorAll('.band')];
   filters.forEach(btn => {
     btn.addEventListener('click', () => {
       filters.forEach(b => {
@@ -690,8 +697,8 @@ const WHATSAPP = '5500000000000';
         b.setAttribute('aria-selected', String(active));
       });
       const cat = btn.dataset.filter;
-      cards.forEach(card => {
-        card.classList.toggle('is-hidden', !(cat === 'all' || card.dataset.cat === cat));
+      faixas.forEach(f => {
+        f.classList.toggle('is-hidden', !(cat === 'all' || f.dataset.band === cat));
       });
     });
   });
