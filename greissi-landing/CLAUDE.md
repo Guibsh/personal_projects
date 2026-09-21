@@ -49,8 +49,27 @@ pode se repetir.
    (iframe, sandbox, possível diferença de comportamento com scroll/libs
    pesadas). Preferir soluções robustas com o mínimo de dependências
    externas: menos pontos de falha que não dá para depurar remotamente.
-3. Depois de publicar, se o usuário reportar que algo não aparece, a
-   primeira suspeita é **falha silenciosa de uma dependência** (script que
-   não carregou, elemento que não existe), não o CSS/HTML em si — conferir
-   lendo os arquivos publicados via `Artifact` `read`, comparando com o
-   commit local.
+3. **Se o usuário disser que algo não aparece, MEDIR O LAYOUT nas larguras
+   reais antes de qualquer outra hipótese.** Conferir integridade de arquivo
+   publicado não prova nada sobre renderização:
+
+   ```js
+   // em Playwright, para cada largura de 360 a 1440:
+   document.querySelector('#scene').getBoundingClientRect()  // width/height são 0?
+   ```
+
+   Isso já custou três rodadas de diagnóstico errado. A cena do hero mediu
+   `0x0` em toda tela abaixo de 921px por semanas, enquanto eu repetia que
+   "os arquivos publicados estão corretos" — e estavam; o CSS é que colapsava.
+   Sintoma de "some no celular, funciona no desktop" quase sempre é layout,
+   não arquivo faltando nem script que não rodou.
+
+4. **Armadilha de sizing circular**, a causa daquele bug — vale conferir
+   sempre que um wrapper tiver `margin-inline:auto`: margem automática faz o
+   item encolher para o conteúdo; se o filho pede largura em `%`, o
+   percentual resolve contra um pai indefinido e vira zero. Use `width`
+   (definida), não `max-width`, no wrapper. Filho `<img>` com `width`/`height`
+   declarados não sofre disso, porque tem dimensão intrínseca.
+
+5. Toda mudança de CSS estrutural: medir em 375, 768 e 1440 **e olhar o
+   screenshot do trecho alterado**, não só de outra parte da página.
