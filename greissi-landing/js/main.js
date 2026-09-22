@@ -818,6 +818,77 @@ const WHATSAPP = '5500000000000';
     marcos.forEach((li, i) => li.classList.toggle('is-lit', p > 0.12 + i * 0.2));
   };
 
+  /* ---- partículas das estações nas faixas de produtos ----
+     Mesmo motor das pétalas à deriva da jornada: posição em FRAÇÃO da caixa,
+     movida por transform no laço de rAF que já existe. O que muda de uma
+     faixa para outra é só o comportamento — velocidade, deriva, giro e
+     sentido. Nenhum código de animação novo, nenhuma biblioteca. */
+  const COMPORTAMENTO = {
+    // folha de outono: cai girando, com deriva larga
+    outono:    { qtd: 9, vy: [ .00030,  .00042], vx: .00055, onda: .00040, giro: 1.5 },
+    // pétala de primavera: cai devagar, quase flutuando de lado
+    primavera: { qtd: 8, vy: [ .00018,  .00026], vx: .00070, onda: .00052, giro: .8 },
+    // pólen de verão: SOBE, quase sem girar — é o ar quente levando
+    verao:     { qtd: 10, vy: [-.00016, -.00026], vx: .00030, onda: .00030, giro: .2 },
+    // neve de inverno: desce reto e muito devagar, sem giro
+    inverno:   { qtd: 10, vy: [ .00014,  .00021], vx: .00016, onda: .00014, giro: 0 }
+  };
+
+  const estacoes = [];
+  if (!reduced) {
+    document.querySelectorAll('.band[data-estacao] .seasonzone').forEach(zona => {
+      const nome = zona.closest('.band').dataset.estacao;
+      const c = COMPORTAMENTO[nome];
+      if (!c) return;
+      const qtd = innerWidth < 700 ? Math.ceil(c.qtd * .6) : c.qtd;
+      const bichos = [];
+      for (let i = 0; i < qtd; i++) {
+        const el = document.createElement('span');
+        el.className = 'flake';
+        zona.appendChild(el);
+        bichos.push({
+          el,
+          x: Math.random(),
+          y: Math.random(),
+          vy: c.vy[0] + Math.random() * (c.vy[1] - c.vy[0]),
+          vx: (Math.random() - .5) * c.vx,
+          rot: Math.random() * 360,
+          giro: (Math.random() - .5) * c.giro
+        });
+      }
+      estacoes.push({ zona, c, bichos, caixa: null });
+    });
+  }
+
+  const medirEstacoes = () => estacoes.forEach(e => { e.caixa = e.zona.getBoundingClientRect(); });
+  if (estacoes.length) {
+    medirEstacoes();
+    addEventListener('resize', medirEstacoes, { passive: true });
+  }
+
+  const moverEstacoes = kick => {
+    for (const e of estacoes) {
+      // remede a cada quadro porque a caixa se move com o scroll e o filtro
+      // pode esconder a faixa inteira; se está fora da tela, nem anima
+      const r = e.zona.getBoundingClientRect();
+      if (r.height === 0 || r.bottom < -80 || r.top > innerHeight + 80) continue;
+      const w = r.width, h = r.height;
+      for (const p of e.bichos) {
+        p.y += p.vy + kick * .00010;
+        p.x += p.vx + Math.sin(p.y * 6 + p.rot) * e.c.onda;
+        p.rot += p.giro;
+        // reentra pelo lado oposto ao do sentido de queda: o pólen do verão
+        // sobe, então ele nasce embaixo
+        if (p.y > 1.08) { p.y = -.08; p.x = Math.random(); }
+        if (p.y < -.12) { p.y = 1.05; p.x = Math.random(); }
+        if (p.x > 1.05) p.x = -.03;
+        if (p.x < -.05) p.x = 1.03;
+        p.el.style.transform =
+          `translate3d(${(p.x * w).toFixed(1)}px, ${(p.y * h).toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+      }
+    }
+  };
+
   /* ---- girassol do "sobre mim" ----
      Semente na terra → regada → haste crescendo em direção à luz → folhas →
      flor abrindo. Tudo dirigido pelo progresso do scroll na seção, não por
@@ -897,6 +968,7 @@ const WHATSAPP = '5500000000000';
     pintarCena();
     pintarGirassol();
     moverDeriva(kick);
+    moverEstacoes(kick);
     passoQueda();
   };
   requestAnimationFrame(frame);

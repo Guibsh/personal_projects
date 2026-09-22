@@ -923,6 +923,63 @@ p{margin:0 0 1.1em}
 .band--dark .band__title{color:var(--cream)}
 .band--dark .band__sub{color:rgba(249,244,230,.6)}
 
+/* ---------- identidade sazonal das faixas de produtos ----------
+   Só dentro de #produtos, e só como CAMADA: os tokens globais (--olive,
+   --terracotta) ficam intactos e a alternância clara/escura das faixas — que
+   é o que dá o contraste — continua sendo a base. A estação entra por cima,
+   como um banho de cor, o ícone do título e as partículas. */
+.band{position:relative;overflow:hidden}
+.band > .wrap{position:relative;z-index:1}
+
+.band[data-estacao="outono"]   {--season-accent:#B5653F;--season-bg:216,134,74}
+.band[data-estacao="primavera"]{--season-accent:#F0B39D;--season-bg:240,179,157}
+.band[data-estacao="verao"]    {--season-accent:#C9902F;--season-bg:226,170,66}
+.band[data-estacao="inverno"]  {--season-accent:#CBDDE4;--season-bg:190,216,226}
+
+/* o banho de cor: diagonal suave a partir de um canto, em alfa baixo. Forte o
+   bastante para a faixa ter temperatura própria, fraco o bastante para não
+   brigar com o creme e o oliva que já organizam a seção. */
+.band[data-estacao]::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(152deg,
+    rgba(var(--season-bg),.16) 0%, rgba(var(--season-bg),.05) 42%, transparent 72%);
+}
+.band--dark[data-estacao]::before{
+  background:linear-gradient(152deg,
+    rgba(var(--season-bg),.13) 0%, rgba(var(--season-bg),.04) 46%, transparent 74%);
+}
+
+/* ícone da estação, na altura da caixa-alta do título */
+.band__title{display:flex;align-items:center;gap:.6em}
+.season{display:inline-flex;width:.82em;height:.82em;color:var(--season-accent);flex:none}
+.season svg{width:100%;height:100%;fill:currentColor}
+.season .veia,.season .raios path{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.season .veia{opacity:.55}
+.band[data-estacao] .band__sub{color:var(--season-accent)}
+.band--dark[data-estacao] .band__sub{color:var(--season-accent);opacity:.86}
+
+/* ---- partículas da estação ----
+   Mesmas peças do resto do site: um <span> absoluto movido por transform no
+   mesmo laço de rAF das pétalas. O que muda por estação é só cor, forma e
+   comportamento — não há motor novo aqui. */
+.seasonzone{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.flake{
+  position:absolute;top:0;left:0;width:11px;height:15px;
+  background:var(--season-accent);opacity:.34;will-change:transform;
+  border-radius:var(--r-petal);
+}
+/* outono: folha de ponta, mais fechada que a pétala */
+.band[data-estacao="outono"] .flake{width:12px;height:9px;border-radius:0 80% 0 80%}
+/* verão: pólen — grão redondo e pequeno */
+.band[data-estacao="verao"] .flake{width:6px;height:6px;border-radius:50%;opacity:.42}
+/* inverno: floco redondo e claro */
+.band[data-estacao="inverno"] .flake{width:7px;height:7px;border-radius:50%;opacity:.5}
+
+@media (prefers-reduced-motion:reduce){
+  /* a cor e o ícone ficam; o que se move sai */
+  .seasonzone{display:none}
+}
+
 @media (max-width:560px){
   .band__head{gap:var(--sp-2)}
 }
