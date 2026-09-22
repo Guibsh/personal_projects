@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greissi de Matos</title>
+<meta name="description" content="Mentoria, consultorias e materiais para mulheres que querem reencontrar o próprio valor, comunicar-se com segurança e construir relacionamentos saudáveis. Mais de 10.000 mulheres atendidas.">
+<meta name="theme-color" content="#F9F4E6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F9F4E6'/%3E%3Cg fill='%23C0705A'%3E%3Cellipse cx='16' cy='11' rx='4' ry='7'/%3E%3Cellipse cx='16' cy='11' rx='4' ry='7' transform='rotate(60 16 16)'/%3E%3Cellipse cx='16' cy='11' rx='4' ry='7' transform='rotate(120 16 16)'/%3E%3Cellipse cx='16' cy='11' rx='4' ry='7' transform='rotate(180 16 16)'/%3E%3Cellipse cx='16' cy='11' rx='4' ry='7' transform='rotate(240 16 16)'/%3E%3Cellipse cx='16' cy='11' rx='4' ry='7' transform='rotate(300 16 16)'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='3' fill='%235A6348'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Greissi de Matos — Mentora de Relacionamentos">
+<meta property="og:description" content="Mais de 10.000 mulheres acompanhadas na jornada de reencontrar o próprio valor.">
+<meta property="og:image" content="images/hero.webp">
+
+<link rel="preload" href="fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/jost-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<!-- buquê que ganha uma flor a cada seção percorrida -->
+<aside class="posy" id="posy" aria-hidden="true">
+  <svg viewBox="0 0 120 170">
+    <g class="posy__sway">
+      <g class="posy__stems" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+        <path d="M60 150 C60 120 60 86 60 46"/>
+        <path d="M60 150 C56 118 46 88 34 58"/>
+        <path d="M60 150 C64 118 74 88 86 58"/>
+        <path d="M60 150 C54 122 40 102 22 84"/>
+        <path d="M60 150 C66 122 80 102 98 84"/>
+        <path d="M60 150 C57 126 48 112 36 102"/>
+        <path d="M60 150 C63 126 72 112 84 102"/>
+      </g>
+      <g class="posy__leaves">
+        <path d="M58 118 C44 114 36 104 33 94 C47 96 56 106 58 118Z"/>
+        <path d="M63 104 C77 100 85 90 88 80 C74 82 65 92 63 104Z"/>
+      </g>
+      <g class="posy__blooms"></g>
+    </g>
+    <g class="posy__wrap">
+      <path d="M48 146 h24 l-4 20 h-16Z"/>
+      <rect x="46" y="142" width="28" height="8" rx="4"/>
+    </g>
+  </svg>
+  <span class="posy__count"><b>0</b>/7</span>
+</aside>
+
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a href="#topo" class="nav__logo">
+      <span class="nav__logo-name">Greissi de Matos</span>
+      <span class="nav__logo-sub">mentoria & relacionamentos</span>
+    </a>
+    <nav class="nav__links" aria-label="Navegação principal">
+      <a href="#sobre">Sobre</a>
+      <a href="#produtos">Materiais</a>
+      <a href="#jornada">Jornada</a>
+      <a href="#depoimentos">Histórias</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a class="btn btn--sm" data-wa data-wa-msg="Olá Greissi! Vim pelo site e gostaria de saber mais.">Falar comigo</a>
+    </nav>
+    <a class="btn btn--sm" data-wa data-wa-msg="Olá Greissi! Vim pelo site e gostaria de saber mais.">Falar comigo</a>
+    <button class="nav__toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="topo">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap hero__inner">
+    <div class="hero__text">
+      <p class="eyebrow reveal">Mentora de desenvolvimento pessoal e relacionamentos</p>
+      <h1 class="reveal" data-delay="1">
+        Você não precisa <em>provar</em> seu valor.<br>
+        Precisa <em>lembrar</em> dele.
+      </h1>
+      <p class="lead reveal" data-delay="2">
+        Há mais de uma década acompanho mulheres que querem se comunicar com segurança,
+        reconhecer o próprio lugar e construir relações em que sejam escolhidas — sem se
+        perder de si no caminho.
+      </p>
+      <div class="hero__cta reveal" data-delay="3">
+        <a href="#produtos" class="btn">Conhecer os materiais</a>
+        <a class="btn btn--ghost" data-wa data-wa-msg="Olá Greissi! Gostaria de conversar sobre as mentorias.">Conversar com a equipe</a>
+      </div>
+      <dl class="stats reveal" data-delay="4">
+        <div><dt data-count="10000" data-prefix="+">+10.000</dt><dd>mulheres acompanhadas</dd></div>
+        <div><dt data-count="400" data-prefix="+" data-suffix=" mil">+400 mil</dt><dd>seguidores</dd></div>
+        <div><dt data-count="13">13</dt><dd>materiais e jornadas</dd></div>
+      </dl>
+    </div>
+
+    <div class="hero__media reveal" data-delay="2">
+      <div class="scene" id="scene">
+        <div class="scene__layer scene__glow" data-depth="-34" aria-hidden="true"></div>
+
+        <div class="scene__window" data-depth="-12">
+          <div class="scene__photo" id="heroPhoto">
+            <img src="images/hero.webp" alt="Greissi de Matos" width="443" height="596" fetchpriority="high" decoding="async">
+          </div>
+          <div class="scene__glass" aria-hidden="true"></div>
+          <div class="scene__frame" aria-hidden="true"></div>
+        </div>
+
+        <div class="scene__layer scene__sill" data-depth="16" aria-hidden="true"></div>
+
+        <div class="scene__layer scene__garden" data-depth="42" aria-hidden="true">
+          <svg viewBox="0 0 430 210">
+            <g id="stalks"></g>
+            <path class="planter" d="M66 118 H364 L351 186 H79Z"/>
+            <rect class="planter planter--lip" x="56" y="106" width="318" height="16" rx="6"/>
+            <!-- a abelhinha: posicionada por JS, voa entre as flores e de vez em
+                 quando pousa numa delas. Fica por último no SVG para passar por
+                 cima das flores e da jardineira. -->
+            <g class="bee" id="bee">
+              <defs>
+                <clipPath id="beeCorpo">
+                  <path d="M4.7 0 C4.7 2.7 2.5 4 -.9 3.7 C-4.3 3.4 -6.7 1.5 -6.7 0 C-6.7 -1.5 -4.3 -3.4 -.9 -3.7 C2.5 -4 4.7 -2.7 4.7 0Z"/>
+                </clipPath>
+              </defs>
+              <!-- duas asas de verdade: a de trás é menor e bate meio tempo
+                   atrás da da frente. Cada uma gira na própria base, que é o
+                   que lê como bater de asa — a elipse só escalando parecia
+                   uma mancha branca piscando. -->
+              <g class="bee__wing bee__wing--tras">
+                <path class="bee__vela" d="M.2 -2.2 C-1.7 -5.6 -4.6 -6.8 -5.6 -5.2 C-6.4 -3.9 -3.7 -2.2 .2 -2.2Z"/>
+                <path class="bee__veia" d="M-.4 -2.5 C-2.2 -3.6 -3.8 -4.5 -5 -5"/>
+              </g>
+              <g class="bee__wing bee__wing--frente">
+                <path class="bee__vela" d="M1.7 -2.5 C-.8 -8.2 -5.2 -10 -6.8 -7.7 C-8 -5.9 -4.1 -2.8 1.7 -2.5Z"/>
+                <path class="bee__veia" d="M1 -2.9 C-1.6 -4.6 -4.2 -6.3 -6.1 -7.2"/>
+              </g>
+              <g class="bee__pernas">
+                <path d="M-1.5 3 C-2 4.5 -3 5.2 -4.1 5.4"/>
+                <path d="M1.3 3.2 C1.3 4.8 .6 5.7 -.5 6.1"/>
+              </g>
+              <path class="bee__body" d="M4.7 0 C4.7 2.7 2.5 4 -.9 3.7 C-4.3 3.4 -6.7 1.5 -6.7 0 C-6.7 -1.5 -4.3 -3.4 -.9 -3.7 C2.5 -4 4.7 -2.7 4.7 0Z"/>
+              <g class="bee__faixas" clip-path="url(#beeCorpo)">
+                <rect x="-4.6" y="-5" width="1.6" height="10"/>
+                <rect x="-1.6" y="-5" width="1.9" height="10"/>
+                <rect x="1.6" y="-5" width="1.9" height="10"/>
+              </g>
+              <ellipse class="bee__torax" cx="3.3" cy="-.2" rx="2.3" ry="2.9"/>
+              <circle class="bee__head" cx="5.4" cy="-.6" r="2.4"/>
+              <circle class="bee__olho" cx="6.4" cy="-1.2" r=".7"/>
+              <path class="bee__ant" d="M6.5 -2.4 C7.6 -3.9 8.2 -4.6 9.1 -5.5"/>
+              <path class="bee__ant" d="M5.2 -2.9 C5.8 -4.5 6.1 -5.4 6.5 -6.5"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a href="#dores" class="scroll-hint" aria-label="Continuar"><span></span></a>
+</section>
+
+<!-- ============ DORES ============ -->
+<section class="section section--tint" id="dores">
+  <div class="fallzone" id="fallzone" aria-hidden="true">
+    <div class="fallzone__petals" id="fallPetals"></div>
+    <div class="fallzone__rake" id="rake">
+      <svg viewBox="0 0 150 150">
+        <path class="rake__handle" d="M138 6 C120 34 96 68 74 96"/>
+        <rect class="rake__head" x="16" y="92" width="96" height="9" rx="4.5"/>
+        <g class="rake__tines">
+          <path d="M22 101 L18 128"/><path d="M37 101 L34 130"/>
+          <path d="M52 101 L51 131"/><path d="M67 101 L67 131"/>
+          <path d="M82 101 L83 130"/><path d="M97 101 L100 128"/>
+          <path d="M107 101 L112 125"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="wrap">
+    <h2 class="reveal">Talvez você se reconheça aqui</h2>
+    <p class="section__lead reveal" data-delay="1">
+      Não é fraqueza. É um padrão — e todo padrão pode ser compreendido e reescrito.
+    </p>
+    <p class="pains__hint reveal" data-delay="1">Toque no que você reconhece em você.</p>
+    <ul class="pains">
+      <li class="reveal" data-delay="1">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Você relê a mensagem dez vezes antes de enviar e ainda assim não sente que é a certa.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="2">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">As conversas começam bem e vão esfriando, sem você entender onde se perderam.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="3">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Você dá muito mais do que recebe — e chama isso de amor.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="4">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Um relacionamento terminou e você sente que perdeu, junto com ele, o próprio eixo.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="5">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Você sabe o que quer, mas trava na hora de dizer "não" sem culpa.</span>
+        </button>
+      </li>
+      <li class="reveal" data-delay="6">
+        <button type="button" class="pain" aria-pressed="false">
+          <span class="pain__mark" aria-hidden="true"></span>
+          <span class="pain__txt">Já tentou de tudo — menos voltar a atenção para você mesma.</span>
+        </button>
+      </li>
+    </ul>
+    <div class="pains__echo" id="painsEcho" hidden>
+      <p class="pains__score"><b>0</b> de 6</p>
+      <p class="pains__msg"></p>
+      <a class="btn" href="#quiz">Descobrir por onde começar</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOBRE ============ -->
+<section class="section" id="sobre">
+  <div class="wrap about">
+    <div class="about__media reveal">
+      <img src="images/sobre.webp" alt="Greissi de Matos" width="421" height="593" loading="lazy" decoding="async">
+      <!-- o amanhecer: a luz nasce no canto de cima à esquerda e ganha força
+           conforme a seção sobe na tela. É para onde o girassol se vira. -->
+      <div class="about__dawn" id="dawn" aria-hidden="true"><span class="about__sol"></span></div>
+      <span class="signature" aria-hidden="true">Greissi de Matos</span>
+      <!-- o girassol: começa semente na terra, é regado, e cresce em direção
+           à luz conforme a visitante desce a página -->
+      <svg class="sunflower" id="sunflower" viewBox="0 0 130 280" aria-hidden="true">
+        <!-- um canteirinho, não uma faixa de terra: a faixa atravessava a
+             borda da foto e virava um bloco marrom solto no creme -->
+        <path class="sf__terra" d="M70 276 C70 257 84 248 100 248 C116 248 130 257 130 276Z"/>
+        <g class="sf__gotas">
+          <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
+          <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
+          <ellipse class="sf__gota" cx="105" cy="0" rx="1.8" ry="3"/>
+        </g>
+        <ellipse class="sf__semente" cx="100" cy="258" rx="4.2" ry="2.9"/>
+        <g class="sf__planta js-wind">
+          <!-- nasce à direita e sobe na diagonal para a esquerda, que é de
+               onde vem a luz: é a inclinação que conta a história -->
+          <path class="sf__caule" d="M100 259 C96 222 84 194 68 166 C50 136 32 110 30 78"/>
+          <g class="sf__folha sf__folha--a">
+            <path d="M80 208 C98 206 112 195 117 181 C99 180 84 191 80 208Z"/>
+          </g>
+          <g class="sf__folha sf__folha--b">
+            <path d="M54 148 C38 142 26 130 24 116 C40 117 52 131 54 148Z"/>
+          </g>
+          <!-- grupo de fora leva a cabeça para a ponta da haste e a inclina
+               para a luz; o de dentro fica livre para a CSS escalar na
+               abertura (a CSS ganharia do atributo transform se fosse um só) -->
+          <g transform="translate(30 78) rotate(-19)"><g class="sf__cabeca">
+            <g class="sf__petalas">
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(30)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(60)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(90)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(120)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(150)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(180)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(210)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(240)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(270)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(300)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(330)"/>
+            </g>
+            <circle class="sf__miolo" r="12.5"/>
+            <g class="sf__grao">
+              <circle cx="-4" cy="-3" r="1.5"/><circle cx="3" cy="-5" r="1.5"/>
+              <circle cx="5" cy="2" r="1.5"/><circle cx="-2" cy="5" r="1.5"/>
+              <circle cx="-7" cy="3" r="1.4"/><circle cx="0" cy="0" r="1.5"/>
+            </g>
+          </g></g>
+        </g>
+      </svg>
+    </div>
+    <div class="about__text">
+      <p class="eyebrow reveal">Sobre mim</p>
+      <h2 class="reveal" data-delay="1">Psicologia de verdade, aplicada ao que você vive todos os dias</h2>
+      <p class="reveal" data-delay="2">
+        Sou mentora de desenvolvimento pessoal, profissional e relacionamentos. Criadora da
+        <em>Jornada 21 Dias para uma Vida de Valor</em>, do e-book <em>Atração Natural</em> e da
+        imersão <em>Exale Feminilidade</em>.
+      </p>
+      <p class="reveal" data-delay="3">
+        Ao longo dos últimos anos acompanhei mais de dez mil mulheres na construção de uma vida
+        de valor e de relacionamentos que fazem sentido. Meu trabalho não é sobre joguinhos nem
+        fórmulas prontas: é sobre entender o comportamento humano — o seu e o dele — e usar esse
+        entendimento com clareza, estratégia e respeito por si mesma.
+      </p>
+      <ul class="pillars">
+        <li class="reveal" data-delay="4"><strong>Autoconhecimento</strong>Entender o padrão antes de tentar mudar o resultado.</li>
+        <li class="reveal" data-delay="5"><strong>Comunicação</strong>Dizer o que sente com segurança, leveza e verdade.</li>
+        <li class="reveal" data-delay="6"><strong>Posicionamento</strong>Ocupar seu lugar sem precisar diminuir ninguém — nem você.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUQUÊ ============ -->
+<section class="bouquet" id="jornada">
+  <div class="driftzone" id="driftzone" aria-hidden="true"></div>
+  <svg class="divider" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg>
+  <div class="wrap journey__inner">
+    <div class="journey__intro">
+      <p class="eyebrow reveal">A jornada</p>
+      <h2 class="reveal" data-delay="1">Toda transformação floresce por etapas</h2>
+      <p class="reveal" data-delay="2">
+        Ninguém desabrocha em um dia. O caminho que proponho tem ritmo, ordem e cuidado —
+        cada flor deste buquê é uma etapa que você atravessa.
+      </p>
+    </div>
+
+    <div class="journey" id="journey">
+      <svg class="journey__vine" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">
+        <path class="journey__stem" d="M20 46 C180 10 300 54 480 34 C660 14 780 52 980 26" fill="none"
+              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+
+      <ol class="journey__steps">
+        <li data-step="1">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">01</span>
+          <strong>Reconhecer</strong>
+          O diagnóstico honesto do que você está vivendo — sem culpa e sem rodeios.
+        </li>
+        <li data-step="2">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">02</span>
+          <strong>Reconectar</strong>
+          Voltar para você: sua energia, sua autoestima, seu encanto.
+        </li>
+        <li data-step="3">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">03</span>
+          <strong>Comunicar</strong>
+          Aprender a expressar valor, limite e desejo com a mesma naturalidade.
+        </li>
+        <li data-step="4">
+          <span class="journey__mark" aria-hidden="true"></span>
+          <span class="journey__num">04</span>
+          <strong>Florescer</strong>
+          Ser escolhida porque você se escolheu primeiro.
+        </li>
+      </ol>
+    </div>
+
+    
+
+  </div>
+<svg class="divider divider--up" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg></section>
+
+<!-- ============ QUIZ ============ -->
+<section class="section section--air quiz" id="quiz">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow reveal">Por onde começar</p>
+    <h2 class="reveal" data-delay="1">Três perguntas para encontrar o seu caminho</h2>
+    <p class="section__lead reveal" data-delay="2">
+      São catorze materiais, e nem todos são para o seu momento. Responda abaixo e eu indico
+      por onde faz mais sentido você começar.
+    </p>
+
+    <div class="quiz__box reveal" data-delay="3">
+      <div class="quiz__head">
+        <div class="quiz__bar"><span></span></div>
+        <p class="quiz__count">1 de 3</p>
+      </div>
+
+      <div class="quiz__step">
+        <h3>Onde você está agora?</h3>
+        <div class="quiz__opts">
+          <button class="quiz__opt" type="button" data-score="atracao:2,desafio:1">Sozinha, e quero me preparar</button>
+          <button class="quiz__opt" type="button" data-score="mulher:3,frases:2">Conversando com alguém, mas não evolui</button>
+          <button class="quiz__opt" type="button" data-score="escolhida:3,mulher:1">Num relacionamento que esfriou</button>
+          <button class="quiz__opt" type="button" data-score="reconquista:3,desapego:2">Terminou, e ainda dói</button>
+        </div>
+      </div>
+
+      <div class="quiz__step">
+        <h3>O que mais te trava hoje?</h3>
+        <div class="quiz__opts">
+          <button class="quiz__opt" type="button" data-score="mulher:3,frases:2">Não sei o que dizer nem como conduzir</button>
+          <button class="quiz__opt" type="button" data-score="escolhida:3,imersao:2">Dou demais e acabo me anulando</button>
+          <button class="quiz__opt" type="button" data-score="desapego:3,reconquista:1">Não consigo desapegar</button>
+          <button class="quiz__opt" type="button" data-score="bloqueios:3,desafio:2">Me sinto travada em tudo, não só no amor</button>
+        </div>
+      </div>
+
+      <div class="quiz__step">
+        <h3>Como você quer ser acompanhada?</h3>
+        <div class="quiz__opts">
+          <button class="quiz__opt" type="button" data-score="mulher:2,desapego:2,atracao:2,bloqueios:2,frases:2">No meu tempo, com um material para ler</button>
+          <button class="quiz__opt" type="button" data-score="escolhida:4,imersao:3">Em grupo, com aulas ao vivo</button>
+          <button class="quiz__opt" type="button" data-score="reconquista:4,imersao:1">Individual, com atenção exclusiva</button>
+        </div>
+      </div>
+
+      <div class="quiz__result" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUTOS ============ -->
+<!-- ============ PRODUTOS ============ -->
+<section class="section section--tight" id="produtos">
+  <div class="wrap">
+    <p class="eyebrow reveal">Materiais e jornadas</p>
+    <h2 class="reveal" data-delay="1">Escolha o ponto onde você está hoje</h2>
+    <p class="section__lead reveal" data-delay="2">
+      Do primeiro passo — um guia para ler no seu tempo — ao acompanhamento próximo em grupo
+      ou individual.
+    </p>
+
+    <div class="filters reveal" data-delay="3" role="tablist" aria-label="Filtrar materiais">
+      <button class="filter is-active" data-filter="all" role="tab" aria-selected="true">Todos</button>
+      <button class="filter" data-filter="ebook" role="tab" aria-selected="false">E-books</button>
+      <button class="filter" data-filter="consultoria" role="tab" aria-selected="false">Consultorias</button>
+      <button class="filter" data-filter="imersao" role="tab" aria-selected="false">Imersões</button>
+      <button class="filter" data-filter="gratuito" role="tab" aria-selected="false">Gratuito</button>
+    </div>
+  </div>
+
+  <div class="band band--light" data-band="ebook" data-estacao="outono">
+        <div class="seasonzone" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="band__head reveal">
+        <h3 class="band__title"><span class="season" role="img" aria-label="Outono"><svg viewBox="0 0 16 16"><path d="M14 2C7.5 2 3 5.2 3 9.6c0 1.4.4 2.6 1.1 3.5L2 15.2l.9.8 2.2-2.2c.9.6 2 .9 3.2.9C12.6 14.7 14 9.4 14 2Z"/><path class="veia" d="M12.6 3.4 5.2 12.4"/></svg></span>E-books</h3>
+        <p class="band__sub">Para ler no seu tempo, quantas vezes precisar.</p>
+      </header>
+      <div class="grid">
+      <article class="card" data-cat="ebook">
+        <span class="card__tag">E-book</span>
+        <h3>A Mulher Que Ele Nunca Esquece</h3>
+        <p class="card__sub">O guia da conversa feminina que marca</p>
+        <p>Mais de 500 frases, perguntas e respostas prontas para conduzir conversas com
+        confiança, leveza e autenticidade — em qualquer fase da relação.</p>
+        <ul class="card__list">
+          <li>Mensagens para iniciar e manter conversas interessantes</li>
+          <li>Perguntas que criam conexão emocional profunda</li>
+          <li>Como demonstrar valor sem parecer distante</li>
+          <li>4 bônus exclusivos, incluindo o Guia da Mulher Magnética</li>
+        </ul>
+        <a class="card__cta" href="https://hotmart.com/pt-br/marketplace/produtos/hagsxd-a-mulher-que-ele-nunca-esquece-6igil/F106278418L" target="_blank" rel="noopener">Conhecer o guia</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="ebook">
+        <span class="card__tag">E-book</span>
+        <h3>Atração Natural</h3>
+        <p class="card__sub">O guia definitivo para atrair sem esforço</p>
+        <p>Atração não se force — se cultiva. Um material sobre presença, energia e a forma
+        como você se apresenta ao mundo antes mesmo de dizer qualquer palavra.</p>
+        <a class="card__cta" href="https://hotmart.com/pt-br/marketplace/produtos/atracao-natural/A101321374E" target="_blank" rel="noopener">Conhecer o guia</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="ebook">
+        <span class="card__tag">E-book</span>
+        <h3>A Arte do Desapego</h3>
+        <p class="card__sub">A chave para a liberdade emocional</p>
+        <p>Exercícios práticos e uma abordagem simples de conscientização sobre a sua situação —
+        mapas para reconstruir a autoestima e um plano para conquistar autonomia emocional.</p>
+        <a class="card__cta" href="https://hotmart.com/pt-br/marketplace/produtos/hagsxd-a-arte-do-desapego-083m2/M102455467L" target="_blank" rel="noopener">Conhecer o guia</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="ebook">
+        <span class="card__tag">E-book</span>
+        <h3>Bloqueios Mentais</h3>
+        <p class="card__sub">Identifique-os e liberte-se deles</p>
+        <p>Só é possível mudar aquilo que se identifica. Um material para reconhecer com clareza
+        os bloqueios que travam sua prosperidade — e desfazer um a um.</p>
+        <a class="card__cta" href="https://hotmart.com/pt-br/marketplace/produtos/bloqueios-mentais-identifique-os-e-liberte-se-deles/P92382211X" target="_blank" rel="noopener">Conhecer o guia</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="ebook">
+        <span class="card__tag">E-book</span>
+        <h3>100 Frases que Conectam</h3>
+        <p class="card__sub">A arte de prender a atenção dele</p>
+        <p>Cansada do "bom dia" que não leva a lugar nenhum? Frases testadas que acionam
+        gatilhos emocionais reais e transformam cada mensagem numa oportunidade de conexão —
+        sem clichês e sem perder a própria essência.</p>
+        <a class="card__cta" href="https://greissidematos.my.canva.site/ebook100frases" target="_blank" rel="noopener">Conhecer o guia</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      </div>
+    </div>
+  </div>
+
+  <div class="band band--dark" data-band="consultoria" data-estacao="primavera">
+        <div class="seasonzone" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="band__head reveal">
+        <h3 class="band__title"><span class="season" role="img" aria-label="Primavera"><svg viewBox="0 0 16 16"><g class="pet5"><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(72 8 8)"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(144 8 8)"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(216 8 8)"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(288 8 8)"/></g><circle class="miolo" cx="8" cy="8" r="1.7"/></svg></span>Consultorias</h3>
+        <p class="band__sub">Acompanhamento comigo, ao vivo.</p>
+      </header>
+      <div class="grid">
+      <article class="card card--feature" data-cat="consultoria">
+        <span class="card__tag">Consultoria em grupo</span>
+        <h3>Pare de Rastejar, Seja Escolhida</h3>
+        <p class="card__sub">Resgate de valor, comunicação e posicionamento</p>
+        <p>Para quem sente que dá tudo e recebe pouco: um caminho estruturado para recuperar
+        valor, comunicar-se com segurança e ser tratada como prioridade.</p>
+        <ul class="card__list">
+          <li>2 meses · 1 aula ao vivo por semana (1h + 30min de dúvidas)</li>
+          <li>Grupo de apoio no Telegram</li>
+          <li>Material complementar em PDF</li>
+          <li>Bônus exclusivo para inscritas</li>
+        </ul>
+        <p class="card__price">R$ 197,90 <span>à vista · parcelamento disponível</span></p>
+        <a class="card__cta card__cta--solid" data-wa data-wa-msg="Olá Greissi! Quero saber mais sobre a consultoria Pare de Rastejar, Seja Escolhida.">Garantir minha vaga</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card card--feature" data-cat="consultoria">
+        <span class="card__tag">Consultoria individual</span>
+        <h3>Jornada da Reconquista</h3>
+        <p class="card__sub">Para quando o relacionamento terminou — ou esfriou</p>
+        <p>Você não perdeu ele: perdeu o seu eixo. Um acompanhamento individual para entender
+        o que aconteceu, reconstruir sua base e se reposicionar com clareza, inteligência e
+        presença — com psicologia de verdade, não com fórmulas prontas.</p>
+        <ul class="card__list">
+          <li>2 consultorias online de 45 a 60 min</li>
+          <li>Diagnóstico inicial + ajuste de rota após 15 dias</li>
+          <li>Protocolo de reconstrução passo a passo</li>
+          <li>Liberação de e-books e aulas conforme a sua situação</li>
+        </ul>
+        <a class="card__cta card__cta--solid" href="https://greissidematos.my.canva.site/jornada-da-reconquista-" target="_blank" rel="noopener">Quero reconquistar meu eixo</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="consultoria">
+        <span class="card__tag">Individual</span>
+        <h3>Mentoria Individual</h3>
+        <p class="card__sub">Acompanhamento desenhado para a sua história</p>
+        <p>Para quem precisa de um olhar exclusivo, com encontros e protocolo criados
+        especificamente a partir da sua situação. Vagas sob consulta.</p>
+        <a class="card__cta" data-wa data-wa-msg="Olá Greissi! Tenho interesse na mentoria individual.">Consultar disponibilidade</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      </div>
+    </div>
+  </div>
+
+  <div class="band band--tint" data-band="imersao" data-estacao="verao">
+        <div class="seasonzone" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="band__head reveal">
+        <h3 class="band__title"><span class="season" role="img" aria-label="Verão"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3.4"/><g class="raios"><path d="M8 .8V3"/><path d="M8 13v2.2"/><path d="M.8 8H3"/><path d="M13 8h2.2"/><path d="M2.9 2.9 4.5 4.5"/><path d="M11.5 11.5 13.1 13.1"/><path d="M13.1 2.9 11.5 4.5"/><path d="M4.5 11.5 2.9 13.1"/></g></svg></span>Imersões e programas</h3>
+        <p class="band__sub">Percursos com começo, meio e fim.</p>
+      </header>
+      <div class="grid">
+      <article class="card card--feature" data-cat="imersao">
+        <span class="card__tag">Imersão · vagas limitadas</span>
+        <h3>Ame-se Para Ser Amada</h3>
+        <p class="card__sub">Treinamento intensivo de 2 dias, totalmente online</p>
+        <p>Dois dias para reencontrar o que você sente e precisa, além das vozes externas.
+        Número reduzido de participantes, ambiente seguro e acolhedor.</p>
+        <ul class="card__list">
+          <li><strong>Reconexão consigo mesma</strong> — além das vozes externas</li>
+          <li><strong>Amor próprio ativo</strong> — autoestima sem depender de validação</li>
+          <li><strong>Cura e libertação de padrões</strong> — integrar o passado e seguir</li>
+          <li><strong>Poder de posicionamento</strong> — dizer "não" sem culpa</li>
+        </ul>
+        <p class="card__price">R$ 197,00 <span>inscrição obrigatória</span></p>
+        <a class="card__cta card__cta--solid" data-wa data-wa-msg="Olá Greissi! Quero reservar minha vaga na imersão Ame-se Para Ser Amada.">Reservar minha vaga</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="imersao">
+        <span class="card__tag">Programa</span>
+        <h3>Desafio 21 Dias</h3>
+        <p class="card__sub">Missões diárias para uma vida de valor</p>
+        <p>Inteligência emocional, crenças limitantes e cura da criança interior em missões
+        diárias. Seus resultados de hoje são reflexo dos seus hábitos — instale hábitos novos
+        e tenha resultados novos.</p>
+        <a class="card__cta" href="https://hotmart.com/pt-br/marketplace/produtos/hagsxd-desafio-21-dias-k5nv6/M91534646P" target="_blank" rel="noopener">Começar o desafio</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="imersao">
+        <span class="card__tag">Imersão · pré-inscrição</span>
+        <h3>Exale Feminilidade</h3>
+        <p class="card__sub">A imersão sobre presença e essência feminina</p>
+        <p>Um encontro para quem quer ocupar o próprio lugar com naturalidade. Entre na lista
+        de pré-inscrição e seja avisada na abertura das vagas.</p>
+        <a class="card__cta" data-wa data-wa-msg="Olá Greissi! Quero entrar na pré-inscrição da imersão Exale Feminilidade.">Entrar na lista</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      </div>
+    </div>
+  </div>
+
+  <div class="band band--dark" data-band="gratuito" data-estacao="inverno">
+        <div class="seasonzone" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="band__head reveal">
+        <h3 class="band__title"><span class="season" role="img" aria-label="Inverno"><svg viewBox="0 0 16 16"><g class="raios"><path d="M8 1v14"/><path d="M1.9 4.5 14.1 11.5"/><path d="M1.9 11.5 14.1 4.5"/><path d="M8 4.4 5.9 3.1M8 4.4l2.1-1.3M8 11.6l-2.1 1.3M8 11.6l2.1 1.3"/></g></svg></span>Gratuitos</h3>
+        <p class="band__sub">Um primeiro passo, sem custo.</p>
+      </header>
+      <div class="grid">
+      <article class="card" data-cat="gratuito">
+        <span class="card__tag">Gratuito</span>
+        <h3>Comunicação que Fortalece Relacionamentos</h3>
+        <p class="card__sub">Material gratuito para download</p>
+        <p>Um primeiro passo, sem custo: princípios de comunicação que sustentam relações
+        saudáveis no dia a dia.</p>
+        <a class="card__cta" data-wa data-wa-msg="Olá Greissi! Quero receber o material gratuito sobre comunicação.">Receber o material</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="gratuito">
+        <span class="card__tag">Gratuito</span>
+        <h3>Grupo Secreto das DIVAS</h3>
+        <p class="card__sub">Comunidade no WhatsApp</p>
+        <p>Um espaço entre mulheres que buscam o mesmo: crescimento, apoio mútuo e conversas
+        honestas. Entrada gratuita.</p>
+        <a class="card__cta" data-wa data-wa-msg="Olá Greissi! Quero entrar no Grupo Secreto das DIVAS.">Quero participar</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      <article class="card" data-cat="gratuito">
+        <span class="card__tag">Gratuito</span>
+        <h3>Consultoria de Diagnóstico</h3>
+        <p class="card__sub">Uma conversa inicial, sem compromisso</p>
+        <p>Não sabe por onde começar? Preencha o formulário e receba uma orientação sobre qual
+        caminho faz mais sentido para o seu momento.</p>
+        <a class="card__cta" data-wa data-wa-msg="Olá Greissi! Gostaria de agendar a consultoria de diagnóstico.">Solicitar orientação</a>
+        <span class="card__bloom" aria-hidden="true"></span>
+      </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPOIMENTOS ============ -->
+<section class="section section--air testimonials" id="depoimentos">
+  <div class="wrap">
+    <p class="eyebrow reveal">Histórias</p>
+    <h2 class="reveal" data-delay="1">Quem já atravessou esse caminho</h2>
+
+    <div class="carousel reveal" data-delay="2">
+      <div class="carousel__track" id="track">
+        <figure class="quote">
+          <blockquote>Comprei o e-book sem acreditar que algo pudesse mudar a minha situação, porque ele estava muito frio. E hoje estamos morando juntos.</blockquote>
+          <figcaption>Mel</figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>Comprei o e-book <em>100 Frases</em> e comecei a usar com o meu pretendente. Tudo mudou: ele está sempre me procurando, responde rápido e me convidou para sair no fim de semana. Estou muito grata.</blockquote>
+          <figcaption>Rafaela</figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>Comprei o e-book e aprendi muito sobre como me comunicar da maneira correta. Agora tenho sempre homens me dando atenção.</blockquote>
+          <figcaption>Edivania</figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>Greissi, minha mentora maravilhosa. Não poderia deixar de compartilhar: está mudando tudo na minha vida, principalmente os meus pensamentos, que agora são só positividade.</blockquote>
+          <figcaption>Suelly Carvalho</figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>Enviei uma das mensagens que você ensinou e fiquei surpresa — não tinha ideia de que ele responderia em segundos, e de forma tão carinhosa.</blockquote>
+          <figcaption>Aluna da mentoria</figcaption>
+        </figure>
+      </div>
+      <div class="carousel__nav">
+        <button id="prev" aria-label="Depoimento anterior">‹</button>
+        <div class="carousel__dots" id="dots"></div>
+        <button id="next" aria-label="Próximo depoimento">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta">
+  <div class="wrap cta__inner">
+    <div class="cta__media reveal">
+      <img src="images/flor-cheiro.webp" alt="Greissi de Matos com uma flor" width="403" height="584" loading="lazy" decoding="async">
+      <!-- Mesma mecânica do girassol do "sobre mim" — semente, rega, haste e
+           abertura, tudo dirigido pelo scroll. Aqui a flor é uma rosa: anéis
+           de pétalas em CRESCENTE, cada uma abraçando o miolo, encolhendo e
+           girando meia casa a cada anel. Uma primeira versão com elipses em
+           coroa e espiral no centro lia como margarida e foi refeita. -->
+      <svg class="sunflower rosebush" id="rosebush" viewBox="0 0 130 280" aria-hidden="true">
+        <path class="sf__terra" d="M70 276 C70 257 84 248 100 248 C116 248 130 257 130 276Z"/>
+        <g class="sf__gotas">
+          <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
+          <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
+          <ellipse class="sf__gota" cx="105" cy="0" rx="1.8" ry="3"/>
+        </g>
+        <ellipse class="sf__semente" cx="100" cy="258" rx="4.2" ry="2.9"/>
+        <g class="sf__planta js-wind">
+          <path class="sf__caule" d="M100 259 C98 224 90 198 78 172 C64 142 50 118 46 92"/>
+          <g class="sf__folha sf__folha--a">
+            <path d="M84 212 C102 210 116 199 121 185 C103 184 88 195 84 212Z"/>
+          </g>
+          <g class="sf__folha sf__folha--b">
+            <path d="M66 156 C50 150 38 138 36 124 C52 125 64 139 66 156Z"/>
+          </g>
+          <g transform="translate(46 90) rotate(-12) scale(1.14)"><g class="sf__cabeca">
+            <circle class="rose__fundo" r="26"/>
+            <g class="rose__fora">
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(0) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(72) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(144) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(216) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(288) scale(1)"/>
+            </g>
+            <g class="rose__meio">
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(36) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(108) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(180) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(252) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(324) scale(0.7)"/>
+            </g>
+            <g class="rose__nucleo">
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(72) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(162) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(252) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(342) scale(0.46)"/>
+              <path class="rose__curl" d="M-5 2.5 C-7.5 -3 -3.5 -8 2.5 -7 C7.5 -6 9 -1 6 2.5 C3.5 5.5 -2 6 -5 2.5Z"/>
+            </g>
+          </g></g>
+        </g>
+      </svg>
+    </div>
+    <div class="cta__text">
+      <h2 class="reveal" data-delay="1">Quando você se escolhe, tudo em volta muda de lugar</h2>
+      <p class="reveal" data-delay="2">
+        Se você chegou até aqui, alguma parte de você já sabe que é hora. Me conte em que ponto
+        está — vamos encontrar juntas o caminho certo para o seu momento.
+      </p>
+      <a class="btn btn--light reveal" data-delay="3" data-wa data-wa-msg="Olá Greissi! Vim pelo site e quero entender qual caminho faz mais sentido para mim.">Conversar pelo WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section section--tight section--tint" id="duvidas">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow reveal">Dúvidas frequentes</p>
+    <h2 class="reveal" data-delay="1">Antes de você decidir</h2>
+
+    <div class="faq">
+      <details class="reveal" data-delay="1">
+        <summary>Quanto tempo dura a consultoria em grupo?</summary>
+        <p>Dois meses, com uma aula ao vivo por semana — uma hora de conteúdo mais trinta minutos reservados para dúvidas.</p>
+      </details>
+      <details class="reveal" data-delay="2">
+        <summary>A mentoria é individual ou em grupo?</summary>
+        <p>A consultoria <em>Pare de Rastejar, Seja Escolhida</em> é em grupo. Se você deseja um acompanhamento individual, criado especificamente para a sua situação, fale com a equipe para consultar disponibilidade.</p>
+      </details>
+      <details class="reveal" data-delay="3">
+        <summary>E se eu não conseguir assistir a uma aula ao vivo?</summary>
+        <p>Você pode solicitar a gravação. Ainda assim, a recomendação é participar ao vivo: o aproveitamento é consideravelmente maior, e você pode tirar suas dúvidas na hora.</p>
+      </details>
+      <details class="reveal" data-delay="4">
+        <summary>Para quem são os materiais?</summary>
+        <p>Para mulheres adultas que querem ampliar repertório, comunicar-se com mais segurança e gerar interesse real nas conversas — seja no início de um relacionamento, seja na retomada de um vínculo.</p>
+      </details>
+      <details class="reveal" data-delay="5">
+        <summary>Preciso ser extrovertida para aplicar o que é ensinado?</summary>
+        <p>Não. O material traz caminhos sutis e caminhos mais diretos, para quem prefere abordagens discretas e para quem prefere ser mais ousada.</p>
+      </details>
+      <details class="reveal" data-delay="6">
+        <summary>O conteúdo é ético e respeita limites?</summary>
+        <p>Sim. Tudo o que ensino incentiva conexão sincera e respeito mútuo. Não trabalho com manipulação, jogos ou qualquer estratégia que desrespeite você ou a outra pessoa.</p>
+      </details>
+      <details class="reveal" data-delay="7">
+        <summary>Em que formato recebo os e-books?</summary>
+        <p>Um arquivo digital em PDF, com download imediato, compatível com celular, tablet e computador. Você pode imprimir para uso pessoal — o compartilhamento público do material não é permitido.</p>
+      </details>
+      <details class="reveal" data-delay="8">
+        <summary>Quanto tempo leva para ver resultados?</summary>
+        <p>Depende da aplicação. Muitas alunas relatam conversas mais interessantes já nas primeiras semanas de uso consistente do material.</p>
+      </details>
+      <details class="reveal" data-delay="9">
+        <summary>Existe suporte se eu tiver dúvidas?</summary>
+        <p>Sim — suporte por e-mail para dúvidas sobre o uso do material e adaptações de tom, além do grupo de apoio no caso das consultorias.</p>
+      </details>
+      <details class="reveal" data-delay="10">
+        <summary>É seguro pagar pelo site?</summary>
+        <p>Sim. As compras são processadas em plataforma de pagamento segura, com seus dados protegidos.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div>
+      <p class="footer__name">Greissi de Matos</p>
+      <p class="footer__role">Mentora de desenvolvimento pessoal, profissional e relacionamentos</p>
+    </div>
+    <nav class="footer__links" aria-label="Links do rodapé">
+      <a href="https://www.instagram.com/greissidematos/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/greissidematos" target="_blank" rel="noopener">Todos os links</a>
+      <a data-wa data-wa-msg="Olá Greissi! Gostaria de falar com a sua equipe.">WhatsApp</a>
+      <a data-wa data-wa-msg="Olá Greissi! Gostaria de contratar uma palestra.">Palestras e parcerias</a>
+    </nav>
+    <p class="footer__legal">
+      © <span id="year"></span> Greissi de Matos. Todos os direitos reservados.<br>
+      Os resultados apresentados são individuais e variam conforme a dedicação de cada pessoa.
+    </p>
+  </div>
+</footer>
+
+<a class="wa-float" data-wa data-wa-msg="Olá Greissi! Vim pelo site." id="waFloat" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.6 0-1.3.6-1.9.9-2.1.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.3.3c-.1.1-.2.3 0 .5.1.2.6 1 1.3 1.6.9.8 1.6 1 1.9 1.2.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l2 .9c.2.1.4.2.4.3.1.2.1.6-.1 1.2Z"/></svg>
+  <span>Falar comigo</span>
+</a>
+
+<script src="vendor/lenis.min.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>
