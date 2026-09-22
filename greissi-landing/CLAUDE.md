@@ -34,6 +34,18 @@ pode se repetir.
 - **Abelhinha no canteiro** (`#bee`): voa entre as flores e de tempos em
   tempos pousa numa delas. Coordenadas no viewBox do canteiro (430x210), com
   a posição da flor recalculada a cada quadro a partir do ângulo do vento.
+  **Duas asas separadas**, cada uma girando na própria base com meio tempo de
+  defasagem — a versão de elipse única escalando parecia uma mancha branca
+  piscando e foi rejeitada.
+- **Girassol no "sobre mim"** (`#sunflower`): semente → regada → haste
+  crescendo → folhas → flor abrindo, tudo dirigido pelo progresso do scroll
+  (`--p`), nunca por animação em loop. Fica na lateral **direita** da foto:
+  à esquerda ele disputava espaço com a assinatura e com o buquê fixo do
+  canto da tela. A luz (`.about__dawn`) nasce no alto à esquerda e é para
+  onde ele se inclina.
+- **O rastelo varre para a DIREITA.** No desenho a cabeça fica à esquerda e o
+  cabo sobe à direita; varrendo para a esquerda a cabeça ia na frente e ele
+  entrava empurrando. Não inverter.
 - **Rastelo e pétalas passam POR CIMA da caixa branca de resposta**
   (`.fallzone` em `z-index:2`, acima do `.wrap`). A linha de pouso é a borda
   **de cima** da caixa, não a de baixo: pela de baixo, no celular, o rastelo

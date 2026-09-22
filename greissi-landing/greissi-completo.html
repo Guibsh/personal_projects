@@ -216,7 +216,11 @@ p{margin:0 0 1.1em}
 @keyframes puff{0%,100%{scale:1}35%{scale:1.09}}
 
 /* ---------- hero ---------- */
-.hero{position:relative;padding:clamp(8rem,16vh,11rem) 0 clamp(4rem,8vw,6rem);z-index:2}
+/* overflow-x:clip (e não hidden) porque hidden num eixo cria contexto de
+   rolagem nos dois e quebraria qualquer position:sticky dentro. O brilho da
+   cena tem inset lateral de -18% e vazava 37px à direita no celular — era
+   uma barra de rolagem horizontal na home. */
+.hero{position:relative;padding:clamp(8rem,16vh,11rem) 0 clamp(4rem,8vw,6rem);z-index:2;overflow-x:clip}
 .hero__inner{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,6vw,5rem);align-items:center}
 .hero__text h1{margin-bottom:1.5rem}
 .lead{font-size:var(--fs-400);color:var(--ink-soft);max-width:48ch}
@@ -251,6 +255,81 @@ p{margin:0 0 1.1em}
 .about__media{position:relative}
 .about__media::after{content:"";position:absolute;inset:auto 0 0 0;height:38%;pointer-events:none;background:linear-gradient(to top,rgba(46,50,38,.55),transparent)}
 .about__media img{border-radius:var(--radius);width:100%}
+
+/* ---------- amanhecer + girassol no "sobre mim" ----------
+   A luz nasce no alto à esquerda da foto e o girassol cresce virado para ela.
+   Tudo é dirigido pelo scroll (variável --p, de 0 a 1, escrita pelo JS): nada
+   aqui roda sozinho em loop, então subir a página desfaz o crescimento na
+   mesma ordem em que ele aconteceu. */
+.about__media{--p:0}
+.about__dawn{
+  position:absolute;inset:0;pointer-events:none;border-radius:var(--radius);
+  overflow:hidden;z-index:1;
+  opacity:calc(var(--p) * 1.2);
+  background:
+    radial-gradient(46% 34% at 2% 6%, rgba(255,228,176,.62), rgba(255,206,142,.26) 48%, transparent 76%),
+    linear-gradient(118deg, rgba(255,208,146,.44) 0%, rgba(255,208,146,.1) 26%, transparent 52%);
+  /* screen com alfa baixo: acende o canto sem estourar a pele. Testei
+     soft-light primeiro e sobre uma foto já clara não aparecia nada. */
+  mix-blend-mode:screen;
+}
+/* raio de luz entrando na diagonal, como sol baixo de manhã */
+.about__dawn::after{
+  content:"";position:absolute;inset:-20% -30%;
+  background:linear-gradient(116deg,transparent 14%,rgba(255,238,198,.38) 22%,transparent 30%,
+             transparent 40%,rgba(255,238,198,.16) 46%,transparent 54%);
+  mix-blend-mode:screen;
+}
+.about__sol{
+  position:absolute;left:-9%;top:0;width:30%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,248,226,.92),rgba(255,228,176,.4) 50%,transparent 70%);
+  /* o sol sobe um pouco enquanto amanhece */
+  transform:translateY(calc((1 - var(--p)) * 34px));
+}
+.sunflower{
+  /* na lateral DIREITA: à esquerda ele disputava espaço com a assinatura no
+     canto de baixo e com o buquê fixo do canto da tela. Daqui ele cresce na
+     diagonal atravessando a foto em direção à luz, que nasce no alto à
+     esquerda — e a inclinação fica sendo o próprio gesto. */
+  position:absolute;bottom:-2px;right:clamp(-44px,-2.8vw,-8px);
+  width:clamp(92px,10.4vw,148px);height:auto;overflow:visible;z-index:2;
+}
+.sf__terra{fill:#6B5B43;opacity:.9}
+.sf__semente{fill:#4A3E2C;opacity:calc(1 - var(--p) * 6)}
+.sf__gota{fill:rgba(150,196,214,.8)}
+.sf__caule{
+  fill:none;stroke:#6E7A4A;stroke-width:3.4;stroke-linecap:round;
+  /* o comprimento real do traço é medido pelo JS e escrito em --len */
+  stroke-dasharray:var(--len,300);
+  stroke-dashoffset:calc(var(--len,300) * (1 - var(--cresc,0)));
+}
+.sf__folha path{fill:#6E7A4A}
+.sf__folha{transform-box:fill-box;transform-origin:0% 100%;transform:scale(var(--f,0))}
+.sf__folha--b{transform-origin:100% 100%}
+.sf__pet{fill:#E8B44C}
+.sf__miolo{fill:#6B4A2A}
+.sf__grao circle{fill:#4A3220}
+.sf__petalas{transform:scale(var(--ab,0)) rotate(calc((1 - var(--ab,0)) * -24deg))}
+.sf__cabeca{transform:scale(var(--flor,0))}
+/* a planta inteira balança no mesmo motor de vento do canteiro — girando na
+   base da haste, não no centro do viewBox */
+.sf__planta{--amp:1.5;transform-box:fill-box;transform-origin:76% 100%;transform:rotate(var(--wind,0deg))}
+
+@media (max-width:920px){
+  /* a foto encolhe e centraliza; o girassol acompanha para não encostar na
+     borda da tela */
+  .sunflower{width:clamp(74px,19vw,104px);right:-8px}
+}
+@media (prefers-reduced-motion:reduce){
+  /* sem o scroll dirigindo nada, a cena chega pronta: girassol crescido e
+     amanhecido, que é o estado que conta a história */
+  .about__media{--p:1}
+  .sunflower .sf__caule{stroke-dashoffset:0}
+  .sf__folha{transform:scale(1)}
+  .sf__cabeca,.sf__petalas{transform:none}
+  .sf__gotas{display:none}
+  .sf__semente{opacity:0}
+}
 
 .pillars{list-style:none;padding:0;margin:2.4rem 0 0;display:grid;gap:1.3rem}
 .pillars li{padding-left:1.4rem;border-left:1px solid rgba(192,112,90,.4);color:var(--ink-soft);font-size:var(--fs-200)}
@@ -739,23 +818,38 @@ p{margin:0 0 1.1em}
    desenho e o bater de asas, que é rápido demais para valer um quadro de rAF. */
 .bee{opacity:0}
 .bee.is-live{opacity:1;transition:opacity 600ms var(--ease)}
-.bee__body{fill:#C9913C}
-.bee__stripe{stroke:#3B3524;stroke-width:1.5;stroke-linecap:round}
-.bee__head{fill:#3B3524}
-.bee__ant{fill:none;stroke:#3B3524;stroke-width:.9;stroke-linecap:round}
-.bee__wing{fill:rgba(255,253,248,.72);stroke:rgba(90,99,72,.28);stroke-width:.5}
-.bee__wings{
-  /* fill-box: sem isso a origem cai no centro do viewBox do canteiro e a asa
-     bate a meio metro da abelha — mesma armadilha das flores */
-  transform-box:fill-box;transform-origin:78% 100%;
-  animation:beeWing 90ms linear infinite;
+
+/* contorno na mesma tinta escura do resto do site: o corpo chapado sem linha
+   sumia contra as pétalas claras do canteiro */
+.bee__body{fill:#D8A241;stroke:#33301F;stroke-width:.62;stroke-linejoin:round}
+.bee__faixas rect{fill:#33301F}
+.bee__torax{fill:#6E5730;stroke:#33301F;stroke-width:.5}
+.bee__head{fill:#33301F}
+.bee__olho{fill:#F9F4E6;opacity:.82}
+.bee__ant{fill:none;stroke:#33301F;stroke-width:.72;stroke-linecap:round}
+.bee__pernas path{fill:none;stroke:#33301F;stroke-width:.72;stroke-linecap:round}
+
+/* Asa: membrana translúcida com nervura, não elipse chapada. Cada asa é um
+   <g> próprio girando na PRÓPRIA base (fill-box + origem no canto de
+   encaixe), com meio tempo de diferença entre elas — é a defasagem que faz
+   parecer duas asas e não uma mancha só. */
+.bee__wing{transform-box:fill-box;transform-origin:100% 100%}
+.bee__vela{fill:rgba(255,253,248,.62);stroke:rgba(51,48,31,.42);stroke-width:.4;stroke-linejoin:round}
+.bee__veia{fill:none;stroke:rgba(51,48,31,.3);stroke-width:.32;stroke-linecap:round}
+.bee__wing--frente{animation:beeAsaFrente 98ms linear infinite}
+.bee__wing--tras{animation:beeAsaTras 98ms linear infinite;animation-delay:-34ms}
+@keyframes beeAsaFrente{
+  0%,100%{transform:rotate(7deg) scaleY(1)}
+  50%{transform:rotate(-31deg) scaleY(.66)}
 }
-/* pousada, a asa quase para: o zumbido some junto com o voo */
-.bee.is-still .bee__wings{animation-duration:1.4s;opacity:.5}
-@keyframes beeWing{
-  0%,100%{transform:scaleY(1) rotate(0deg)}
-  50%{transform:scaleY(.26) rotate(-9deg)}
+@keyframes beeAsaTras{
+  0%,100%{transform:rotate(2deg) scaleY(.96)}
+  50%{transform:rotate(-24deg) scaleY(.7)}
 }
+/* pousada, a asa quase para e recolhe: o zumbido some junto com o voo */
+.bee.is-still .bee__wing{animation-duration:2.6s}
+.bee.is-still .bee__wing--tras{animation-delay:-1.1s}
+
 @media (prefers-reduced-motion:reduce){
   .bee{display:none}
 }
@@ -954,15 +1048,38 @@ p{margin:0 0 1.1em}
                  quando pousa numa delas. Fica por último no SVG para passar por
                  cima das flores e da jardineira. -->
             <g class="bee" id="bee">
-              <g class="bee__wings">
-                <ellipse class="bee__wing" cx="-1.2" cy="-4.4" rx="5.4" ry="2.7"/>
-                <ellipse class="bee__wing" cx="2.4" cy="-4" rx="4" ry="2.1"/>
+              <defs>
+                <clipPath id="beeCorpo">
+                  <path d="M4.7 0 C4.7 2.7 2.5 4 -.9 3.7 C-4.3 3.4 -6.7 1.5 -6.7 0 C-6.7 -1.5 -4.3 -3.4 -.9 -3.7 C2.5 -4 4.7 -2.7 4.7 0Z"/>
+                </clipPath>
+              </defs>
+              <!-- duas asas de verdade: a de trás é menor e bate meio tempo
+                   atrás da da frente. Cada uma gira na própria base, que é o
+                   que lê como bater de asa — a elipse só escalando parecia
+                   uma mancha branca piscando. -->
+              <g class="bee__wing bee__wing--tras">
+                <path class="bee__vela" d="M.2 -2.2 C-1.7 -5.6 -4.6 -6.8 -5.6 -5.2 C-6.4 -3.9 -3.7 -2.2 .2 -2.2Z"/>
+                <path class="bee__veia" d="M-.4 -2.5 C-2.2 -3.6 -3.8 -4.5 -5 -5"/>
               </g>
-              <ellipse class="bee__body" cx="0" cy="0" rx="5.2" ry="3.5"/>
-              <path class="bee__stripe" d="M-1.8 -3.1 V3.1"/>
-              <path class="bee__stripe" d="M1 -3.4 V3.4"/>
-              <circle class="bee__head" cx="5.3" cy="-.5" r="2.4"/>
-              <path class="bee__ant" d="M6.6 -2.2 C7.9 -3.8 8.4 -4.4 9.2 -5.4"/>
+              <g class="bee__wing bee__wing--frente">
+                <path class="bee__vela" d="M1.7 -2.5 C-.8 -8.2 -5.2 -10 -6.8 -7.7 C-8 -5.9 -4.1 -2.8 1.7 -2.5Z"/>
+                <path class="bee__veia" d="M1 -2.9 C-1.6 -4.6 -4.2 -6.3 -6.1 -7.2"/>
+              </g>
+              <g class="bee__pernas">
+                <path d="M-1.5 3 C-2 4.5 -3 5.2 -4.1 5.4"/>
+                <path d="M1.3 3.2 C1.3 4.8 .6 5.7 -.5 6.1"/>
+              </g>
+              <path class="bee__body" d="M4.7 0 C4.7 2.7 2.5 4 -.9 3.7 C-4.3 3.4 -6.7 1.5 -6.7 0 C-6.7 -1.5 -4.3 -3.4 -.9 -3.7 C2.5 -4 4.7 -2.7 4.7 0Z"/>
+              <g class="bee__faixas" clip-path="url(#beeCorpo)">
+                <rect x="-4.6" y="-5" width="1.6" height="10"/>
+                <rect x="-1.6" y="-5" width="1.9" height="10"/>
+                <rect x="1.6" y="-5" width="1.9" height="10"/>
+              </g>
+              <ellipse class="bee__torax" cx="3.3" cy="-.2" rx="2.3" ry="2.9"/>
+              <circle class="bee__head" cx="5.4" cy="-.6" r="2.4"/>
+              <circle class="bee__olho" cx="6.4" cy="-1.2" r=".7"/>
+              <path class="bee__ant" d="M6.5 -2.4 C7.6 -3.9 8.2 -4.6 9.1 -5.5"/>
+              <path class="bee__ant" d="M5.2 -2.9 C5.8 -4.5 6.1 -5.4 6.5 -6.5"/>
             </g>
           </svg>
         </div>
@@ -1046,7 +1163,59 @@ p{margin:0 0 1.1em}
   <div class="wrap about">
     <div class="about__media reveal">
       <img src="data:image/webp;base64,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" alt="Greissi de Matos" width="421" height="593" loading="lazy" decoding="async">
+      <!-- o amanhecer: a luz nasce no canto de cima à esquerda e ganha força
+           conforme a seção sobe na tela. É para onde o girassol se vira. -->
+      <div class="about__dawn" id="dawn" aria-hidden="true"><span class="about__sol"></span></div>
       <span class="signature" aria-hidden="true">Greissi de Matos</span>
+      <!-- o girassol: começa semente na terra, é regado, e cresce em direção
+           à luz conforme a visitante desce a página -->
+      <svg class="sunflower" id="sunflower" viewBox="0 0 130 280" aria-hidden="true">
+        <!-- um canteirinho, não uma faixa de terra: a faixa atravessava a
+             borda da foto e virava um bloco marrom solto no creme -->
+        <path class="sf__terra" d="M66 276 C66 256 82 247 100 247 C118 247 134 256 134 276Z"/>
+        <g class="sf__gotas">
+          <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
+          <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
+          <ellipse class="sf__gota" cx="105" cy="0" rx="1.8" ry="3"/>
+        </g>
+        <ellipse class="sf__semente" cx="100" cy="258" rx="4.2" ry="2.9"/>
+        <g class="sf__planta js-wind">
+          <!-- nasce à direita e sobe na diagonal para a esquerda, que é de
+               onde vem a luz: é a inclinação que conta a história -->
+          <path class="sf__caule" d="M100 259 C96 222 84 194 68 166 C50 136 32 110 30 78"/>
+          <g class="sf__folha sf__folha--a">
+            <path d="M80 208 C98 206 112 195 117 181 C99 180 84 191 80 208Z"/>
+          </g>
+          <g class="sf__folha sf__folha--b">
+            <path d="M54 148 C38 142 26 130 24 116 C40 117 52 131 54 148Z"/>
+          </g>
+          <!-- grupo de fora leva a cabeça para a ponta da haste e a inclina
+               para a luz; o de dentro fica livre para a CSS escalar na
+               abertura (a CSS ganharia do atributo transform se fosse um só) -->
+          <g transform="translate(30 78) rotate(-19)"><g class="sf__cabeca">
+            <g class="sf__petalas">
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(30)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(60)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(90)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(120)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(150)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(180)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(210)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(240)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(270)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(300)"/>
+              <ellipse class="sf__pet" cx="0" cy="-23" rx="5.6" ry="14" transform="rotate(330)"/>
+            </g>
+            <circle class="sf__miolo" r="12.5"/>
+            <g class="sf__grao">
+              <circle cx="-4" cy="-3" r="1.5"/><circle cx="3" cy="-5" r="1.5"/>
+              <circle cx="5" cy="2" r="1.5"/><circle cx="-2" cy="5" r="1.5"/>
+              <circle cx="-7" cy="3" r="1.4"/><circle cx="0" cy="0" r="1.5"/>
+            </g>
+          </g></g>
+        </g>
+      </svg>
     </div>
     <div class="about__text">
       <p class="eyebrow reveal">Sobre mim</p>
@@ -2074,13 +2243,15 @@ const WHATSAPP = '5500000000000';
     campoQueda.appendChild(el);
     caidas.push({
       el,
-      // caem numa faixa estreita da lateral direita, longe da coluna de texto
-      x: larguraZona * (0.62 + Math.random() * 0.33),
+      // faixa da direita, alinhada com o trecho que o rastelo varre
+      x: larguraZona * (0.56 + Math.random() * 0.30),
       y: -30 - Math.random() * 60,
-      vy: 1.5 + Math.random() * 1.1,
-      deriva: (Math.random() - 0.5) * 0.7,
+      // a terça parte da velocidade anterior: pétala não despenca, ela
+      // desce planando. É a diferença entre cair e pousar.
+      vy: 0.5 + Math.random() * 0.38,
+      deriva: (Math.random() - 0.5) * 0.4,
       rot: Math.random() * 360,
-      giro: (Math.random() - 0.5) * 2.4,
+      giro: (Math.random() - 0.5) * 1.1,
       pousada: false
     });
   };
@@ -2091,32 +2262,38 @@ const WHATSAPP = '5500000000000';
   // de um único deslocamento linear.
   const dispararRastelo = (retomando = false) => {
     faseRastelo = 'varrendo';
-    const pilha = larguraZona * (larguraZona < 620 ? 0.64 : 0.56);
-    const xFinal = pilha - 30;
-    const xInicio = larguraZona + 40;
+    // DIREÇÃO. No desenho a cabeça fica à esquerda e o cabo sobe para a
+    // direita — ou seja, quem segura está do lado direito. Varrendo para a
+    // ESQUERDA a cabeça ia na frente do cabo: o rastelo entrava empurrando,
+    // que era exatamente o defeito. Varrendo para a DIREITA a cabeça vem
+    // atrás do cabo, como vassoura puxada na direção de quem varre.
+    const larg = rastelo?.offsetWidth || 150;
+    const cx = larg * (64 / 150);    // centro da cabeça dentro do elemento
+    const meia = larg * (48 / 150);  // meia largura da cabeça
+    const xFinal = larguraZona * (larguraZona < 620 ? 0.80 : 0.82) - cx;
+    const xInicio = larguraZona * 0.50 - cx;
+    const centroPilha = xFinal + cx + meia * 0.55;
     const N = 4;
-    const passo = (xInicio - xFinal) / N;
+    const passo = (xFinal - xInicio) / N;
 
     const golpes = [];
     let cursor = xInicio;
     if (retomando && rakeInfo) {
-      // ele ficou encostado no monte da vez anterior. Em vez de teleportar
-      // para o começo, ergue o rastelo e volta caminhando — é o gesto de quem
-      // recomeça a varrer, e de dentes no ar ele não arrasta o que já juntou.
-      golpes.push({ tipo: 'volta', de: rakeInfo.pilha - 34, ate: xInicio, dur: 1150 });
+      // ficou encostado no monte da vez anterior: ergue e caminha de volta ao
+      // começo, de dentes no ar, em vez de teleportar
+      golpes.push({ tipo: 'volta', de: rakeInfo.xFinal, ate: xInicio, dur: 1150 });
     }
     for (let i = 0; i < N; i++) {
       if (i > 0) {
-        // reposiciona um pouco à direita antes do próximo puxão — o rastelo
-        // "solta" o chão aqui, por isso não arrasta pétalas nesta parte
-        const alcance = cursor + passo * 0.32;
-        golpes.push({ tipo: 'alcance', de: cursor, ate: alcance, dur: 420 });
-        cursor = alcance;
+        // entre uma varrida e outra a vassoura recua um pouco, erguida — é
+        // esse recuo que faz o gesto parecer repetido por uma pessoa, e não
+        // um único deslize contínuo. Erguida, não arrasta o que já juntou.
+        const recuo = cursor - passo * 0.30;
+        golpes.push({ tipo: 'recuo', de: cursor, ate: recuo, dur: 420 });
+        cursor = recuo;
       }
-      const alvo = i === N - 1 ? xFinal : cursor - passo;
-      // 820ms por puxão, quatro puxões: é o "com calma" que o movimento
-      // anterior não tinha — ele reunia tudo em pouco mais de um segundo
-      golpes.push({ tipo: 'puxada', de: cursor, ate: alvo, dur: 820 });
+      const alvo = i === N - 1 ? xFinal : cursor + passo;
+      golpes.push({ tipo: 'varre', de: cursor, ate: alvo, dur: 820 });
       cursor = alvo;
     }
 
@@ -2124,14 +2301,15 @@ const WHATSAPP = '5500000000000';
     // a ~131/150 da altura do SVG, então o topo do elemento sobe essa medida
     const baseY = chaoY - (rastelo?.offsetHeight || 150) * (131 / 150);
 
-    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes, pilha, baseY, comecou: false };
+    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes,
+                 centroPilha, xFinal, cx, meia, baseY, comecou: false };
     if (rastelo) {
       rastelo.style.opacity = '1';
-      rastelo.style.transform = `translate3d(${xInicio}px, ${(baseY + 8).toFixed(1)}px, 0) rotate(6deg)`;
+      rastelo.style.transform = `translate3d(${xInicio.toFixed(1)}px, ${(baseY + 8).toFixed(1)}px, 0) rotate(8deg)`;
     }
     // o que ainda estiver no ar desce depressa, para o rastelo não varrer
     // um chão pela metade
-    caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 6); });
+    caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 2.1); });
   };
 
   const atualizarRastelo = () => {
@@ -2152,35 +2330,43 @@ const WHATSAPP = '5500000000000';
         rakeInfo.assentarInicio = agora;
         caidas.filter(p => p.pousada).forEach((p, i) => {
           p.origX = p.x; p.origY = p.y;
-          p.alvoX = rakeInfo.pilha + (Math.random() - 0.5) * 70;
+          p.alvoX = rakeInfo.centroPilha + (Math.random() - 0.5) * 58;
           p.alvoY = chaoY - Math.floor(i / 5) * 6;
         });
         return;
       }
 
       const k = clamp((agora - rakeInfo.tGolpe) / golpe.dur, 0, 1);
-      const puxando = golpe.tipo === 'puxada';
+      const varrendo = golpe.tipo === 'varre';
       const voltando = golpe.tipo === 'volta';
-      const ek = puxando ? easeFora(k) : easeDentroFora(k);
+      // easeDentroFora em tudo: sai devagar, ganha corpo no meio, encosta
+      // macio no fim. É a curva do braço de quem varre sem pressa.
+      const ek = easeDentroFora(k);
       const rx = golpe.de + (golpe.ate - golpe.de) * ek;
 
-      // durante a puxada o rastelo inclina para trás e afunda no chão;
-      // durante o alcance ele se ergue e inclina para frente, como um pulso.
-      // na volta ele fica erguido o caminho todo, num arco de seno.
+      // varrendo, a vassoura apoia no chão e o cabo passa de recostado para
+      // inclinado à frente; recuando ela se ergue; na volta fica no ar o
+      // caminho todo, num arco de seno.
       const rot = voltando ? 20 - 4 * Math.sin(Math.PI * k)
-                : puxando ? -7 + 5 * (1 - ek)
-                : 11 - 5 * ek;
+                : varrendo ? 8 - 15 * ek
+                : 12 - 4 * ek;
       const y = rakeInfo.baseY + (voltando ? -13 - 9 * Math.sin(Math.PI * k)
-                                : puxando ? 2 + 7 * ek
-                                : 9 - 7 * ek);
+                                : varrendo ? 2 + 6 * ek
+                                : 6 - 9 * ek);
       rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
 
-      if (puxando) {
+      if (varrendo) {
+        // as pétalas que a cabeça alcança seguem junto, encostadas na face
+        // dos dentes — é o acúmulo acontecendo durante a varrida, não só no
+        // assentamento do fim
+        const cab = rx + rakeInfo.cx;
+        const frente = cab + rakeInfo.meia - 8;
         for (const p of caidas) {
-          if (p.pousada && p.x > rx && p.x < rx + 150) {
-            // 0.06: a pétala cede devagar em vez de grudar no rastelo
-            p.x += (rx + 40 - p.x) * 0.06;
-            p.rot += 0.9;
+          if (!p.pousada) continue;
+          if (p.x > cab - rakeInfo.meia - 18 && p.x < frente + 12) {
+            // 0.07: a pétala cede devagar, não gruda no rastelo
+            p.x += (frente - p.x) * 0.07;
+            p.rot += 0.8;
             p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
           }
         }
@@ -2204,8 +2390,10 @@ const WHATSAPP = '5500000000000';
       // inteira, e era justamente a imagem que devia permanecer.
       const b = Math.sin(agora / 1500) * 1.1;
       rastelo.style.opacity = '1';
+      // para exatamente onde a última varrida terminou, com a inclinação em
+      // que terminou — sem salto entre o fim do gesto e o repouso
       rastelo.style.transform =
-        `translate3d(${(rakeInfo.pilha - 34).toFixed(1)}px, ${(rakeInfo.baseY + 9 + b).toFixed(1)}px, 0) rotate(${(5 + b * .7).toFixed(1)}deg)`;
+        `translate3d(${rakeInfo.xFinal.toFixed(1)}px, ${(rakeInfo.baseY + 8 + b).toFixed(1)}px, 0) rotate(${(-7 + b * .7).toFixed(1)}deg)`;
     }
   };
 
@@ -2248,7 +2436,9 @@ const WHATSAPP = '5500000000000';
     for (const p of caidas) {
       if (p.pousada) continue;
       p.y += p.vy;
-      p.x += p.deriva + Math.sin(p.y / 46) * 0.55;
+      // onda mais longa e mais larga: o zigue-zague curto parecia tremor,
+      // este parece a pétala procurando o ar
+      p.x += p.deriva + Math.sin(p.y / 78) * 0.62;
       p.rot += p.giro;
       if (p.y >= chaoY) { p.y = chaoY; p.pousada = true; p.rot = 80 + Math.random() * 20; }
       p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
@@ -2330,6 +2520,48 @@ const WHATSAPP = '5500000000000';
     marcos.forEach((li, i) => li.classList.toggle('is-lit', p > 0.12 + i * 0.2));
   };
 
+  /* ---- girassol do "sobre mim" ----
+     Semente na terra → regada → haste crescendo em direção à luz → folhas →
+     flor abrindo. Tudo dirigido pelo progresso do scroll na seção, não por
+     animação em loop: subir a página desfaz o crescimento na mesma ordem.
+     O balanço da planta já vem do motor de vento (classe js-wind no grupo). */
+  const sobreMidia = document.querySelector('.about__media');
+  const girassol = document.getElementById('sunflower');
+  const caule = girassol?.querySelector('.sf__caule');
+  const folhasSf = girassol ? [...girassol.querySelectorAll('.sf__folha')] : [];
+  const gotas = girassol ? [...girassol.querySelectorAll('.sf__gota')] : [];
+  let pSf = -1;
+
+  // o comprimento do traço tem de sair do próprio path: chutar um número aqui
+  // deixaria a haste crescendo até um ponto que não é a ponta dela
+  if (caule) girassol.style.setProperty('--len', caule.getTotalLength().toFixed(1));
+
+  const pintarGirassol = () => {
+    if (!sobreMidia || !girassol) return;
+    const r = sobreMidia.getBoundingClientRect();
+    const inicio = innerHeight * .88, fim = innerHeight * .42;
+    const p = clamp((inicio - r.top) / (r.height + inicio - fim), 0, 1);
+    if (Math.abs(p - pSf) < .002) return;
+    pSf = p;
+    sobreMidia.style.setProperty('--p', p.toFixed(3));
+
+    // recorta uma janela [a,b] do progresso e devolve 0..1 dentro dela
+    const etapa = (a, b) => easeFora(clamp((p - a) / (b - a), 0, 1));
+
+    // a rega vem primeiro: três gotas escalonadas caem sobre a semente
+    gotas.forEach((g, i) => {
+      const k = clamp((p - (.05 + i * .045)) / .12, 0, 1);
+      g.style.transform = `translateY(${(36 + k * 220).toFixed(1)}px)`;
+      g.style.opacity = k <= 0 || k >= 1 ? '0' : Math.min(1, (1 - k) * 3).toFixed(2);
+    });
+
+    girassol.style.setProperty('--cresc', etapa(.16, .66).toFixed(3));
+    folhasSf[0]?.style.setProperty('--f', etapa(.34, .52).toFixed(3));
+    folhasSf[1]?.style.setProperty('--f', etapa(.48, .66).toFixed(3));
+    girassol.style.setProperty('--flor', etapa(.62, .80).toFixed(3));
+    girassol.style.setProperty('--ab', etapa(.70, .96).toFixed(3));
+  };
+
   /* ---- laço principal ---- */
   let t = 0;
   const frame = () => {
@@ -2365,6 +2597,7 @@ const WHATSAPP = '5500000000000';
     moverPetalas(kick);
     pintarJornada();
     pintarCena();
+    pintarGirassol();
     moverDeriva(kick);
     passoQueda();
   };

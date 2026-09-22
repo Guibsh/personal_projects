@@ -541,13 +541,15 @@ const WHATSAPP = '5500000000000';
     campoQueda.appendChild(el);
     caidas.push({
       el,
-      // caem numa faixa estreita da lateral direita, longe da coluna de texto
-      x: larguraZona * (0.62 + Math.random() * 0.33),
+      // faixa da direita, alinhada com o trecho que o rastelo varre
+      x: larguraZona * (0.56 + Math.random() * 0.30),
       y: -30 - Math.random() * 60,
-      vy: 1.5 + Math.random() * 1.1,
-      deriva: (Math.random() - 0.5) * 0.7,
+      // a terça parte da velocidade anterior: pétala não despenca, ela
+      // desce planando. É a diferença entre cair e pousar.
+      vy: 0.5 + Math.random() * 0.38,
+      deriva: (Math.random() - 0.5) * 0.4,
       rot: Math.random() * 360,
-      giro: (Math.random() - 0.5) * 2.4,
+      giro: (Math.random() - 0.5) * 1.1,
       pousada: false
     });
   };
@@ -558,32 +560,38 @@ const WHATSAPP = '5500000000000';
   // de um único deslocamento linear.
   const dispararRastelo = (retomando = false) => {
     faseRastelo = 'varrendo';
-    const pilha = larguraZona * (larguraZona < 620 ? 0.64 : 0.56);
-    const xFinal = pilha - 30;
-    const xInicio = larguraZona + 40;
+    // DIREÇÃO. No desenho a cabeça fica à esquerda e o cabo sobe para a
+    // direita — ou seja, quem segura está do lado direito. Varrendo para a
+    // ESQUERDA a cabeça ia na frente do cabo: o rastelo entrava empurrando,
+    // que era exatamente o defeito. Varrendo para a DIREITA a cabeça vem
+    // atrás do cabo, como vassoura puxada na direção de quem varre.
+    const larg = rastelo?.offsetWidth || 150;
+    const cx = larg * (64 / 150);    // centro da cabeça dentro do elemento
+    const meia = larg * (48 / 150);  // meia largura da cabeça
+    const xFinal = larguraZona * (larguraZona < 620 ? 0.80 : 0.82) - cx;
+    const xInicio = larguraZona * 0.50 - cx;
+    const centroPilha = xFinal + cx + meia * 0.55;
     const N = 4;
-    const passo = (xInicio - xFinal) / N;
+    const passo = (xFinal - xInicio) / N;
 
     const golpes = [];
     let cursor = xInicio;
     if (retomando && rakeInfo) {
-      // ele ficou encostado no monte da vez anterior. Em vez de teleportar
-      // para o começo, ergue o rastelo e volta caminhando — é o gesto de quem
-      // recomeça a varrer, e de dentes no ar ele não arrasta o que já juntou.
-      golpes.push({ tipo: 'volta', de: rakeInfo.pilha - 34, ate: xInicio, dur: 1150 });
+      // ficou encostado no monte da vez anterior: ergue e caminha de volta ao
+      // começo, de dentes no ar, em vez de teleportar
+      golpes.push({ tipo: 'volta', de: rakeInfo.xFinal, ate: xInicio, dur: 1150 });
     }
     for (let i = 0; i < N; i++) {
       if (i > 0) {
-        // reposiciona um pouco à direita antes do próximo puxão — o rastelo
-        // "solta" o chão aqui, por isso não arrasta pétalas nesta parte
-        const alcance = cursor + passo * 0.32;
-        golpes.push({ tipo: 'alcance', de: cursor, ate: alcance, dur: 420 });
-        cursor = alcance;
+        // entre uma varrida e outra a vassoura recua um pouco, erguida — é
+        // esse recuo que faz o gesto parecer repetido por uma pessoa, e não
+        // um único deslize contínuo. Erguida, não arrasta o que já juntou.
+        const recuo = cursor - passo * 0.30;
+        golpes.push({ tipo: 'recuo', de: cursor, ate: recuo, dur: 420 });
+        cursor = recuo;
       }
-      const alvo = i === N - 1 ? xFinal : cursor - passo;
-      // 820ms por puxão, quatro puxões: é o "com calma" que o movimento
-      // anterior não tinha — ele reunia tudo em pouco mais de um segundo
-      golpes.push({ tipo: 'puxada', de: cursor, ate: alvo, dur: 820 });
+      const alvo = i === N - 1 ? xFinal : cursor + passo;
+      golpes.push({ tipo: 'varre', de: cursor, ate: alvo, dur: 820 });
       cursor = alvo;
     }
 
@@ -591,14 +599,15 @@ const WHATSAPP = '5500000000000';
     // a ~131/150 da altura do SVG, então o topo do elemento sobe essa medida
     const baseY = chaoY - (rastelo?.offsetHeight || 150) * (131 / 150);
 
-    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes, pilha, baseY, comecou: false };
+    rakeInfo = { inicio: performance.now(), tGolpe: 0, indice: 0, golpes,
+                 centroPilha, xFinal, cx, meia, baseY, comecou: false };
     if (rastelo) {
       rastelo.style.opacity = '1';
-      rastelo.style.transform = `translate3d(${xInicio}px, ${(baseY + 8).toFixed(1)}px, 0) rotate(6deg)`;
+      rastelo.style.transform = `translate3d(${xInicio.toFixed(1)}px, ${(baseY + 8).toFixed(1)}px, 0) rotate(8deg)`;
     }
     // o que ainda estiver no ar desce depressa, para o rastelo não varrer
     // um chão pela metade
-    caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 6); });
+    caidas.forEach(p => { if (!p.pousada) p.vy = Math.max(p.vy, 2.1); });
   };
 
   const atualizarRastelo = () => {
@@ -619,35 +628,43 @@ const WHATSAPP = '5500000000000';
         rakeInfo.assentarInicio = agora;
         caidas.filter(p => p.pousada).forEach((p, i) => {
           p.origX = p.x; p.origY = p.y;
-          p.alvoX = rakeInfo.pilha + (Math.random() - 0.5) * 70;
+          p.alvoX = rakeInfo.centroPilha + (Math.random() - 0.5) * 58;
           p.alvoY = chaoY - Math.floor(i / 5) * 6;
         });
         return;
       }
 
       const k = clamp((agora - rakeInfo.tGolpe) / golpe.dur, 0, 1);
-      const puxando = golpe.tipo === 'puxada';
+      const varrendo = golpe.tipo === 'varre';
       const voltando = golpe.tipo === 'volta';
-      const ek = puxando ? easeFora(k) : easeDentroFora(k);
+      // easeDentroFora em tudo: sai devagar, ganha corpo no meio, encosta
+      // macio no fim. É a curva do braço de quem varre sem pressa.
+      const ek = easeDentroFora(k);
       const rx = golpe.de + (golpe.ate - golpe.de) * ek;
 
-      // durante a puxada o rastelo inclina para trás e afunda no chão;
-      // durante o alcance ele se ergue e inclina para frente, como um pulso.
-      // na volta ele fica erguido o caminho todo, num arco de seno.
+      // varrendo, a vassoura apoia no chão e o cabo passa de recostado para
+      // inclinado à frente; recuando ela se ergue; na volta fica no ar o
+      // caminho todo, num arco de seno.
       const rot = voltando ? 20 - 4 * Math.sin(Math.PI * k)
-                : puxando ? -7 + 5 * (1 - ek)
-                : 11 - 5 * ek;
+                : varrendo ? 8 - 15 * ek
+                : 12 - 4 * ek;
       const y = rakeInfo.baseY + (voltando ? -13 - 9 * Math.sin(Math.PI * k)
-                                : puxando ? 2 + 7 * ek
-                                : 9 - 7 * ek);
+                                : varrendo ? 2 + 6 * ek
+                                : 6 - 9 * ek);
       rastelo.style.transform = `translate3d(${rx.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
 
-      if (puxando) {
+      if (varrendo) {
+        // as pétalas que a cabeça alcança seguem junto, encostadas na face
+        // dos dentes — é o acúmulo acontecendo durante a varrida, não só no
+        // assentamento do fim
+        const cab = rx + rakeInfo.cx;
+        const frente = cab + rakeInfo.meia - 8;
         for (const p of caidas) {
-          if (p.pousada && p.x > rx && p.x < rx + 150) {
-            // 0.06: a pétala cede devagar em vez de grudar no rastelo
-            p.x += (rx + 40 - p.x) * 0.06;
-            p.rot += 0.9;
+          if (!p.pousada) continue;
+          if (p.x > cab - rakeInfo.meia - 18 && p.x < frente + 12) {
+            // 0.07: a pétala cede devagar, não gruda no rastelo
+            p.x += (frente - p.x) * 0.07;
+            p.rot += 0.8;
             p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
           }
         }
@@ -671,8 +688,10 @@ const WHATSAPP = '5500000000000';
       // inteira, e era justamente a imagem que devia permanecer.
       const b = Math.sin(agora / 1500) * 1.1;
       rastelo.style.opacity = '1';
+      // para exatamente onde a última varrida terminou, com a inclinação em
+      // que terminou — sem salto entre o fim do gesto e o repouso
       rastelo.style.transform =
-        `translate3d(${(rakeInfo.pilha - 34).toFixed(1)}px, ${(rakeInfo.baseY + 9 + b).toFixed(1)}px, 0) rotate(${(5 + b * .7).toFixed(1)}deg)`;
+        `translate3d(${rakeInfo.xFinal.toFixed(1)}px, ${(rakeInfo.baseY + 8 + b).toFixed(1)}px, 0) rotate(${(-7 + b * .7).toFixed(1)}deg)`;
     }
   };
 
@@ -715,7 +734,9 @@ const WHATSAPP = '5500000000000';
     for (const p of caidas) {
       if (p.pousada) continue;
       p.y += p.vy;
-      p.x += p.deriva + Math.sin(p.y / 46) * 0.55;
+      // onda mais longa e mais larga: o zigue-zague curto parecia tremor,
+      // este parece a pétala procurando o ar
+      p.x += p.deriva + Math.sin(p.y / 78) * 0.62;
       p.rot += p.giro;
       if (p.y >= chaoY) { p.y = chaoY; p.pousada = true; p.rot = 80 + Math.random() * 20; }
       p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
@@ -797,6 +818,48 @@ const WHATSAPP = '5500000000000';
     marcos.forEach((li, i) => li.classList.toggle('is-lit', p > 0.12 + i * 0.2));
   };
 
+  /* ---- girassol do "sobre mim" ----
+     Semente na terra → regada → haste crescendo em direção à luz → folhas →
+     flor abrindo. Tudo dirigido pelo progresso do scroll na seção, não por
+     animação em loop: subir a página desfaz o crescimento na mesma ordem.
+     O balanço da planta já vem do motor de vento (classe js-wind no grupo). */
+  const sobreMidia = document.querySelector('.about__media');
+  const girassol = document.getElementById('sunflower');
+  const caule = girassol?.querySelector('.sf__caule');
+  const folhasSf = girassol ? [...girassol.querySelectorAll('.sf__folha')] : [];
+  const gotas = girassol ? [...girassol.querySelectorAll('.sf__gota')] : [];
+  let pSf = -1;
+
+  // o comprimento do traço tem de sair do próprio path: chutar um número aqui
+  // deixaria a haste crescendo até um ponto que não é a ponta dela
+  if (caule) girassol.style.setProperty('--len', caule.getTotalLength().toFixed(1));
+
+  const pintarGirassol = () => {
+    if (!sobreMidia || !girassol) return;
+    const r = sobreMidia.getBoundingClientRect();
+    const inicio = innerHeight * .88, fim = innerHeight * .42;
+    const p = clamp((inicio - r.top) / (r.height + inicio - fim), 0, 1);
+    if (Math.abs(p - pSf) < .002) return;
+    pSf = p;
+    sobreMidia.style.setProperty('--p', p.toFixed(3));
+
+    // recorta uma janela [a,b] do progresso e devolve 0..1 dentro dela
+    const etapa = (a, b) => easeFora(clamp((p - a) / (b - a), 0, 1));
+
+    // a rega vem primeiro: três gotas escalonadas caem sobre a semente
+    gotas.forEach((g, i) => {
+      const k = clamp((p - (.05 + i * .045)) / .12, 0, 1);
+      g.style.transform = `translateY(${(36 + k * 220).toFixed(1)}px)`;
+      g.style.opacity = k <= 0 || k >= 1 ? '0' : Math.min(1, (1 - k) * 3).toFixed(2);
+    });
+
+    girassol.style.setProperty('--cresc', etapa(.16, .66).toFixed(3));
+    folhasSf[0]?.style.setProperty('--f', etapa(.34, .52).toFixed(3));
+    folhasSf[1]?.style.setProperty('--f', etapa(.48, .66).toFixed(3));
+    girassol.style.setProperty('--flor', etapa(.62, .80).toFixed(3));
+    girassol.style.setProperty('--ab', etapa(.70, .96).toFixed(3));
+  };
+
   /* ---- laço principal ---- */
   let t = 0;
   const frame = () => {
@@ -832,6 +895,7 @@ const WHATSAPP = '5500000000000';
     moverPetalas(kick);
     pintarJornada();
     pintarCena();
+    pintarGirassol();
     moverDeriva(kick);
     passoQueda();
   };
