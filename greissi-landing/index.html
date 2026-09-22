@@ -245,7 +245,7 @@
       <svg class="sunflower" id="sunflower" viewBox="0 0 130 280" aria-hidden="true">
         <!-- um canteirinho, não uma faixa de terra: a faixa atravessava a
              borda da foto e virava um bloco marrom solto no creme -->
-        <path class="sf__terra" d="M66 276 C66 256 82 247 100 247 C118 247 134 256 134 276Z"/>
+        <path class="sf__terra" d="M70 276 C70 257 84 248 100 248 C116 248 130 257 130 276Z"/>
         <g class="sf__gotas">
           <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
           <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
@@ -683,6 +683,53 @@
   <div class="wrap cta__inner">
     <div class="cta__media reveal">
       <img src="images/flor-cheiro.webp" alt="Greissi de Matos com uma flor" width="403" height="584" loading="lazy" decoding="async">
+      <!-- Mesma mecânica do girassol do "sobre mim" — semente, rega, haste e
+           abertura, tudo dirigido pelo scroll. Aqui a flor é uma rosa: anéis
+           de pétalas em CRESCENTE, cada uma abraçando o miolo, encolhendo e
+           girando meia casa a cada anel. Uma primeira versão com elipses em
+           coroa e espiral no centro lia como margarida e foi refeita. -->
+      <svg class="sunflower rosebush" id="rosebush" viewBox="0 0 130 280" aria-hidden="true">
+        <path class="sf__terra" d="M70 276 C70 257 84 248 100 248 C116 248 130 257 130 276Z"/>
+        <g class="sf__gotas">
+          <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
+          <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
+          <ellipse class="sf__gota" cx="105" cy="0" rx="1.8" ry="3"/>
+        </g>
+        <ellipse class="sf__semente" cx="100" cy="258" rx="4.2" ry="2.9"/>
+        <g class="sf__planta js-wind">
+          <path class="sf__caule" d="M100 259 C98 224 90 198 78 172 C64 142 50 118 46 92"/>
+          <g class="sf__folha sf__folha--a">
+            <path d="M84 212 C102 210 116 199 121 185 C103 184 88 195 84 212Z"/>
+          </g>
+          <g class="sf__folha sf__folha--b">
+            <path d="M66 156 C50 150 38 138 36 124 C52 125 64 139 66 156Z"/>
+          </g>
+          <g transform="translate(46 90) rotate(-12) scale(1.14)"><g class="sf__cabeca">
+            <circle class="rose__fundo" r="26"/>
+            <g class="rose__fora">
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(0) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(72) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(144) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(216) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(288) scale(1)"/>
+            </g>
+            <g class="rose__meio">
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(36) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(108) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(180) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(252) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(324) scale(0.7)"/>
+            </g>
+            <g class="rose__nucleo">
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(72) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(162) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(252) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(342) scale(0.46)"/>
+              <path class="rose__curl" d="M-5 2.5 C-7.5 -3 -3.5 -8 2.5 -7 C7.5 -6 9 -1 6 2.5 C3.5 5.5 -2 6 -5 2.5Z"/>
+            </g>
+          </g></g>
+        </g>
+      </svg>
     </div>
     <div class="cta__text">
       <h2 class="reveal" data-delay="1">Quando você se escolhe, tudo em volta muda de lugar</h2>

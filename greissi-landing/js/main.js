@@ -491,7 +491,8 @@ const WHATSAPP = '5500000000000';
   const doresEl = document.getElementById('dores');
   const caidas = [];
   let chaoY = 0, larguraZona = 0, nascidas = 0;
-  let faseRastelo = 'esperando'; // esperando → varrendo → assentando → escondendo → fim
+  let faseRastelo = 'esperando'; // esperando → varrendo → assentando → parado
+  let tPousio = 0;               // quando a última pétala pousou
   let rakeInfo = null;
   const TOTAL_QUEDA = innerWidth < 700 ? 14 : 24;
   const easeDentroFora = k => (k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
@@ -546,7 +547,7 @@ const WHATSAPP = '5500000000000';
       y: -30 - Math.random() * 60,
       // a terça parte da velocidade anterior: pétala não despenca, ela
       // desce planando. É a diferença entre cair e pousar.
-      vy: 0.5 + Math.random() * 0.38,
+      vy: 0.82 + Math.random() * 0.5,
       deriva: (Math.random() - 0.5) * 0.4,
       rot: Math.random() * 360,
       giro: (Math.random() - 0.5) * 1.1,
@@ -724,6 +725,7 @@ const WHATSAPP = '5500000000000';
       // 'pausa' não é fase conhecida do rastelo: ele fica parado enquanto as
       // pétalas novas descem, e só então a varrida começa
       faseRastelo = 'pausa';
+      tPousio = 0;
       tRetomada = setTimeout(() => dispararRastelo(retomando), 1600);
     }));
   };
@@ -746,14 +748,40 @@ const WHATSAPP = '5500000000000';
       const r = doresEl.getBoundingClientRect();
       const inicioViewport = innerHeight * .85;
       const fimViewport = innerHeight * .60;
-      // distância de scroll entre "o topo entra a 85% da tela" e
-      // "a base sai a 60%": a mesma janela que o ScrollTrigger usava
       const distancia = r.height + inicioViewport - fimViewport;
       const progresso = clamp((inicioViewport - r.top) / distancia, 0, 1);
-      const alvo = Math.round(progresso * TOTAL_QUEDA);
+      // nascem todas na PRIMEIRA METADE do percurso da seção. Espalhadas pelo
+      // percurso inteiro, as últimas só apareciam quando já não havia mais
+      // scroll pela frente e nunca chegavam a pousar antes do rastelo.
+      const alvo = Math.round(clamp(progresso / .5, 0, 1) * TOTAL_QUEDA);
       while (nascidas < alvo) { nascerPetala(); nascidas++; }
 
-      if (r.bottom <= innerHeight * .62) dispararRastelo();
+      const naTela = r.bottom > 0 && r.top < innerHeight;
+      const todasNasceram = nascidas >= TOTAL_QUEDA;
+
+      // só quando a seção já está claramente indo embora (base acima de 55% da
+      // tela) o que sobrou no ar ganha um empurrãozinho para terminar de
+      // descer. Com um limiar generoso demais (95%) isso disparava logo na
+      // entrada e a queda lenta virava queda rápida disfarçada.
+      if (todasNasceram && r.bottom < innerHeight * .55) {
+        for (const p of caidas) if (!p.pousada) p.vy = Math.min(p.vy * 1.01, 2);
+      }
+
+      // O GATILHO É O CHÃO, NÃO O SCROLL. Antes ele era "a base da seção
+      // passou de 62% da tela", e por isso o rastelo aparecia enquanto as
+      // pétalas ainda estavam caindo — ele entrava antes do que ia juntar.
+      const pousadas = caidas.reduce((n, p) => n + (p.pousada ? 1 : 0), 0);
+      const chegaram = todasNasceram && caidas.length > 0 &&
+                       pousadas >= Math.ceil(caidas.length * .85);
+
+      if (chegaram && naTela) {
+        // e ainda uma pausa depois da última pousar: dá tempo de ver o monte
+        // no chão antes de alguém vir recolhê-lo
+        if (!tPousio) tPousio = performance.now();
+        else if (performance.now() - tPousio > 900) dispararRastelo();
+      } else {
+        tPousio = 0;
+      }
     } else {
       atualizarRastelo();
     }
@@ -889,46 +917,74 @@ const WHATSAPP = '5500000000000';
     }
   };
 
-  /* ---- girassol do "sobre mim" ----
-     Semente na terra → regada → haste crescendo em direção à luz → folhas →
-     flor abrindo. Tudo dirigido pelo progresso do scroll na seção, não por
-     animação em loop: subir a página desfaz o crescimento na mesma ordem.
-     O balanço da planta já vem do motor de vento (classe js-wind no grupo). */
-  const sobreMidia = document.querySelector('.about__media');
-  const girassol = document.getElementById('sunflower');
-  const caule = girassol?.querySelector('.sf__caule');
-  const folhasSf = girassol ? [...girassol.querySelectorAll('.sf__folha')] : [];
-  const gotas = girassol ? [...girassol.querySelectorAll('.sf__gota')] : [];
-  let pSf = -1;
+  /* ---- plantas que crescem com o scroll ----
+     Semente na terra → regada → haste crescendo → folhas → flor abrindo.
+     Duas delas na página: o girassol do "sobre mim" e a rosa do CTA. Mesmo
+     motor, mesma marcação, só muda a flor no topo da haste.
 
-  // o comprimento do traço tem de sair do próprio path: chutar um número aqui
-  // deixaria a haste crescendo até um ponto que não é a ponta dela
-  if (caule) girassol.style.setProperty('--len', caule.getTotalLength().toFixed(1));
+     Tudo é dirigido pelo progresso do scroll na seção, não por animação em
+     loop: subir a página desfaz o crescimento na mesma ordem em que ele
+     aconteceu. O balanço vem do motor de vento (classe js-wind no grupo).
 
-  const pintarGirassol = () => {
-    if (!sobreMidia || !girassol) return;
-    const r = sobreMidia.getBoundingClientRect();
-    const inicio = innerHeight * .88, fim = innerHeight * .42;
-    const p = clamp((inicio - r.top) / (r.height + inicio - fim), 0, 1);
-    if (Math.abs(p - pSf) < .002) return;
-    pSf = p;
-    sobreMidia.style.setProperty('--p', p.toFixed(3));
+     As janelas de cada etapa terminam em 74% do percurso, não em 96%: a flor
+     precisa estar aberta enquanto a seção ainda está na tela, senão o
+     desabrochar acontece quando ninguém mais está olhando para ela. */
+  const ETAPAS = {
+    gotas:  [.04, .16],   // a rega, antes de tudo
+    caule:  [.10, .46],
+    folhaA: [.22, .38],
+    folhaB: [.32, .48],
+    flor:   [.40, .58],   // a cabeça surge
+    abre:   [.46, .70],   // pétalas de fora
+    abre2:  [.56, .80]    // miolo / camada de dentro (só a rosa usa)
+  };
 
-    // recorta uma janela [a,b] do progresso e devolve 0..1 dentro dela
-    const etapa = (a, b) => easeFora(clamp((p - a) / (b - a), 0, 1));
+  const plantas = [
+    ['.about__media', '#sunflower'],
+    ['.cta__media',   '#rosebush']
+  ].map(([seletor, id]) => {
+    const host = document.querySelector(seletor);
+    const svg = document.querySelector(id);
+    if (!host || !svg) return null;
+    const caule = svg.querySelector('.sf__caule');
+    // o comprimento do traço tem de sair do próprio path: chutar um número
+    // aqui deixaria a haste crescendo até um ponto que não é a ponta dela
+    if (caule) svg.style.setProperty('--len', caule.getTotalLength().toFixed(1));
+    return {
+      host, svg,
+      folhas: [...svg.querySelectorAll('.sf__folha')],
+      gotas: [...svg.querySelectorAll('.sf__gota')],
+      p: -1
+    };
+  }).filter(Boolean);
 
-    // a rega vem primeiro: três gotas escalonadas caem sobre a semente
-    gotas.forEach((g, i) => {
-      const k = clamp((p - (.05 + i * .045)) / .12, 0, 1);
-      g.style.transform = `translateY(${(36 + k * 220).toFixed(1)}px)`;
-      g.style.opacity = k <= 0 || k >= 1 ? '0' : Math.min(1, (1 - k) * 3).toFixed(2);
-    });
+  const pintarPlantas = () => {
+    for (const pl of plantas) {
+      const r = pl.host.getBoundingClientRect();
+      if (!r.height) continue;
+      const inicio = innerHeight * .92, fim = innerHeight * .46;
+      const p = clamp((inicio - r.top) / (r.height + inicio - fim), 0, 1);
+      if (Math.abs(p - pl.p) < .002) continue;
+      pl.p = p;
+      pl.host.style.setProperty('--p', p.toFixed(3));
 
-    girassol.style.setProperty('--cresc', etapa(.16, .66).toFixed(3));
-    folhasSf[0]?.style.setProperty('--f', etapa(.34, .52).toFixed(3));
-    folhasSf[1]?.style.setProperty('--f', etapa(.48, .66).toFixed(3));
-    girassol.style.setProperty('--flor', etapa(.62, .80).toFixed(3));
-    girassol.style.setProperty('--ab', etapa(.70, .96).toFixed(3));
+      // recorta uma janela [a,b] do progresso e devolve 0..1 dentro dela
+      const etapa = ([a, b]) => easeFora(clamp((p - a) / (b - a), 0, 1));
+
+      pl.gotas.forEach((g, i) => {
+        const [a, b] = ETAPAS.gotas;
+        const k = clamp((p - (a + i * .035)) / (b - a), 0, 1);
+        g.style.transform = `translateY(${(36 + k * 220).toFixed(1)}px)`;
+        g.style.opacity = k <= 0 || k >= 1 ? '0' : Math.min(1, (1 - k) * 3).toFixed(2);
+      });
+
+      pl.svg.style.setProperty('--cresc', etapa(ETAPAS.caule).toFixed(3));
+      pl.folhas[0]?.style.setProperty('--f', etapa(ETAPAS.folhaA).toFixed(3));
+      pl.folhas[1]?.style.setProperty('--f', etapa(ETAPAS.folhaB).toFixed(3));
+      pl.svg.style.setProperty('--flor', etapa(ETAPAS.flor).toFixed(3));
+      pl.svg.style.setProperty('--ab', etapa(ETAPAS.abre).toFixed(3));
+      pl.svg.style.setProperty('--ab2', etapa(ETAPAS.abre2).toFixed(3));
+    }
   };
 
   /* ---- laço principal ---- */
@@ -966,7 +1022,7 @@ const WHATSAPP = '5500000000000';
     moverPetalas(kick);
     pintarJornada();
     pintarCena();
-    pintarGirassol();
+    pintarPlantas();
     moverDeriva(kick);
     moverEstacoes(kick);
     passoQueda();

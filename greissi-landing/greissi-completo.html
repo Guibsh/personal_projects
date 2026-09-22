@@ -291,7 +291,10 @@ p{margin:0 0 1.1em}
      canto de baixo e com o buquê fixo do canto da tela. Daqui ele cresce na
      diagonal atravessando a foto em direção à luz, que nasce no alto à
      esquerda — e a inclinação fica sendo o próprio gesto. */
-  position:absolute;bottom:-2px;right:clamp(-44px,-2.8vw,-8px);
+  /* right:0 — a base encosta na borda direita da foto e fica INTEIRA dentro
+     dela. Saindo para fora, o torrão de terra virava uma mancha escura solta
+     no oliva do CTA. A flor é que avança para dentro da foto, não o pé. */
+  position:absolute;bottom:-2px;right:0;
   width:clamp(92px,10.4vw,148px);height:auto;overflow:visible;z-index:2;
 }
 .sf__terra{fill:#6B5B43;opacity:.9}
@@ -315,15 +318,43 @@ p{margin:0 0 1.1em}
    base da haste, não no centro do viewBox */
 .sf__planta{--amp:1.5;transform-box:fill-box;transform-origin:76% 100%;transform:rotate(var(--wind,0deg))}
 
+/* ---- a rosa do CTA ----
+   Mesmas peças do girassol (terra, gota, semente, caule, folha, cabeça) e o
+   mesmo motor de scroll; o que muda é a flor, que abre em DUAS camadas de
+   pétalas em vez de uma coroa só — é isso que faz ler como rosa. */
+.cta__media{position:relative}
+.rosebush .sf__terra{fill:#4E4432}
+.rosebush .sf__caule{stroke:#8A9070}
+.rosebush .sf__folha path{fill:#8A9070}
+.rosebush .sf__semente{fill:#33301F}
+/* a rosa escurece para dentro, como rosa de verdade: a pétala do meio é a
+   que pega mais luz e o fundo do botão é o tom mais fechado */
+.rose__fundo{fill:#E3A992}
+.rose__pet{stroke:rgba(74,40,28,.14);stroke-width:.7;stroke-linejoin:round}
+.rose__pet--fora{fill:var(--terracotta-soft)}
+.rose__pet--meio{fill:var(--terracotta)}
+.rose__pet--dentro{fill:#AE5D47}
+.rose__curl{fill:#93493A}
+/* a camada de fora abre primeiro e desenrola um pouco; a de dentro vem
+   depois, com meia volta a menos — é a defasagem que dá o giro da rosa */
+.rose__fora{transform:scale(var(--ab,0)) rotate(calc((1 - var(--ab,0)) * -30deg))}
+.rose__meio{transform:scale(var(--ab2,0)) rotate(calc((1 - var(--ab2,0)) * 22deg))}
+.rose__nucleo{transform:scale(var(--ab2,0)) rotate(calc((1 - var(--ab2,0)) * -18deg))}
+.rose__fundo{transform:scale(var(--ab,0))}
+
+@media (prefers-reduced-motion:reduce){
+  .rose__fora,.rose__meio,.rose__nucleo{transform:none}
+}
+
 @media (max-width:920px){
   /* a foto encolhe e centraliza; o girassol acompanha para não encostar na
      borda da tela */
-  .sunflower{width:clamp(74px,19vw,104px);right:-8px}
+  .sunflower{width:clamp(74px,19vw,104px);right:0}
 }
 @media (prefers-reduced-motion:reduce){
   /* sem o scroll dirigindo nada, a cena chega pronta: girassol crescido e
      amanhecido, que é o estado que conta a história */
-  .about__media{--p:1}
+  .about__media,.cta__media{--p:1}
   .sunflower .sf__caule{stroke-dashoffset:0}
   .sf__folha{transform:scale(1)}
   .sf__cabeca,.sf__petalas{transform:none}
@@ -938,6 +969,63 @@ p{margin:0 0 1.1em}
 .band--dark .band__title{color:var(--cream)}
 .band--dark .band__sub{color:rgba(249,244,230,.6)}
 
+/* ---------- identidade sazonal das faixas de produtos ----------
+   Só dentro de #produtos, e só como CAMADA: os tokens globais (--olive,
+   --terracotta) ficam intactos e a alternância clara/escura das faixas — que
+   é o que dá o contraste — continua sendo a base. A estação entra por cima,
+   como um banho de cor, o ícone do título e as partículas. */
+.band{position:relative;overflow:hidden}
+.band > .wrap{position:relative;z-index:1}
+
+.band[data-estacao="outono"]   {--season-accent:#B5653F;--season-bg:216,134,74}
+.band[data-estacao="primavera"]{--season-accent:#F0B39D;--season-bg:240,179,157}
+.band[data-estacao="verao"]    {--season-accent:#C9902F;--season-bg:226,170,66}
+.band[data-estacao="inverno"]  {--season-accent:#CBDDE4;--season-bg:190,216,226}
+
+/* o banho de cor: diagonal suave a partir de um canto, em alfa baixo. Forte o
+   bastante para a faixa ter temperatura própria, fraco o bastante para não
+   brigar com o creme e o oliva que já organizam a seção. */
+.band[data-estacao]::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(152deg,
+    rgba(var(--season-bg),.16) 0%, rgba(var(--season-bg),.05) 42%, transparent 72%);
+}
+.band--dark[data-estacao]::before{
+  background:linear-gradient(152deg,
+    rgba(var(--season-bg),.13) 0%, rgba(var(--season-bg),.04) 46%, transparent 74%);
+}
+
+/* ícone da estação, na altura da caixa-alta do título */
+.band__title{display:flex;align-items:center;gap:.6em}
+.season{display:inline-flex;width:.82em;height:.82em;color:var(--season-accent);flex:none}
+.season svg{width:100%;height:100%;fill:currentColor}
+.season .veia,.season .raios path{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.season .veia{opacity:.55}
+.band[data-estacao] .band__sub{color:var(--season-accent)}
+.band--dark[data-estacao] .band__sub{color:var(--season-accent);opacity:.86}
+
+/* ---- partículas da estação ----
+   Mesmas peças do resto do site: um <span> absoluto movido por transform no
+   mesmo laço de rAF das pétalas. O que muda por estação é só cor, forma e
+   comportamento — não há motor novo aqui. */
+.seasonzone{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.flake{
+  position:absolute;top:0;left:0;width:11px;height:15px;
+  background:var(--season-accent);opacity:.34;will-change:transform;
+  border-radius:var(--r-petal);
+}
+/* outono: folha de ponta, mais fechada que a pétala */
+.band[data-estacao="outono"] .flake{width:12px;height:9px;border-radius:0 80% 0 80%}
+/* verão: pólen — grão redondo e pequeno */
+.band[data-estacao="verao"] .flake{width:6px;height:6px;border-radius:50%;opacity:.42}
+/* inverno: floco redondo e claro */
+.band[data-estacao="inverno"] .flake{width:7px;height:7px;border-radius:50%;opacity:.5}
+
+@media (prefers-reduced-motion:reduce){
+  /* a cor e o ícone ficam; o que se move sai */
+  .seasonzone{display:none}
+}
+
 @media (max-width:560px){
   .band__head{gap:var(--sp-2)}
 }
@@ -1172,7 +1260,7 @@ p{margin:0 0 1.1em}
       <svg class="sunflower" id="sunflower" viewBox="0 0 130 280" aria-hidden="true">
         <!-- um canteirinho, não uma faixa de terra: a faixa atravessava a
              borda da foto e virava um bloco marrom solto no creme -->
-        <path class="sf__terra" d="M66 276 C66 256 82 247 100 247 C118 247 134 256 134 276Z"/>
+        <path class="sf__terra" d="M70 276 C70 257 84 248 100 248 C116 248 130 257 130 276Z"/>
         <g class="sf__gotas">
           <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
           <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
@@ -1363,10 +1451,11 @@ p{margin:0 0 1.1em}
     </div>
   </div>
 
-  <div class="band band--light" data-band="ebook">
+  <div class="band band--light" data-band="ebook" data-estacao="outono">
+        <div class="seasonzone" aria-hidden="true"></div>
     <div class="wrap">
       <header class="band__head reveal">
-        <h3 class="band__title">E-books</h3>
+        <h3 class="band__title"><span class="season" role="img" aria-label="Outono"><svg viewBox="0 0 16 16"><path d="M14 2C7.5 2 3 5.2 3 9.6c0 1.4.4 2.6 1.1 3.5L2 15.2l.9.8 2.2-2.2c.9.6 2 .9 3.2.9C12.6 14.7 14 9.4 14 2Z"/><path class="veia" d="M12.6 3.4 5.2 12.4"/></svg></span>E-books</h3>
         <p class="band__sub">Para ler no seu tempo, quantas vezes precisar.</p>
       </header>
       <div class="grid">
@@ -1426,10 +1515,11 @@ p{margin:0 0 1.1em}
     </div>
   </div>
 
-  <div class="band band--dark" data-band="consultoria">
+  <div class="band band--dark" data-band="consultoria" data-estacao="primavera">
+        <div class="seasonzone" aria-hidden="true"></div>
     <div class="wrap">
       <header class="band__head reveal">
-        <h3 class="band__title">Consultorias</h3>
+        <h3 class="band__title"><span class="season" role="img" aria-label="Primavera"><svg viewBox="0 0 16 16"><g class="pet5"><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(72 8 8)"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(144 8 8)"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(216 8 8)"/><ellipse cx="8" cy="4.4" rx="2.1" ry="3.3" transform="rotate(288 8 8)"/></g><circle class="miolo" cx="8" cy="8" r="1.7"/></svg></span>Consultorias</h3>
         <p class="band__sub">Acompanhamento comigo, ao vivo.</p>
       </header>
       <div class="grid">
@@ -1478,10 +1568,11 @@ p{margin:0 0 1.1em}
     </div>
   </div>
 
-  <div class="band band--tint" data-band="imersao">
+  <div class="band band--tint" data-band="imersao" data-estacao="verao">
+        <div class="seasonzone" aria-hidden="true"></div>
     <div class="wrap">
       <header class="band__head reveal">
-        <h3 class="band__title">Imersões e programas</h3>
+        <h3 class="band__title"><span class="season" role="img" aria-label="Verão"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3.4"/><g class="raios"><path d="M8 .8V3"/><path d="M8 13v2.2"/><path d="M.8 8H3"/><path d="M13 8h2.2"/><path d="M2.9 2.9 4.5 4.5"/><path d="M11.5 11.5 13.1 13.1"/><path d="M13.1 2.9 11.5 4.5"/><path d="M4.5 11.5 2.9 13.1"/></g></svg></span>Imersões e programas</h3>
         <p class="band__sub">Percursos com começo, meio e fim.</p>
       </header>
       <div class="grid">
@@ -1524,10 +1615,11 @@ p{margin:0 0 1.1em}
     </div>
   </div>
 
-  <div class="band band--dark" data-band="gratuito">
+  <div class="band band--dark" data-band="gratuito" data-estacao="inverno">
+        <div class="seasonzone" aria-hidden="true"></div>
     <div class="wrap">
       <header class="band__head reveal">
-        <h3 class="band__title">Gratuitos</h3>
+        <h3 class="band__title"><span class="season" role="img" aria-label="Inverno"><svg viewBox="0 0 16 16"><g class="raios"><path d="M8 1v14"/><path d="M1.9 4.5 14.1 11.5"/><path d="M1.9 11.5 14.1 4.5"/><path d="M8 4.4 5.9 3.1M8 4.4l2.1-1.3M8 11.6l-2.1 1.3M8 11.6l2.1 1.3"/></g></svg></span>Gratuitos</h3>
         <p class="band__sub">Um primeiro passo, sem custo.</p>
       </header>
       <div class="grid">
@@ -1606,6 +1698,53 @@ p{margin:0 0 1.1em}
   <div class="wrap cta__inner">
     <div class="cta__media reveal">
       <img src="data:image/webp;base64,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" alt="Greissi de Matos com uma flor" width="403" height="584" loading="lazy" decoding="async">
+      <!-- Mesma mecânica do girassol do "sobre mim" — semente, rega, haste e
+           abertura, tudo dirigido pelo scroll. Aqui a flor é uma rosa: anéis
+           de pétalas em CRESCENTE, cada uma abraçando o miolo, encolhendo e
+           girando meia casa a cada anel. Uma primeira versão com elipses em
+           coroa e espiral no centro lia como margarida e foi refeita. -->
+      <svg class="sunflower rosebush" id="rosebush" viewBox="0 0 130 280" aria-hidden="true">
+        <path class="sf__terra" d="M70 276 C70 257 84 248 100 248 C116 248 130 257 130 276Z"/>
+        <g class="sf__gotas">
+          <ellipse class="sf__gota" cx="101" cy="0" rx="2.4" ry="4"/>
+          <ellipse class="sf__gota" cx="95" cy="0" rx="2" ry="3.4"/>
+          <ellipse class="sf__gota" cx="105" cy="0" rx="1.8" ry="3"/>
+        </g>
+        <ellipse class="sf__semente" cx="100" cy="258" rx="4.2" ry="2.9"/>
+        <g class="sf__planta js-wind">
+          <path class="sf__caule" d="M100 259 C98 224 90 198 78 172 C64 142 50 118 46 92"/>
+          <g class="sf__folha sf__folha--a">
+            <path d="M84 212 C102 210 116 199 121 185 C103 184 88 195 84 212Z"/>
+          </g>
+          <g class="sf__folha sf__folha--b">
+            <path d="M66 156 C50 150 38 138 36 124 C52 125 64 139 66 156Z"/>
+          </g>
+          <g transform="translate(46 90) rotate(-12) scale(1.14)"><g class="sf__cabeca">
+            <circle class="rose__fundo" r="26"/>
+            <g class="rose__fora">
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(0) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(72) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(144) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(216) scale(1)"/>
+              <path class="rose__pet rose__pet--fora" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(288) scale(1)"/>
+            </g>
+            <g class="rose__meio">
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(36) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(108) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(180) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(252) scale(0.7)"/>
+              <path class="rose__pet rose__pet--meio" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(324) scale(0.7)"/>
+            </g>
+            <g class="rose__nucleo">
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(72) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(162) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(252) scale(0.46)"/>
+              <path class="rose__pet rose__pet--dentro" d="M-20 -12 C-18 -26 -9 -32 0 -32 C9 -32 18 -26 20 -12 C17 -14.5 14 -19 8 -20.8 C3 -22.4 -3 -22.4 -8 -20.8 C-14 -19 -17 -14.5 -20 -12Z" transform="rotate(342) scale(0.46)"/>
+              <path class="rose__curl" d="M-5 2.5 C-7.5 -3 -3.5 -8 2.5 -7 C7.5 -6 9 -1 6 2.5 C3.5 5.5 -2 6 -5 2.5Z"/>
+            </g>
+          </g></g>
+        </g>
+      </svg>
     </div>
     <div class="cta__text">
       <h2 class="reveal" data-delay="1">Quando você se escolhe, tudo em volta muda de lugar</h2>
@@ -2193,7 +2332,8 @@ const WHATSAPP = '5500000000000';
   const doresEl = document.getElementById('dores');
   const caidas = [];
   let chaoY = 0, larguraZona = 0, nascidas = 0;
-  let faseRastelo = 'esperando'; // esperando → varrendo → assentando → escondendo → fim
+  let faseRastelo = 'esperando'; // esperando → varrendo → assentando → parado
+  let tPousio = 0;               // quando a última pétala pousou
   let rakeInfo = null;
   const TOTAL_QUEDA = innerWidth < 700 ? 14 : 24;
   const easeDentroFora = k => (k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
@@ -2248,7 +2388,7 @@ const WHATSAPP = '5500000000000';
       y: -30 - Math.random() * 60,
       // a terça parte da velocidade anterior: pétala não despenca, ela
       // desce planando. É a diferença entre cair e pousar.
-      vy: 0.5 + Math.random() * 0.38,
+      vy: 0.82 + Math.random() * 0.5,
       deriva: (Math.random() - 0.5) * 0.4,
       rot: Math.random() * 360,
       giro: (Math.random() - 0.5) * 1.1,
@@ -2426,6 +2566,7 @@ const WHATSAPP = '5500000000000';
       // 'pausa' não é fase conhecida do rastelo: ele fica parado enquanto as
       // pétalas novas descem, e só então a varrida começa
       faseRastelo = 'pausa';
+      tPousio = 0;
       tRetomada = setTimeout(() => dispararRastelo(retomando), 1600);
     }));
   };
@@ -2448,14 +2589,40 @@ const WHATSAPP = '5500000000000';
       const r = doresEl.getBoundingClientRect();
       const inicioViewport = innerHeight * .85;
       const fimViewport = innerHeight * .60;
-      // distância de scroll entre "o topo entra a 85% da tela" e
-      // "a base sai a 60%": a mesma janela que o ScrollTrigger usava
       const distancia = r.height + inicioViewport - fimViewport;
       const progresso = clamp((inicioViewport - r.top) / distancia, 0, 1);
-      const alvo = Math.round(progresso * TOTAL_QUEDA);
+      // nascem todas na PRIMEIRA METADE do percurso da seção. Espalhadas pelo
+      // percurso inteiro, as últimas só apareciam quando já não havia mais
+      // scroll pela frente e nunca chegavam a pousar antes do rastelo.
+      const alvo = Math.round(clamp(progresso / .5, 0, 1) * TOTAL_QUEDA);
       while (nascidas < alvo) { nascerPetala(); nascidas++; }
 
-      if (r.bottom <= innerHeight * .62) dispararRastelo();
+      const naTela = r.bottom > 0 && r.top < innerHeight;
+      const todasNasceram = nascidas >= TOTAL_QUEDA;
+
+      // só quando a seção já está claramente indo embora (base acima de 55% da
+      // tela) o que sobrou no ar ganha um empurrãozinho para terminar de
+      // descer. Com um limiar generoso demais (95%) isso disparava logo na
+      // entrada e a queda lenta virava queda rápida disfarçada.
+      if (todasNasceram && r.bottom < innerHeight * .55) {
+        for (const p of caidas) if (!p.pousada) p.vy = Math.min(p.vy * 1.01, 2);
+      }
+
+      // O GATILHO É O CHÃO, NÃO O SCROLL. Antes ele era "a base da seção
+      // passou de 62% da tela", e por isso o rastelo aparecia enquanto as
+      // pétalas ainda estavam caindo — ele entrava antes do que ia juntar.
+      const pousadas = caidas.reduce((n, p) => n + (p.pousada ? 1 : 0), 0);
+      const chegaram = todasNasceram && caidas.length > 0 &&
+                       pousadas >= Math.ceil(caidas.length * .85);
+
+      if (chegaram && naTela) {
+        // e ainda uma pausa depois da última pousar: dá tempo de ver o monte
+        // no chão antes de alguém vir recolhê-lo
+        if (!tPousio) tPousio = performance.now();
+        else if (performance.now() - tPousio > 900) dispararRastelo();
+      } else {
+        tPousio = 0;
+      }
     } else {
       atualizarRastelo();
     }
@@ -2520,46 +2687,145 @@ const WHATSAPP = '5500000000000';
     marcos.forEach((li, i) => li.classList.toggle('is-lit', p > 0.12 + i * 0.2));
   };
 
-  /* ---- girassol do "sobre mim" ----
-     Semente na terra → regada → haste crescendo em direção à luz → folhas →
-     flor abrindo. Tudo dirigido pelo progresso do scroll na seção, não por
-     animação em loop: subir a página desfaz o crescimento na mesma ordem.
-     O balanço da planta já vem do motor de vento (classe js-wind no grupo). */
-  const sobreMidia = document.querySelector('.about__media');
-  const girassol = document.getElementById('sunflower');
-  const caule = girassol?.querySelector('.sf__caule');
-  const folhasSf = girassol ? [...girassol.querySelectorAll('.sf__folha')] : [];
-  const gotas = girassol ? [...girassol.querySelectorAll('.sf__gota')] : [];
-  let pSf = -1;
+  /* ---- partículas das estações nas faixas de produtos ----
+     Mesmo motor das pétalas à deriva da jornada: posição em FRAÇÃO da caixa,
+     movida por transform no laço de rAF que já existe. O que muda de uma
+     faixa para outra é só o comportamento — velocidade, deriva, giro e
+     sentido. Nenhum código de animação novo, nenhuma biblioteca. */
+  const COMPORTAMENTO = {
+    // folha de outono: cai girando, com deriva larga
+    outono:    { qtd: 9, vy: [ .00030,  .00042], vx: .00055, onda: .00040, giro: 1.5 },
+    // pétala de primavera: cai devagar, quase flutuando de lado
+    primavera: { qtd: 8, vy: [ .00018,  .00026], vx: .00070, onda: .00052, giro: .8 },
+    // pólen de verão: SOBE, quase sem girar — é o ar quente levando
+    verao:     { qtd: 10, vy: [-.00016, -.00026], vx: .00030, onda: .00030, giro: .2 },
+    // neve de inverno: desce reto e muito devagar, sem giro
+    inverno:   { qtd: 10, vy: [ .00014,  .00021], vx: .00016, onda: .00014, giro: 0 }
+  };
 
-  // o comprimento do traço tem de sair do próprio path: chutar um número aqui
-  // deixaria a haste crescendo até um ponto que não é a ponta dela
-  if (caule) girassol.style.setProperty('--len', caule.getTotalLength().toFixed(1));
-
-  const pintarGirassol = () => {
-    if (!sobreMidia || !girassol) return;
-    const r = sobreMidia.getBoundingClientRect();
-    const inicio = innerHeight * .88, fim = innerHeight * .42;
-    const p = clamp((inicio - r.top) / (r.height + inicio - fim), 0, 1);
-    if (Math.abs(p - pSf) < .002) return;
-    pSf = p;
-    sobreMidia.style.setProperty('--p', p.toFixed(3));
-
-    // recorta uma janela [a,b] do progresso e devolve 0..1 dentro dela
-    const etapa = (a, b) => easeFora(clamp((p - a) / (b - a), 0, 1));
-
-    // a rega vem primeiro: três gotas escalonadas caem sobre a semente
-    gotas.forEach((g, i) => {
-      const k = clamp((p - (.05 + i * .045)) / .12, 0, 1);
-      g.style.transform = `translateY(${(36 + k * 220).toFixed(1)}px)`;
-      g.style.opacity = k <= 0 || k >= 1 ? '0' : Math.min(1, (1 - k) * 3).toFixed(2);
+  const estacoes = [];
+  if (!reduced) {
+    document.querySelectorAll('.band[data-estacao] .seasonzone').forEach(zona => {
+      const nome = zona.closest('.band').dataset.estacao;
+      const c = COMPORTAMENTO[nome];
+      if (!c) return;
+      const qtd = innerWidth < 700 ? Math.ceil(c.qtd * .6) : c.qtd;
+      const bichos = [];
+      for (let i = 0; i < qtd; i++) {
+        const el = document.createElement('span');
+        el.className = 'flake';
+        zona.appendChild(el);
+        bichos.push({
+          el,
+          x: Math.random(),
+          y: Math.random(),
+          vy: c.vy[0] + Math.random() * (c.vy[1] - c.vy[0]),
+          vx: (Math.random() - .5) * c.vx,
+          rot: Math.random() * 360,
+          giro: (Math.random() - .5) * c.giro
+        });
+      }
+      estacoes.push({ zona, c, bichos, caixa: null });
     });
+  }
 
-    girassol.style.setProperty('--cresc', etapa(.16, .66).toFixed(3));
-    folhasSf[0]?.style.setProperty('--f', etapa(.34, .52).toFixed(3));
-    folhasSf[1]?.style.setProperty('--f', etapa(.48, .66).toFixed(3));
-    girassol.style.setProperty('--flor', etapa(.62, .80).toFixed(3));
-    girassol.style.setProperty('--ab', etapa(.70, .96).toFixed(3));
+  const medirEstacoes = () => estacoes.forEach(e => { e.caixa = e.zona.getBoundingClientRect(); });
+  if (estacoes.length) {
+    medirEstacoes();
+    addEventListener('resize', medirEstacoes, { passive: true });
+  }
+
+  const moverEstacoes = kick => {
+    for (const e of estacoes) {
+      // remede a cada quadro porque a caixa se move com o scroll e o filtro
+      // pode esconder a faixa inteira; se está fora da tela, nem anima
+      const r = e.zona.getBoundingClientRect();
+      if (r.height === 0 || r.bottom < -80 || r.top > innerHeight + 80) continue;
+      const w = r.width, h = r.height;
+      for (const p of e.bichos) {
+        p.y += p.vy + kick * .00010;
+        p.x += p.vx + Math.sin(p.y * 6 + p.rot) * e.c.onda;
+        p.rot += p.giro;
+        // reentra pelo lado oposto ao do sentido de queda: o pólen do verão
+        // sobe, então ele nasce embaixo
+        if (p.y > 1.08) { p.y = -.08; p.x = Math.random(); }
+        if (p.y < -.12) { p.y = 1.05; p.x = Math.random(); }
+        if (p.x > 1.05) p.x = -.03;
+        if (p.x < -.05) p.x = 1.03;
+        p.el.style.transform =
+          `translate3d(${(p.x * w).toFixed(1)}px, ${(p.y * h).toFixed(1)}px, 0) rotate(${p.rot.toFixed(1)}deg)`;
+      }
+    }
+  };
+
+  /* ---- plantas que crescem com o scroll ----
+     Semente na terra → regada → haste crescendo → folhas → flor abrindo.
+     Duas delas na página: o girassol do "sobre mim" e a rosa do CTA. Mesmo
+     motor, mesma marcação, só muda a flor no topo da haste.
+
+     Tudo é dirigido pelo progresso do scroll na seção, não por animação em
+     loop: subir a página desfaz o crescimento na mesma ordem em que ele
+     aconteceu. O balanço vem do motor de vento (classe js-wind no grupo).
+
+     As janelas de cada etapa terminam em 74% do percurso, não em 96%: a flor
+     precisa estar aberta enquanto a seção ainda está na tela, senão o
+     desabrochar acontece quando ninguém mais está olhando para ela. */
+  const ETAPAS = {
+    gotas:  [.04, .16],   // a rega, antes de tudo
+    caule:  [.10, .46],
+    folhaA: [.22, .38],
+    folhaB: [.32, .48],
+    flor:   [.40, .58],   // a cabeça surge
+    abre:   [.46, .70],   // pétalas de fora
+    abre2:  [.56, .80]    // miolo / camada de dentro (só a rosa usa)
+  };
+
+  const plantas = [
+    ['.about__media', '#sunflower'],
+    ['.cta__media',   '#rosebush']
+  ].map(([seletor, id]) => {
+    const host = document.querySelector(seletor);
+    const svg = document.querySelector(id);
+    if (!host || !svg) return null;
+    const caule = svg.querySelector('.sf__caule');
+    // o comprimento do traço tem de sair do próprio path: chutar um número
+    // aqui deixaria a haste crescendo até um ponto que não é a ponta dela
+    if (caule) svg.style.setProperty('--len', caule.getTotalLength().toFixed(1));
+    return {
+      host, svg,
+      folhas: [...svg.querySelectorAll('.sf__folha')],
+      gotas: [...svg.querySelectorAll('.sf__gota')],
+      p: -1
+    };
+  }).filter(Boolean);
+
+  const pintarPlantas = () => {
+    for (const pl of plantas) {
+      const r = pl.host.getBoundingClientRect();
+      if (!r.height) continue;
+      const inicio = innerHeight * .92, fim = innerHeight * .46;
+      const p = clamp((inicio - r.top) / (r.height + inicio - fim), 0, 1);
+      if (Math.abs(p - pl.p) < .002) continue;
+      pl.p = p;
+      pl.host.style.setProperty('--p', p.toFixed(3));
+
+      // recorta uma janela [a,b] do progresso e devolve 0..1 dentro dela
+      const etapa = ([a, b]) => easeFora(clamp((p - a) / (b - a), 0, 1));
+
+      pl.gotas.forEach((g, i) => {
+        const [a, b] = ETAPAS.gotas;
+        const k = clamp((p - (a + i * .035)) / (b - a), 0, 1);
+        g.style.transform = `translateY(${(36 + k * 220).toFixed(1)}px)`;
+        g.style.opacity = k <= 0 || k >= 1 ? '0' : Math.min(1, (1 - k) * 3).toFixed(2);
+      });
+
+      pl.svg.style.setProperty('--cresc', etapa(ETAPAS.caule).toFixed(3));
+      pl.folhas[0]?.style.setProperty('--f', etapa(ETAPAS.folhaA).toFixed(3));
+      pl.folhas[1]?.style.setProperty('--f', etapa(ETAPAS.folhaB).toFixed(3));
+      pl.svg.style.setProperty('--flor', etapa(ETAPAS.flor).toFixed(3));
+      pl.svg.style.setProperty('--ab', etapa(ETAPAS.abre).toFixed(3));
+      pl.svg.style.setProperty('--ab2', etapa(ETAPAS.abre2).toFixed(3));
+    }
   };
 
   /* ---- laço principal ---- */
@@ -2597,8 +2863,9 @@ const WHATSAPP = '5500000000000';
     moverPetalas(kick);
     pintarJornada();
     pintarCena();
-    pintarGirassol();
+    pintarPlantas();
     moverDeriva(kick);
+    moverEstacoes(kick);
     passoQueda();
   };
   requestAnimationFrame(frame);

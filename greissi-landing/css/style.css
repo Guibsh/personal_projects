@@ -276,7 +276,10 @@ p{margin:0 0 1.1em}
      canto de baixo e com o buquê fixo do canto da tela. Daqui ele cresce na
      diagonal atravessando a foto em direção à luz, que nasce no alto à
      esquerda — e a inclinação fica sendo o próprio gesto. */
-  position:absolute;bottom:-2px;right:clamp(-44px,-2.8vw,-8px);
+  /* right:0 — a base encosta na borda direita da foto e fica INTEIRA dentro
+     dela. Saindo para fora, o torrão de terra virava uma mancha escura solta
+     no oliva do CTA. A flor é que avança para dentro da foto, não o pé. */
+  position:absolute;bottom:-2px;right:0;
   width:clamp(92px,10.4vw,148px);height:auto;overflow:visible;z-index:2;
 }
 .sf__terra{fill:#6B5B43;opacity:.9}
@@ -300,15 +303,43 @@ p{margin:0 0 1.1em}
    base da haste, não no centro do viewBox */
 .sf__planta{--amp:1.5;transform-box:fill-box;transform-origin:76% 100%;transform:rotate(var(--wind,0deg))}
 
+/* ---- a rosa do CTA ----
+   Mesmas peças do girassol (terra, gota, semente, caule, folha, cabeça) e o
+   mesmo motor de scroll; o que muda é a flor, que abre em DUAS camadas de
+   pétalas em vez de uma coroa só — é isso que faz ler como rosa. */
+.cta__media{position:relative}
+.rosebush .sf__terra{fill:#4E4432}
+.rosebush .sf__caule{stroke:#8A9070}
+.rosebush .sf__folha path{fill:#8A9070}
+.rosebush .sf__semente{fill:#33301F}
+/* a rosa escurece para dentro, como rosa de verdade: a pétala do meio é a
+   que pega mais luz e o fundo do botão é o tom mais fechado */
+.rose__fundo{fill:#E3A992}
+.rose__pet{stroke:rgba(74,40,28,.14);stroke-width:.7;stroke-linejoin:round}
+.rose__pet--fora{fill:var(--terracotta-soft)}
+.rose__pet--meio{fill:var(--terracotta)}
+.rose__pet--dentro{fill:#AE5D47}
+.rose__curl{fill:#93493A}
+/* a camada de fora abre primeiro e desenrola um pouco; a de dentro vem
+   depois, com meia volta a menos — é a defasagem que dá o giro da rosa */
+.rose__fora{transform:scale(var(--ab,0)) rotate(calc((1 - var(--ab,0)) * -30deg))}
+.rose__meio{transform:scale(var(--ab2,0)) rotate(calc((1 - var(--ab2,0)) * 22deg))}
+.rose__nucleo{transform:scale(var(--ab2,0)) rotate(calc((1 - var(--ab2,0)) * -18deg))}
+.rose__fundo{transform:scale(var(--ab,0))}
+
+@media (prefers-reduced-motion:reduce){
+  .rose__fora,.rose__meio,.rose__nucleo{transform:none}
+}
+
 @media (max-width:920px){
   /* a foto encolhe e centraliza; o girassol acompanha para não encostar na
      borda da tela */
-  .sunflower{width:clamp(74px,19vw,104px);right:-8px}
+  .sunflower{width:clamp(74px,19vw,104px);right:0}
 }
 @media (prefers-reduced-motion:reduce){
   /* sem o scroll dirigindo nada, a cena chega pronta: girassol crescido e
      amanhecido, que é o estado que conta a história */
-  .about__media{--p:1}
+  .about__media,.cta__media{--p:1}
   .sunflower .sf__caule{stroke-dashoffset:0}
   .sf__folha{transform:scale(1)}
   .sf__cabeca,.sf__petalas{transform:none}

@@ -43,6 +43,23 @@ pode se repetir.
   à esquerda ele disputava espaço com a assinatura e com o buquê fixo do
   canto da tela. A luz (`.about__dawn`) nasce no alto à esquerda e é para
   onde ele se inclina.
+- **O gatilho do rastelo é o CHÃO, não o scroll.** Ele só entra depois que as
+  pétalas pousam (85% delas) e ainda espera 900ms, para dar tempo de ver o
+  monte no chão. A versão antiga disparava em "a base da seção passou de 62%
+  da tela" e por isso ele aparecia enquanto as pétalas ainda caíam — entrava
+  antes do que ia juntar. Não voltar a amarrar isso à rolagem.
+- **Girassol e rosa dividem o mesmo motor** (`plantas` + `pintarPlantas` em
+  `js/main.js`), com as janelas de etapa na constante `ETAPAS`. Todas terminam
+  em 74% do percurso da seção: a flor precisa estar aberta enquanto a seção
+  ainda está na tela.
+- **A rosa do CTA é feita de anéis de pétalas em CRESCENTE**, cada uma
+  abraçando o miolo, encolhendo e girando meia casa a cada anel. A versão com
+  elipses em coroa + espiral no centro lia como margarida e foi rejeitada.
+- **Estações em `#produtos`** entram como CAMADA sobre a alternância
+  clara/escura das faixas, que continua sendo a base do contraste. Tokens
+  `--season-accent`/`--season-bg` escopados em `.band[data-estacao]`; nenhum
+  token global foi tocado. As partículas reaproveitam o motor das pétalas à
+  deriva — só mudam cor, forma e comportamento.
 - **O rastelo varre para a DIREITA.** No desenho a cabeça fica à esquerda e o
   cabo sobe à direita; varrendo para a esquerda a cabeça ia na frente e ele
   entrava empurrando. Não inverter.
@@ -99,6 +116,18 @@ pode se repetir.
 
 5. Toda mudança de CSS estrutural: medir em 375, 768 e 1440 **e olhar o
    screenshot do trecho alterado**, não só de outra parte da página.
+
+6. **Nunca recortar `index.html` por índice com padrão não único.** Um
+   `h[:ini] + novo + h[fim:]` onde `fim` veio de um `h.index(...)` de um
+   fechamento genérico (`</g></g>\n</g>\n</svg>`) pegou a ocorrência do
+   girassol, que vem ANTES da rosa: `fim < ini`, e o arquivo saiu com metade
+   da página duplicada — dois `#produtos`, dois CTA. Passou despercebido
+   porque o HTML continuava válido. Sempre substituir por `str.replace` com
+   `assert conta == 1`, e conferir depois:
+
+   ```bash
+   grep -c 'id="produtos"' index.html   # tem de ser 1
+   ```
 
 ## Arquivo único para revisão
 
