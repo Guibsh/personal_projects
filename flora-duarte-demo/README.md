@@ -27,7 +27,6 @@ python3 build-single.py
 | O que cada botão da Flora explica ao ser clicado | `js/main.js`, objeto `DEMO` |
 | Produtos do quiz | `js/main.js`, objeto `CATALOGO`, e os `data-score` no `index.html` |
 | Imagem da prévia do link | `images/og-image.jpg` (1200×630) |
-
 | O mascote Gui 8-bit (desenho e cenas) | `js/gui.js` |
 | Falas do mascote | `index.html` (balões) e `js/gui.js` (as da faixa do topo) |
 
