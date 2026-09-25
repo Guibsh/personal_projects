@@ -35,8 +35,13 @@
      cliente da mentora. Sem isso, a pessoa acha que caiu no site errado. -->
 <p class="demo-bar">
   <span class="demo-bar__long">Você está vendo um site demonstrativo de portfólio.</span>
-  <span class="demo-bar__short">Site demonstrativo.</span>
+  <span class="demo-bar__short">Demonstração.</span>
   <a href="#bastidores">Ver quem fez ↓</a>
+  <!-- easter egg: a cabeça do Gui 8-bit espia da faixa e provoca -->
+  <button type="button" class="gui-bar" id="guiBar" aria-label="Recado do mascote">
+    <span class="gui-bar__janela"><span class="gui-sprite" data-gui="cabeca" data-px="2"></span></span>
+    <span class="gui-balao gui-balao--bar" role="status">Psiu. Quem fez isso tá lá embaixo.</span>
+  </button>
 </p>
 
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
@@ -69,6 +74,11 @@
   </svg>
   <span class="posy__count"><b>0</b>/7</span>
 </aside>
+
+<div class="gui-pop gui-pop--buque" id="guiBuque" aria-hidden="true">
+  <span class="gui-balao gui-balao--dir">7 de 7! Agora desce, que tem mais.</span>
+  <span class="gui-pop__clip"><span class="gui-sprite" data-gui="mascote" data-px="2"></span></span>
+</div>
 
 <header class="nav" id="nav">
   <div class="wrap nav__inner">
@@ -122,9 +132,11 @@
       <div class="scene" id="scene">
         <div class="scene__layer scene__glow" data-depth="-34" aria-hidden="true"></div>
 
+        <div class="gui-espia gui-espia--janela" id="guiJanela" aria-hidden="true"><span class="gui-sprite" data-gui="mascote" data-px="2"></span></div>
+
         <div class="scene__window" data-depth="-12">
           <div class="scene__photo" id="heroPhoto">
-            <img src="images/hero.webp" alt="Flora Duarte" width="411" height="595" fetchpriority="high" decoding="async">
+            <img src="images/hero.webp" alt="Flora Duarte" width="760" height="1110" fetchpriority="high" decoding="async">
           </div>
           <div class="scene__glass" aria-hidden="true"></div>
           <div class="scene__frame" aria-hidden="true"></div>
@@ -256,7 +268,7 @@
 <section class="section" id="sobre">
   <div class="wrap about">
     <div class="about__media reveal">
-      <img src="images/sobre.webp" alt="Flora Duarte sentada, olhando para o lado" width="283" height="387" loading="lazy" decoding="async">
+      <img src="images/sobre.webp" alt="Flora Duarte sentada, olhando para o lado" width="880" height="1076" loading="lazy" decoding="async">
       <!-- o amanhecer: a luz nasce no canto de cima à esquerda e ganha força
            conforme a seção sobe na tela. É para onde o girassol se vira. -->
       <div class="about__dawn" id="dawn" aria-hidden="true"><span class="about__sol"></span></div>
@@ -400,6 +412,10 @@
     </p>
 
     <div class="quiz__box reveal" data-delay="3">
+      <div class="gui-pop gui-pop--quiz" id="guiQuiz" aria-hidden="true">
+        <span class="gui-balao gui-balao--esq">Esse quiz tem dedo meu. No fim da página eu conto.</span>
+        <span class="gui-pop__clip"><span class="gui-sprite" data-gui="mascote" data-px="2"></span></span>
+      </div>
       <div class="quiz__head">
         <div class="quiz__bar"><span></span></div>
         <p class="quiz__count">1 de 3</p>
@@ -642,7 +658,7 @@
 <section class="cta">
   <div class="wrap cta__inner">
     <div class="cta__media reveal">
-      <img src="images/flor-rosa.webp" alt="Flora Duarte sentindo o perfume de uma rosa" width="408" height="594" loading="lazy" decoding="async">
+      <img src="images/flor-rosa.webp" alt="Flora Duarte sentindo o perfume de uma rosa" width="760" height="1109" loading="lazy" decoding="async">
       <!-- Mesma mecânica do girassol do "sobre mim" — semente, rega, haste e
            abertura, tudo dirigido pelo scroll. Aqui a flor é uma rosa: anéis
            de pétalas em CRESCENTE, cada uma abraçando o miolo, encolhendo e
@@ -766,9 +782,48 @@
 <section class="credits" id="bastidores" aria-labelledby="creditsTitle">
   <svg class="divider" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F9F4E6" d="M0 80 C220 18 380 68 620 44 C840 22 1010 70 1220 38 C1300 26 1380 18 1440 24 L1440 80Z"/></svg>
   <div class="wrap credits__inner">
+    <!-- a barra enche conforme a pessoa desce: é o "quanto falta" que segura
+         a curiosidade até o fim. Fica presa no topo durante a cena inteira. -->
+    <div class="gui-hud" id="guiHud" aria-hidden="true">
+      <span class="gui-hud__txt">Carregando criador</span>
+      <span class="gui-hud__barra"><i></i></span>
+      <span class="gui-hud__pct">0%</span>
+    </div>
+
     <p class="eyebrow reveal">Cena pós-créditos</p>
+
+    <!-- ato 1: chega de paraquedas e pousa em cima do título -->
+    <div class="gui-cena gui-cena--paraquedas" data-cena="paraquedas" aria-hidden="true">
+      <div class="gui-ator">
+        <span class="gui-sprite gui-paraquedas" data-gui="paraquedas"></span>
+        <span class="gui-sprite" data-gui="mascote"></span>
+        <span class="gui-balao gui-balao--dir">Achou a cena pós-créditos. Vem comigo.</span>
+      </div>
+    </div>
+
     <h2 class="credits__reveal reveal" data-delay="1" id="creditsTitle">A Flora Duarte <em>não existe.</em></h2>
     <p class="credits__lead reveal" data-delay="2">Mas tudo o que você sentiu rolando esta página, sim.</p>
+
+    <!-- ato 2: no notebook, o código sobe e um mini-site se monta do lado -->
+    <div class="gui-cena gui-cena--obra" data-cena="obra" aria-hidden="true">
+      <div class="gui-ator">
+        <span class="gui-sprite" data-gui="mascote"></span>
+        <span class="gui-sprite gui-notebook" data-gui="notebook"></span>
+        <span class="gui-codigo"><i>&lt;/&gt;</i><i>{ }</i><i>01</i><i>&lt;h1&gt;</i><i>.css</i><i>js</i></span>
+      </div>
+      <div class="gui-mini">
+        <span class="gui-mini__barra"><i></i><i></i><i></i></span>
+        <span class="gui-mini__corpo">
+          <i class="gui-mini__b gui-mini__logo"></i>
+          <i class="gui-mini__b gui-mini__h1"></i>
+          <i class="gui-mini__b gui-mini__h1b"></i>
+          <i class="gui-mini__b gui-mini__txt"></i>
+          <i class="gui-mini__b gui-mini__btn"></i>
+          <i class="gui-mini__b gui-mini__foto"></i>
+        </span>
+        <span class="gui-mini__selo">No ar!</span>
+      </div>
+    </div>
 
     <div class="credits__live reveal" data-delay="3">
       <p class="credits__tag"><span class="credits__dot" aria-hidden="true"></span>Medido agora, na sua visita</p>
@@ -776,11 +831,49 @@
       <p class="credits__bridge">Imagina o que um site assim faria pelo seu negócio, com o seu nome, os seus produtos e clientes de verdade.</p>
     </div>
 
+    <!-- ato 3: puxa um cabo do WhatsApp até o celular e as mensagens chegam sozinhas -->
+    <div class="gui-cena gui-cena--cabo" data-cena="cabo" aria-hidden="true">
+      <span class="gui-sprite gui-zap" data-gui="zap"></span>
+      <svg class="gui-fio"><path/></svg>
+      <div class="gui-ator"><span class="gui-sprite" data-gui="mascote"></span></div>
+      <span class="gui-cel">
+        <span class="gui-cel__tela">
+          <i class="gui-cel__msg">Oi! Vi o seu site.</i>
+          <i class="gui-cel__msg">Quero agendar!</i>
+          <i class="gui-cel__msg">Aceita Pix?</i>
+        </span>
+        <span class="gui-cel__badge">3</span>
+      </span>
+      <span class="gui-legenda">automação</span>
+    </div>
+
     <p class="credits__punch reveal">Se esse site te prendeu até aqui, ele prende o seu cliente também.</p>
 
+    <!-- ato 4: pergunta para a IA quem fez o site, e a IA entrega -->
+    <div class="gui-cena gui-cena--ia" data-cena="ia" aria-hidden="true">
+      <div class="gui-ator">
+        <span class="gui-sprite" data-gui="mascote"></span>
+        <span class="gui-balao gui-balao--dir gui-fala-1">Ô IA, quem fez esse site?</span>
+        <span class="gui-balao gui-balao--dir gui-fala-2">Shhh! Era surpresa.</span>
+      </div>
+      <div class="gui-ia">
+        <span class="gui-sprite" data-gui="orbe"></span>
+        <span class="gui-balao gui-balao--esq gui-ia__fala"><span class="gui-digitando"><i></i><i></i><i></i></span><span class="gui-ia__resposta">← Foi esse aí.</span></span>
+      </div>
+    </div>
+
     <div class="credits__card reveal">
-      <div class="credits__photo">
-        <img src="images/guilherme.webp" alt="Guilherme Magalhães Brites" width="204" height="277" loading="lazy" decoding="async">
+      <div class="credits__foto-palco" id="guiFinal">
+        <div class="credits__photo">
+          <img src="images/guilherme.webp" alt="Guilherme Magalhães Brites" width="204" height="277" loading="lazy" decoding="async">
+          <canvas class="gui-pixelado" aria-hidden="true"></canvas>
+        </div>
+        <div class="gui-ator gui-ator--final" aria-hidden="true"><span class="gui-sprite" data-gui="mascote"></span></div>
+      </div>
+      <!-- depois de virar foto, ele reaparece em cima do cartão -->
+      <div class="gui-fim" aria-hidden="true">
+        <span class="gui-balao gui-balao--esq">Prazer, Guilherme. Bora fazer o seu?</span>
+        <span class="gui-sprite" data-gui="mascote" data-px="2"></span>
       </div>
       <div class="credits__who">
         <p class="eyebrow">Quem fez esta página</p>
@@ -814,11 +907,11 @@
     <div class="credits__behind reveal">
       <p class="eyebrow">O que tem nesta página</p>
       <ul>
-        <li><strong>Animações feitas à mão</strong>A abelha que pousa nas flores, o rastelo, o girassol, a rosa e as quatro estações. Nada de template.</li>
+        <li><strong>Sem template</strong>Estruturada e criada do zero por Guilherme Brites: a abelha que pousa nas flores, o rastelo, o girassol, a rosa, as quatro estações e o mascote em pixel.</li>
         <li><strong>Um quiz que vende</strong>Três perguntas e a visitante recebe o produto certo para o momento dela.</li>
         <li><strong>Primeiro no celular</strong>Pensada para a tela onde está a maior parte do público.</li>
         <li><strong>Pronta para vender</strong>Botões ligados ao WhatsApp, ao Instagram e ao checkout, com mensagem já escrita.</li>
-        <li><strong>Leve e sua</strong>Código próprio, sem construtor de sites: a página inteira pesa menos de 500 KB.</li>
+        <li><strong>Leve e rápida</strong>Com fotos, animações e mascote, a página inteira pesa menos de 500 KB.</li>
       </ul>
     </div>
   </div>
@@ -850,5 +943,6 @@
 
 <script src="vendor/lenis.min.js" defer></script>
 <script src="js/main.js" defer></script>
+<script src="js/gui.js" defer></script>
 </body>
 </html>

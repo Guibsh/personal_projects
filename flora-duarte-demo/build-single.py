@@ -38,6 +38,7 @@ html = re.sub(r'<img src="(images/[^"]+)"', lambda m: f'<img src="{data_uri(ROOT
 
 html = html.replace('<script src="vendor/lenis.min.js" defer></script>', inline_script(ROOT / 'vendor/lenis.min.js'))
 html = html.replace('<script src="js/main.js" defer></script>', inline_script(ROOT / 'js/main.js'))
+html = html.replace('<script src="js/gui.js" defer></script>', inline_script(ROOT / 'js/gui.js'))
 
 for sobra in ('href="css/', 'src="js/', 'src="vendor/', 'src="images/', '"../fonts/'):
     assert sobra not in html, f'ficou referência externa: {sobra}'

@@ -483,6 +483,8 @@
     }
     colhidas = n + 1;
     if (contador) contador.textContent = colhidas;
+    // o mascote (gui.js) espera por isto para aparecer ao lado do buquê
+    if (colhidas === PONTAS.length) document.dispatchEvent(new CustomEvent('flora:buque'));
     posy.classList.add('is-puff');
     setTimeout(() => posy.classList.remove('is-puff'), 700);
     const r = posy.getBoundingClientRect();
@@ -1270,6 +1272,7 @@
         : `href="#demonstracao" data-demo="checkout" data-produto="${p.nome}"`;
 
       visita.quiz = true;
+      document.dispatchEvent(new CustomEvent('flora:quiz'));
       resultBox.innerHTML = `
         <p class="eyebrow">O seu ponto de partida</p>
         <h3>${first.nome}</h3>
