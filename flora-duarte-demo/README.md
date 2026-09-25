@@ -40,9 +40,9 @@ O `js/gui.js` desenha o mascote pixel por pixel (sem imagem) e comanda:
 - a cabeça que espia na faixa do topo e provoca com um balão (clicar nela troca a fala);
 - as espiadas: atrás da janela do topo, em cima do quiz quando ele termina e ao lado do
   buquê quando ele completa 7 de 7;
-- os cinco atos da cena pós-créditos, guiados pelo scroll: paraquedas, notebook montando
-  um mini-site, cabo do WhatsApp até o celular, conversa com a IA e, no fim, a entrada na
-  moldura enquanto a foto sai do pixel e fica nítida;
+- os quatro atos da cena pós-créditos, guiados pelo scroll: paraquedas, notebook montando
+  um mini-site, cabo do WhatsApp até o celular e, no fim, a entrada na moldura enquanto a
+  foto sai do pixel e fica nítida;
 - a barra "Carregando criador", que chega a 100% junto com a foto.
 
 Para posts, `mascote/gerar.py` exporta o Gui em PNG transparente e grande (terno,

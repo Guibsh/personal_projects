@@ -1431,26 +1431,7 @@ button.btn{font-family:inherit;font-weight:inherit}
 }
 .gui-cena--cabo.is-ligado .gui-legenda{opacity:1;transform:translate(-50%,0)}
 
-/* ato 4 */
-.gui-cena--ia .gui-ator{opacity:0}
-.gui-cena--ia .gui-ator .gui-balao{left:0;bottom:calc(100% + 10px)}
-.gui-cena--ia .gui-ator .gui-balao::before{left:10px}.gui-cena--ia .gui-ator .gui-balao::after{left:12px}
-.gui-cena--ia.is-f1 .gui-fala-1,.gui-cena--ia.is-f2 .gui-fala-2{opacity:1;transform:none}
-.gui-ia{position:absolute;right:10%;bottom:calc(var(--px) * 12);animation:guiFlutua 3.2s ease-in-out infinite}
-.gui-ia .gui-sprite{filter:drop-shadow(0 0 10px rgba(216,152,130,.75))}
-@keyframes guiFlutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.gui-ia__fala{right:0;left:auto;bottom:calc(100% + 12px);transform-origin:100% 100%}
-.gui-ia__fala::before{left:auto;right:8px;border-width:10px 0 0 10px;border-color:#1E1B18 transparent transparent transparent}
-.gui-ia__fala::after{left:auto;right:10px;border-width:6px 0 0 6px;border-color:var(--white) transparent transparent transparent}
-.gui-cena--ia.is-digita .gui-ia__fala,.gui-cena--ia.is-resp .gui-ia__fala{opacity:1;transform:none}
-.gui-digitando,.gui-ia__resposta{display:none}
-.gui-cena--ia.is-digita .gui-digitando{display:flex;gap:4px;padding:3px 2px}
-.gui-cena--ia.is-resp .gui-ia__resposta{display:inline}
-.gui-digitando i{width:5px;height:5px;background:var(--ink);animation:guiPonto 1s steps(2) infinite}
-.gui-digitando i:nth-child(2){animation-delay:.2s}.gui-digitando i:nth-child(3){animation-delay:.4s}
-@keyframes guiPonto{50%{opacity:.25}}
-
-/* ato 5: a foto em pixel dentro da moldura */
+/* ato 4: a foto em pixel dentro da moldura */
 .credits__foto-palco{position:relative;width:max-content}
 .credits__photo{position:relative}
 .gui-pixelado{position:absolute;inset:0;width:100%;height:100%;opacity:0;image-rendering:pixelated;transition:opacity .35s var(--ease)}
@@ -1465,12 +1446,11 @@ button.btn{font-family:inherit;font-weight:inherit}
 
 @media (prefers-reduced-motion:reduce){
   .gui-codigo,.gui-ator--final{display:none}
-  .gui-ia{animation:none}
 }
 /* o balão do quiz fica rente à borda da caixa, longe do texto de cima */
 .gui-pop--quiz .gui-balao{bottom:8px}
-/* espaço sob a IA para o mascote final subir no cartão sem esbarrar na bolinha */
-.gui-cena--ia{margin-bottom:calc(var(--px) * 30)}
+/* espaço acima do cartão: é onde o mascote sobe no fim, sem encostar na frase de cima */
+.credits__card{margin-top:5.5rem}
 
 </style>
 </head>
@@ -2293,19 +2273,6 @@ button.btn{font-family:inherit;font-weight:inherit}
     </div>
 
     <p class="credits__punch reveal">Se esse site te prendeu até aqui, ele prende o seu cliente também.</p>
-
-    <!-- ato 4: pergunta para a IA quem fez o site, e a IA entrega -->
-    <div class="gui-cena gui-cena--ia" data-cena="ia" aria-hidden="true">
-      <div class="gui-ator">
-        <span class="gui-sprite" data-gui="mascote"></span>
-        <span class="gui-balao gui-balao--dir gui-fala-1">Ô IA, quem fez esse site?</span>
-        <span class="gui-balao gui-balao--dir gui-fala-2">Shhh! Era surpresa.</span>
-      </div>
-      <div class="gui-ia">
-        <span class="gui-sprite" data-gui="orbe"></span>
-        <span class="gui-balao gui-balao--esq gui-ia__fala"><span class="gui-digitando"><i></i><i></i><i></i></span><span class="gui-ia__resposta">← Foi esse aí.</span></span>
-      </div>
-    </div>
 
     <div class="credits__card reveal">
       <div class="credits__foto-palco" id="guiFinal">
@@ -3848,9 +3815,9 @@ button.btn{font-family:inherit;font-weight:inherit}
 /* =========================================================
    GUI 8-BIT — o mascote de quem fez a página
    Aparece espiando pela página da Flora (faixa do topo, janela do hero,
-   quiz, buquê) e ganha a cena inteira na cena pós-créditos, em cinco atos
-   dirigidos pelo scroll: paraquedas, notebook, cabo do WhatsApp, conversa
-   com a IA e, no fim, entra na moldura e vira a foto de verdade.
+   quiz, buquê) e ganha a cena inteira na cena pós-créditos, em quatro atos
+   dirigidos pelo scroll: paraquedas, notebook, cabo do WhatsApp e, no fim,
+   entra na moldura e vira a foto de verdade.
 
    O desenho é feito aqui mesmo, pixel por pixel: cada linha de texto é uma
    linha do sprite e cada letra, uma cor da paleta. Nenhuma imagem extra.
@@ -3860,7 +3827,7 @@ button.btn{font-family:inherit;font-weight:inherit}
 (() => {
   'use strict';
 
-  const DADOS = {"pal":{"A":"#5A6173","C":"#DCE6DA","E":"#1E1B18","F":"#1E1B18","G":"#25D366","H":"#2B221D","J":"#434959","K":"#1E1B18","L":"#5A6173","M":"#2B221D","N":"#8A6A4E","O":"#D89882","P":"#333845","R":"#C0705A","S":"#EBBE9B","T":"#C0705A","U":"#F1E9D6","W":"#FFFDF8","Y":"#FFFFFF","f":"#655143","g":"#A08269","h":"#4A3A30","j":"#333845","l":"#B9B29F","m":"#7A3B2E","n":"#6B5240","r":"#F1E9D6","s":"#CF9B78","t":"#F1E9D6","w":"#FFFFFF"},"sprites":{"mascote":{"parado":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........",".......KCSSCK.........","....KJJJCTTCJJJK......","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJjJK.....","...KJjJJJtTJJJjJK.....","...KJjJJJJJJJJjJK.....","...KSSKJJJJJJKSSK.....","....KKKPPKKPPKKK......","......KPPKKPPK........",".....KFFFKKFFFK.......",".....KKKKKKKKKK......."],"pisca":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSSSSSSSSSsK.....","...KsSEESSSSEESsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........",".......KCSSCK.........","....KJJJCTTCJJJK......","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJjJK.....","...KJjJJJtTJJJjJK.....","...KJjJJJJJJJJjJK.....","...KSSKJJJJJJKSSK.....","....KKKPPKKPPKKK......","......KPPKKPPK........",".....KFFFKKFFFK.......",".....KKKKKKKKKK......."],"acena":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK.KKK..","....KSSMMMMMMSSKKSSSK.","....KSmWWWWWWmSKKSSSK.","....KSSmWWWWmSSKKsSsK.","....KSSSmmmmSSSKKCCK..",".....KSSMMMMSSK.KJJK..","......KKKKKKKK.KJJK...",".......KCSSCK.KJJK....","....KJJJCTTCJJJJJK....","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJJJK.....","...KJjJJJtTJJJJJK.....","...KJjJJJJJJJJJJK.....","...KSSKJJJJJJJJK......","....KKKPPKKPPKKK......","......KPPKKPPK........",".....KFFFKKFFFK.......",".....KKKKKKKKKK......."],"anda":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........",".......KCSSCK.........","....KJJJCTTCJJJK......","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJjJK.....","...KJjJJJtTJJJjJK.....","...KJjJJJJJJJJjJK.....","...KSSKJJJJJJKSSK.....","....KKKPPKKPPKKK......",".....KPPK..KPPK.......","....KFFFK..KFFFK......","....KKKKK..KKKKK......"]},"cabeca":{"parado":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........"],"pisca":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSSSSSSSSSsK.....","...KsSEESSSSEESsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........"]},"paraquedas":{"parado":["........KKKKKKKKKK........","......KrRRRRrrrrRRRK......","....KrrrRRRRrrrrRRRRrK....","...KrrrrRRRRrrrrRRRRrrK...","..KRrrrrRRRRrrrrRRRRrrrK..",".KRRrrrrRRRRrrrrRRRRrrrrK.",".KRRrrrrRRRRrrrrRRRRrrrrK.",".KRRrrrrRRRRrrrrRRRRrrrrK.","KKRRKKrrKKRRKKrrKKRRKKrrKK",".l......................l.",".l......................l.",".l......................l.","..l....................l..","..l....................l..","..l....................l..","..l....................l..","..l....................l..","...l..................l...","...l..................l...","...l..................l...","...l..................l...","...l..................l...","....l................l....","....l................l....","....l................l....","....l................l....","....l................l....",".....l..............l.....",".....l..............l.....",".....l..............l.....",".....l..............l.....",".....l..............l.....","......l............l......","......l............l......","......l............l......","......l............l......","......l............l......",".......l..........l.......",".......l..........l.......",".......l..........l.......",".........................."]},"notebook":{"parado":[".....KKKKKKKKKKKKKKKK.....",".....KAAAAAAAAAAAAAAK.....",".....KAAAAAAATAAAAAAK.....",".....KAAAAAATtTAAAAAK.....",".....KAAAAAAATAAAAAAK.....",".....KAAAAAAAAAAAAAAK.....","...KKKKKKKKKKKKKKKKKKKK...","KKKKKKKKKKKKKKKKKKKKKKKKKK","KNNNNNNNNNNNNNNNNNNNNNNNNK","KKKKKKKKKKKKKKKKKKKKKKKKKK","..KnK..............KnK....","..KnK..............KnK....","..KnK..............KnK....","..KKK..............KKK...."]},"zap":{"parado":["....KKKKK....","..KKGGGGGKK..",".KGGGGGGGGGK.",".KGGwwGGGGGK.","KGGGwwGGGGGGK","KGGGwwGGGGGGK","KGGGGwwGGGGGK","KGGGGGwwGwwGK",".KGGGGGGwwwK.",".KGGGGGGGGGK.","KGGKKGGGGGKK.","KGKK.KKKKK...","KK..........."]},"orbe":{"parado":["....KKKK....","..KKOOOOKK..",".KOOUUUUOOK.",".KOUYYUUUOK.","KOUYUUUUUUOK","KOUUKUUKUUOK","KOUUKUUKUUOK","KOUUUUUUUUOK",".KOUUUUUUOK.",".KOOUUUUOOK.","..KKOOOOKK..","....KKKK...."],"pisca":["....KKKK....","..KKOOOOKK..",".KOOUUUUOOK.",".KOUYYUUUOK.","KOUYUUUUUUOK","KOUUUUUUUUOK","KOUUKUUKUUOK","KOUUUUUUUUOK",".KOUUUUUUOK.",".KOOUUUUOOK.","..KKOOOOKK..","....KKKK...."]}}};
+  const DADOS = {"pal":{"A":"#5A6173","C":"#DCE6DA","E":"#1E1B18","F":"#1E1B18","G":"#25D366","H":"#2B221D","J":"#434959","K":"#1E1B18","L":"#5A6173","M":"#2B221D","N":"#8A6A4E","P":"#333845","R":"#C0705A","S":"#EBBE9B","T":"#C0705A","W":"#FFFDF8","f":"#655143","g":"#A08269","h":"#4A3A30","j":"#333845","l":"#B9B29F","m":"#7A3B2E","n":"#6B5240","r":"#F1E9D6","s":"#CF9B78","t":"#F1E9D6","w":"#FFFFFF"},"sprites":{"mascote":{"parado":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........",".......KCSSCK.........","....KJJJCTTCJJJK......","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJjJK.....","...KJjJJJtTJJJjJK.....","...KJjJJJJJJJJjJK.....","...KSSKJJJJJJKSSK.....","....KKKPPKKPPKKK......","......KPPKKPPK........",".....KFFFKKFFFK.......",".....KKKKKKKKKK......."],"pisca":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSSSSSSSSSsK.....","...KsSEESSSSEESsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........",".......KCSSCK.........","....KJJJCTTCJJJK......","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJjJK.....","...KJjJJJtTJJJjJK.....","...KJjJJJJJJJJjJK.....","...KSSKJJJJJJKSSK.....","....KKKPPKKPPKKK......","......KPPKKPPK........",".....KFFFKKFFFK.......",".....KKKKKKKKKK......."],"acena":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK.KKK..","....KSSMMMMMMSSKKSSSK.","....KSmWWWWWWmSKKSSSK.","....KSSmWWWWmSSKKsSsK.","....KSSSmmmmSSSKKCCK..",".....KSSMMMMSSK.KJJK..","......KKKKKKKK.KJJK...",".......KCSSCK.KJJK....","....KJJJCTTCJJJJJK....","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJJJK.....","...KJjJJJtTJJJJJK.....","...KJjJJJJJJJJJJK.....","...KSSKJJJJJJJJK......","....KKKPPKKPPKKK......","......KPPKKPPK........",".....KFFFKKFFFK.......",".....KKKKKKKKKK......."],"anda":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........",".......KCSSCK.........","....KJJJCTTCJJJK......","...KJJJLCTTCLJJJK.....","...KJJJJLtTLJJJJK.....","...KJjJJJTtJJJjJK.....","...KJjJJJtTJJJjJK.....","...KJjJJJJJJJJjJK.....","...KSSKJJJJJJKSSK.....","....KKKPPKKPPKKK......",".....KPPK..KPPK.......","....KFFFK..KFFFK......","....KKKKK..KKKKK......"]},"cabeca":{"parado":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSESSSSESSsK.....","...KsSSESSSSESSsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........"],"pisca":["......KKKKKKKK........",".....KHHHhhHHHK.......","....KHHHHHhhHHHK......","....KfHHHHHHHHfK......","....KgfSSSSSSfgK......","....KgHHSSSSHHgK......","...KsgSSSSSSSSgsK.....","...KsSSSSSSSSSSsK.....","...KsSEESSSSEESsK.....","....KSSSSSsSSSSK......","....KSSMMMMMMSSK......","....KSmWWWWWWmSK......","....KSSmWWWWmSSK......","....KSSSmmmmSSSK......",".....KSSMMMMSSK.......","......KKKKKKKK........"]},"paraquedas":{"parado":["........KKKKKKKKKK........","......KrRRRRrrrrRRRK......","....KrrrRRRRrrrrRRRRrK....","...KrrrrRRRRrrrrRRRRrrK...","..KRrrrrRRRRrrrrRRRRrrrK..",".KRRrrrrRRRRrrrrRRRRrrrrK.",".KRRrrrrRRRRrrrrRRRRrrrrK.",".KRRrrrrRRRRrrrrRRRRrrrrK.","KKRRKKrrKKRRKKrrKKRRKKrrKK",".l......................l.",".l......................l.",".l......................l.","..l....................l..","..l....................l..","..l....................l..","..l....................l..","..l....................l..","...l..................l...","...l..................l...","...l..................l...","...l..................l...","...l..................l...","....l................l....","....l................l....","....l................l....","....l................l....","....l................l....",".....l..............l.....",".....l..............l.....",".....l..............l.....",".....l..............l.....",".....l..............l.....","......l............l......","......l............l......","......l............l......","......l............l......","......l............l......",".......l..........l.......",".......l..........l.......",".......l..........l.......",".........................."]},"notebook":{"parado":[".....KKKKKKKKKKKKKKKK.....",".....KAAAAAAAAAAAAAAK.....",".....KAAAAAAATAAAAAAK.....",".....KAAAAAATtTAAAAAK.....",".....KAAAAAAATAAAAAAK.....",".....KAAAAAAAAAAAAAAK.....","...KKKKKKKKKKKKKKKKKKKK...","KKKKKKKKKKKKKKKKKKKKKKKKKK","KNNNNNNNNNNNNNNNNNNNNNNNNK","KKKKKKKKKKKKKKKKKKKKKKKKKK","..KnK..............KnK....","..KnK..............KnK....","..KnK..............KnK....","..KKK..............KKK...."]},"zap":{"parado":["....KKKKK....","..KKGGGGGKK..",".KGGGGGGGGGK.",".KGGwwGGGGGK.","KGGGwwGGGGGGK","KGGGwwGGGGGGK","KGGGGwwGGGGGK","KGGGGGwwGwwGK",".KGGGGGGwwwK.",".KGGGGGGGGGK.","KGGKKGGGGGKK.","KGKK.KKKKK...","KK..........."]}}};
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fino = matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -3938,6 +3905,7 @@ button.btn{font-family:inherit;font-weight:inherit}
   }, 170);
 
   const modo = (el, m) => { if (el) el._modo = m; };
+  let naCena = false;   // a pessoa está na cena pós-créditos
   // passo de caminhada escolhido pela posição: rolar devagar anda devagar
   const passo = (el, x, px) => { el._modo = 'anda'; quadro(el, Math.floor(x / (px * 4)) % 2 ? 'anda' : 'parado'); };
 
@@ -3991,7 +3959,8 @@ button.btn{font-family:inherit;font-weight:inherit}
 
   // quiz terminado e buquê completo: sobe, acena, fala e desce
   const subir = (el, ms) => {
-    if (!el || reduced) return;
+    // o recado do buquê não aparece por cima da cena pós-créditos
+    if (!el || reduced || (naCena && el.id === 'guiBuque')) return;
     const spr = el.querySelector('.gui-sprite');
     el.classList.add('is-on');
     modo(spr, 'acena');
@@ -4077,24 +4046,10 @@ button.btn{font-family:inherit;font-weight:inherit}
       path.setAttribute('d', `M${zx.toFixed(1)} ${zy.toFixed(1)} Q${((zx + fx) / 2).toFixed(1)} ${barriga.toFixed(1)} ${fx.toFixed(1)} ${fy.toFixed(1)}`);
       c.el.classList.toggle('is-ligado', ligado);
       msgs.forEach((m, i) => m.classList.toggle('is-on', p > .64 + i * .08));
-    },
-
-    // ato 4: pergunta para a IA quem fez o site; a IA entrega, ele pede segredo
-    ia(c, p) {
-      const k = clamp((p - .04) / .22, 0, 1);
-      const x = lerp(-60, 0, easeFora(k));
-      c.ator.style.opacity = clamp(p / .06, 0, 1).toFixed(2);
-      c.ator.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
-      if (k > 0 && k < 1) passo(c.spr, x + 60, c.px);
-      else modo(c.spr, 'parado');
-      c.el.classList.toggle('is-f1', p > .28 && p < .58);
-      c.el.classList.toggle('is-digita', p > .42 && p < .58);
-      c.el.classList.toggle('is-resp', p >= .58 && p < .8);
-      c.el.classList.toggle('is-f2', p >= .8);
     }
   };
 
-  /* ---- ato 5: a foto em pixel ganha resolução enquanto ele entra nela ---- */
+  /* ---- ato 4: a foto em pixel ganha resolução enquanto ele entra nela ---- */
   const palco = document.getElementById('guiFinal');
   const cartao = palco?.closest('.credits__card');
   const foto = palco?.querySelector('img');
@@ -4198,7 +4153,7 @@ button.btn{font-family:inherit;font-weight:inherit}
   };
   const buque = document.getElementById('guiBuque');
   new IntersectionObserver(([e]) => {
-    ativo = e.isIntersecting;
+    ativo = naCena = e.isIntersecting;
     // a cena é dele: o recado do buquê não fica pendurado no canto
     if (ativo) buque?.classList.remove('is-on');
     if (ativo && !raf) raf = requestAnimationFrame(laco);
