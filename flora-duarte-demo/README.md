@@ -48,6 +48,12 @@ O `js/gui.js` desenha o mascote pixel por pixel (sem imagem) e comanda:
 Para posts, `mascote/gerar.py` exporta o Gui em PNG transparente e grande (terno,
 kimono, casual). É só rodar `python3 mascote/gerar.py` e pegar os arquivos em `mascote/png`.
 
+Para carrosséis e vídeos, `mascote/kit/` traz o kit completo para outra ferramenta usar o
+mascote sem redesenhá-lo: folha do personagem, PNGs e GIFs transparentes (terno e kimono
+nas 5 faixas), sprite sheets, objetos de cena, um carrossel de exemplo e o
+`PROMPT-diretor-de-marketing.txt`. Os PNGs, GIFs e sprites são gerados por
+`python3 mascote/kit.py`.
+
 A fonte de pixel é a Silkscreen (licença SIL Open Font, livre para uso comercial).
 
 ## Antes de impulsionar

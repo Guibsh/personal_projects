@@ -1,0 +1,66 @@
+Você vai usar um mascote fixo nos meus carrosséis e vídeos curtos: o GUI 8-BIT, a versão em pixel art de mim (Guilherme Brites, @ogui.ia). Anexei o kit dele. Leia este briefing inteiro antes de criar qualquer coisa.
+
+1. QUEM ELE É E PARA QUE SERVE
+- É o meu "eu" em miniatura: cabelo degradê (laterais raspadas, volume em cima), bigode, cavanhaque e sorriso largo.
+- Função: guiar quem está vendo de um slide para o outro, provocar curiosidade ("arrasta", "no fim eu te conto") e, no último slide, revelar algo ou chamar para a ação.
+- Personalidade: simpático, um pouco provocador, confiante. Nunca bobo. Fala pouco.
+
+2. ARQUIVOS ANEXOS (use estes; não redesenhe)
+- 00-folha-do-personagem.png: guia visual completo (poses, paleta, regras, balões, tempos de animação).
+- png/: cada pose em PNG com fundo transparente. Nome: gui-[figurino]-[pose].png
+  Figurinos: terno; kimono-faixa-branca, -azul, -roxa, -marrom, -preta; casual.
+  Poses: parado, piscando, acenando, andando. Extra: gui-cabeca-parado e gui-cabeca-piscando (para espiar).
+- gif/: animações prontas com fundo transparente: acenando, piscando, andando e apresentacao (pisca e acena).
+- sprite-sheets/: os 4 quadros lado a lado (parado, piscando, acenando, andando), para animar em editor de vídeo.
+- props/: paraquedas (para ele chegar) e notebook com mesa (para ele trabalhar).
+- exemplo-carrossel-kimono/: 5 slides de referência mostrando como ele vive dentro de um carrossel.
+
+3. REGRAS DE DESENHO (inegociáveis)
+- Nunca gere uma versão nova dele com IA de imagem nem "melhore" o desenho. Use sempre os arquivos do kit. Se faltar uma pose, me diga qual é que eu crio na mesma grade.
+- Grade fixa de 22 x 28 pixels. Ampliar só em escala inteira (2x, 4x, 8x, 12x, 16x) e sem suavização (nearest neighbor / pixelated). Nada de desfoque, sombra suave, brilho, 3D ou degradê nele.
+- Pode espelhar na horizontal (para andar para a esquerda). Não esticar, não achatar, girar no máximo 10 graus.
+- Fundo atrás dele sempre liso: creme #F9F4E6, tinta #2E3226 ou a cor de fundo do carrossel, desde que lisa e com contraste.
+- Num slide de 1080 x 1350, use entre 8x e 16x (176 a 352 px de largura). Ele é coadjuvante: o texto principal continua sendo o protagonista.
+
+4. FIGURINOS: QUANDO USAR CADA UM
+- Terno (padrão): negócios, autoridade, vendas, sites, propostas.
+- Kimono: disciplina, constância, evolução, rotina, "do básico ao avançado". A faixa vira barra de progresso: cada slide sobe uma graduação (branca, azul, roxa, marrom, preta). A faixa preta aparece só no último slide.
+- Casual: bastidores, rotina, conteúdo mais leve.
+
+5. COMO ELE ATUA NUM CARROSSEL
+- Capa: ele espia (só a cabeça surgindo de uma borda) ou acena, com um balão que provoca a arrastar. Ex.: "Cada slide é uma faixa. Arrasta →".
+- Slides do meio: uma ação por slide, ligada ao assunto. Andando = processo, passo a passo. Notebook = construir site ou sistema. Piscando = dica esperta. Acenando = comemorar uma conquista. Ele nunca cobre o texto.
+- Progresso: uma barra no topo em pixel que avança a cada slide ("CARREGANDO..." com porcentagem, ou "FAIXA ROXA ■■■□□ 3/5").
+- Continuidade: quando fizer sentido, ele pode atravessar a emenda entre dois slides (metade do corpo no fim de um, a outra metade no começo do seguinte), para dar a sensação de movimento ao arrastar.
+- Último slide: a recompensa e o convite. Ele acena ao lado do CTA: "Me chama no Direct · @ogui.ia".
+
+6. TEXTO E BALÕES
+- Balão: retângulo de cantos retos, fundo #FFFDF8, borda de 4 px #1E1B18, sombra sólida deslocada 6 px (sem desfoque), rabinho apontando para ele.
+- Fontes: Silkscreen nos balões e na barra de progresso (Google Fonts, gratuita). Cormorant Garamond nos títulos. Jost no texto corrido.
+- Falas curtas: no máximo 8 palavras, português do Brasil, tom de conversa, sem emoji.
+- Cores de destaque da marca: terracota #C0705A e #D89882, oliva #5A6348.
+
+7. ANIMAÇÃO (slides em vídeo, Reels ou Stories)
+- Piscar: quadro "piscando" por 140 ms a cada 2 a 4 segundos, de forma irregular.
+- Acenar: alterna "parado" e "acenando" a cada 340 ms, de 3 a 4 vezes.
+- Andar: alterna "parado" e "andando" a cada 180 ms enquanto ele desliza para o lado.
+- Surgir: sobe de trás de uma borda em 450 ms, com um pulinho no fim.
+- Espiar: só a cabeça aparece por trás de um objeto, fica 2 segundos e volta.
+- Sumir ou revelar: pisca como sinal ruim (liga e desliga a cada 70 ms) e some; ou uma foto minha sai do pixelado e fica nítida.
+- A troca de pose é sempre em degraus, sem transição suave entre quadros. Só a posição na tela pode deslizar suave.
+- Cada slide em vídeo: de 3 a 5 segundos.
+
+8. O QUE NUNCA FAZER
+- Redesenhar, recolorir ou "humanizar" o personagem.
+- Colocar o mascote em cima do título ou de informação importante.
+- Usar mais de uma pose dele no mesmo slide (a não ser numa sequência animada).
+- Falas longas, piadas forçadas ou emoji.
+
+9. O QUE EU QUERO QUE VOCÊ ME ENTREGUE
+Antes de tudo, diga em uma linha qual figurino você escolheu e por quê. Depois, para cada carrossel, um roteiro slide a slide com:
+- número do slide;
+- título e texto;
+- arquivo do mascote (ex.: png/gui-kimono-faixa-roxa-andando.png) e posição (ex.: canto inferior direito, surgindo da borda de baixo);
+- fala do balão, se houver;
+- barra de progresso daquele slide;
+- animação e tempos, se o slide for em vídeo.
