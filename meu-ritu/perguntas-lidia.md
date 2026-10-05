@@ -12,7 +12,7 @@ c) Tem grupo no WhatsApp, comunidade ou algum acompanhamento seu?
 d) Tem bônus? (ex.: guia de alimentação, lista de compras, meditação, cardápio…)
 
 *3. Sua história*
-Me conta em 2 ou 3 frases como você estava no seu pior momento depois da maternidade (cansaço, peso, autoestima). Vai no bloco "Sou a Lidi…".
+Me conta em 2 ou 3 frases como você estava no seu pior momento depois da maternidade (cansaço, peso, autoestima). Vai no bloco "Sou a Lidia…".
 
 *4. Provas e depoimentos*
 a) Você tem foto sua de antes e depois?

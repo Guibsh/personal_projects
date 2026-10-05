@@ -1,4 +1,4 @@
-# design.md — Meu Ritú por Lidi Vicente
+# design.md — Meu Ritú por Lidia Vicente
 
 > Fonte única de verdade visual da landing do Desafio "De Volta Pra Mim".
 

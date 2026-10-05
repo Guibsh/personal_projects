@@ -1,6 +1,6 @@
 # Meu Ritú — Desafio De Volta Pra Mim
 
-Landing page de vendas do desafio de 14 dias (R$ 47) da Lidi Vicente.
+Landing page de vendas do desafio de 14 dias (R$ 47) da Lidia Vicente.
 HTML + CSS + JS puro, sem build.
 
 ## Arquivos
