@@ -150,58 +150,56 @@
     }
   })();
 
-  /* 2. GALHO SECO QUE FLORESCE (seção do cansaço) -------------------------- */
-  (function branch() {
-    var box = document.querySelector(".branch");
-    if (!box) return;
-    var section = box.closest("section");
-    var s = svg("0 0 300 190", box);
-    var main = el("path", { "class": "branch__line", d: "M6,182 C70,160 110,130 160,96 S250,40 294,26" }, s);
-    var twigs = [
-      "M112,128 C116,108 128,96 142,86",
-      "M196,66 C200,52 212,44 226,42",
-      "M66,158 C56,144 56,128 64,116",
-      "M244,48 C248,34 256,24 266,18"
-    ].map(function (d) { return el("path", { "class": "branch__line branch__twig", d: d }, s); });
-
-    var leaves = [];
-    [0.18, 0.3, 0.42, 0.55, 0.68, 0.8, 0.92].forEach(function (f, i) {
-      leaves.push(leafAt(s, main, f, i % 2 ? 1 : -1, 22 + (i % 2) * 4, "leaf leaf--grow"));
-    });
-    twigs.forEach(function (t, i) { leaves.push(leafAt(s, t, 0.6, i % 2 ? -1 : 1, 18, "leaf leaf--grow")); });
-    var flowers = [[142, 86, 9], [226, 42, 8], [64, 116, 7], [266, 18, 8], [294, 26, 6]].map(function (f, i) {
-      return flower(s, f[0], f[1], f[2], i * 90);
-    });
-
-    function update(vh) {
-      var r = section.getBoundingClientRect();
-      var p = reduced ? 1 : clamp((vh * 0.75 - r.top) / (r.height * 0.75), 0, 1);
-      box.style.setProperty("--p", p.toFixed(3));
-      leaves.forEach(function (l, i) { l.classList.toggle("is-on", p > 0.12 + i * (0.6 / leaves.length)); });
-      flowers.forEach(function (f) { f.classList.toggle("is-on", p > 0.82); });
-    }
-    scrollers.push(update);
-    update(window.innerHeight);
-  })();
-
-  /* 3. 20 DOS 1.440 MINUTOS ------------------------------------------------- */
+  /* 2. 20 DOS 1.440 MINUTOS: anima com a rolagem (e desfaz ao voltar) ------- */
   (function minutes() {
     var sec = document.querySelector(".minutes");
     if (!sec) return;
     var ticks = sec.querySelector(".minutes__ticks");
+    var tickEls = [];
     for (var h = 0; h < 24; h++) {
       var a = h / 24 * Math.PI * 2;
       var r1 = 100, r2 = h % 6 === 0 ? 92 : 96;
-      el("line", {
+      tickEls.push(el("line", {
         x1: (110 + Math.sin(a) * r1).toFixed(1), y1: (110 - Math.cos(a) * r1).toFixed(1),
         x2: (110 + Math.sin(a) * r2).toFixed(1), y2: (110 - Math.cos(a) * r2).toFixed(1)
-      }, ticks);
+      }, ticks));
     }
-    onceVisible(sec, function () { sec.classList.add("is-on"); }, 0.4);
-    if (reduced) sec.classList.add("is-on");
+    var track = sec.querySelector(".minutes__track");
+    var slice = sec.querySelector(".minutes__slice");
+    var dayNum = sec.querySelector(".minutes__label--day .minutes__num");
+    var youNum = sec.querySelector(".minutes__label--you .minutes__num");
+    function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+    function stage(p, a, b) { return ease(clamp((p - a) / (b - a), 0, 1)); }
+
+    // Fases (p de 0 a 1 ao longo da seção alta):
+    // 0.05–0.45 relógio do dia se desenha e conta até 1.440
+    // 0.50–0.62 troca o centro para "minutos para você"
+    // 0.55–0.85 a fatia verde cresce devagar de 0 a 20
+    // 0.85–0.95 frase final aparece
+    function update(vh) {
+      var p;
+      if (reduced) p = 1;
+      else {
+        var r = sec.getBoundingClientRect();
+        p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+      }
+      var day = stage(p, 0.05, 0.45);
+      track.style.strokeDashoffset = (1000 * (1 - day)).toFixed(1);
+      tickEls.forEach(function (t, i) { t.style.opacity = day * 24 > i ? 1 : 0; });
+      dayNum.textContent = Math.round(1440 * day).toLocaleString("pt-BR");
+      var swap = stage(p, 0.5, 0.62);
+      sec.style.setProperty("--swap", swap.toFixed(3));
+      var mine = stage(p, 0.55, 0.85);
+      slice.style.strokeDasharray = (20 * mine).toFixed(2) + " 1440";
+      slice.style.opacity = mine > 0 ? 1 : 0;
+      youNum.textContent = Math.round(20 * mine);
+      sec.style.setProperty("--line2", stage(p, 0.55, 0.7).toFixed(3));
+      sec.style.setProperty("--line3", stage(p, 0.82, 0.95).toFixed(3));
+    }
+    scrollers.push(update);
   })();
 
-  /* 4. NINHO COM 3 FILHOTES ------------------------------------------------- */
+  /* 3. NINHO COM 3 FILHOTES ------------------------------------------------- */
   (function nest() {
     var btn = document.querySelector(".nest");
     if (!btn) return;
@@ -242,117 +240,127 @@
     if (reduced) btn.classList.add("is-on");
   })();
 
-  /* 5. JARDIM DE 14 DIAS ---------------------------------------------------- */
-  (function garden() {
-    var box = document.querySelector(".garden");
+  /* 4. CAMINHO DE 14 DIAS (vertical): o caule cresce enquanto você desce ---- */
+  (function journey() {
+    var box = document.querySelector(".journey");
     if (!box) return;
-    var holder = box.querySelector(".garden__svg");
-    var nEl = box.querySelector(".garden__n");
-    var tEl = box.querySelector(".garden__t");
-    var DAYS = [
-      "O primeiro passo", "Acordar o corpo", "Força nas pernas", "Abdômen e postura",
-      "Mais energia", "Mobilidade", "Metade do caminho", "Glúteos",
-      "Braços e costas", "Resistência", "Corpo inteiro", "Constância",
-      "Confiança", "De volta pra mim"
-    ];
-    var leaves = [], flowers = [], stem, stemLen, picked = false, lastDay = 0, mode = "";
+    var holder = box.querySelector(".journey__stem");
+    var list = box.querySelector(".journey__list");
+    var days = Array.prototype.slice.call(list.querySelectorAll(".day"));
+    var stem, stemLen, leaves = [], flowers = [], marks = [];
 
     function build() {
-      var wide = window.innerWidth >= 700;
-      if ((wide ? "w" : "n") === mode) return;
-      mode = wide ? "w" : "n";
       holder.innerHTML = "";
-      leaves = []; flowers = [];
-      var s = wide ? svg("0 0 1000 230", holder) : svg("0 0 600 300", holder);
-      var d = wide
-        ? "M20,170 C170,120 260,200 420,150 S690,80 900,118"
-        : "M14,230 C110,170 170,260 280,190 S440,90 540,140";
-      el("path", { "class": "garden__ghost", d: d }, s);
-      stem = el("path", { "class": "garden__stem", d: d }, s);
+      leaves = []; flowers = []; marks = [];
+      var w = holder.offsetWidth, h = list.offsetHeight;
+      if (!w || !h) return;
+      var cx = w / 2, top = 0, bottom = h - 20;
+      var s = svg("0 0 " + w + " " + h, holder);
+      s.setAttribute("width", w); s.setAttribute("height", h);
+      // Caule com ondulação suave
+      var d = "M" + cx + "," + top, steps = 24;
+      for (var k = 1; k <= steps; k++) {
+        var y = top + (bottom - top) * k / steps;
+        var yPrev = top + (bottom - top) * (k - 1) / steps;
+        var x = cx + Math.sin(k * 1.3) * 6;
+        d += " Q" + (cx + Math.sin(k * 1.3 - 0.65) * 12).toFixed(1) + "," + ((y + yPrev) / 2).toFixed(1) + " " + x.toFixed(1) + "," + y.toFixed(1);
+      }
+      el("path", { "class": "journey__ghost", d: d }, s);
+      stem = el("path", { "class": "journey__line", d: d }, s);
       stemLen = stem.getTotalLength();
       stem.style.strokeDasharray = stemLen;
-      DAYS.forEach(function (t, i) {
-        var frac = 0.05 + i * (0.86 / 13);
-        var leaf = leafAt(s, stem, frac, i % 2 ? 1 : -1, wide ? 40 : 46, "leaf leaf--grow garden__leaf");
-        var hit = el("circle", { "class": "garden__hit", cx: 15, cy: 0, r: 17 }, leaf);
-        leaf.setAttribute("tabindex", "0");
-        leaf.setAttribute("role", "button");
-        leaf.setAttribute("aria-label", "Dia " + (i + 1) + ": " + t);
-        leaf.addEventListener("click", function () { picked = true; show(i); });
-        leaf.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); picked = true; show(i); }
-        });
-        leaves.push(leaf);
+      var listTop = list.getBoundingClientRect().top;
+      days.forEach(function (li, i) {
+        var y = li.getBoundingClientRect().top - listTop + 14;
+        // Ponto do caule nessa altura (busca simples)
+        var lo = 0, hi = stemLen;
+        for (var n = 0; n < 18; n++) {
+          var mid = (lo + hi) / 2;
+          if (stem.getPointAtLength(mid).y < y) lo = mid; else hi = mid;
+        }
+        marks.push(lo / stemLen);
+        var pt = stem.getPointAtLength(lo);
+        var side = i % 2 ? -1 : 1;
+        var outer = el("g", { transform: "translate(" + pt.x.toFixed(1) + "," + pt.y.toFixed(1) + ") rotate(" + (side > 0 ? -35 : 215) + ") scale(0.85)" }, s);
+        var g = el("g", { "class": "leaf leaf--grow" }, outer);
+        el("path", { "class": "leaf__shape", d: LEAF }, g);
+        el("path", { "class": "leaf__vein", d: LEAF_VEIN }, g);
+        leaves.push(g);
       });
       var end = stem.getPointAtLength(stemLen);
-      var fs = wide ? 1 : 1.25;
-      [[0, -4, 11], [-16, 10, 8], [14, 14, 7], [-4, 26, 6]].forEach(function (f, i) {
-        flowers.push(flower(s, end.x + f[0] * fs, end.y + f[1] * fs, f[2] * fs, i * 140));
+      [[0, 0, 9], [-12, -10, 6.5], [11, -8, 6]].forEach(function (f, i) {
+        flowers.push(flower(s, end.x + f[0], end.y + f[1], f[2], i * 140));
       });
       runScroll();
     }
 
-    function show(i) {
-      leaves.forEach(function (l, k) { l.classList.toggle("is-active", k === i); });
-      nEl.textContent = "Dia " + (i + 1);
-      tEl.textContent = DAYS[i];
-    }
-
     function update(vh) {
       if (!stem) return;
-      var r = box.getBoundingClientRect();
-      var p = reduced ? 1 : clamp((vh * 0.9 - r.top) / (vh * 0.55), 0, 1);
+      var r = list.getBoundingClientRect();
+      // A ponta do caule acompanha uma linha imaginária a 65% da altura da tela
+      var p = reduced ? 1 : clamp((vh * 0.65 - r.top) / r.height, 0, 1);
       stem.style.strokeDashoffset = (stemLen * (1 - p)).toFixed(1);
-      var grown = 0;
-      leaves.forEach(function (l, i) {
-        var onNow = p >= 0.05 + i * (0.86 / 13);
-        l.classList.toggle("is-on", onNow);
-        if (onNow) grown = i + 1;
+      days.forEach(function (li, i) {
+        var onNow = p >= marks[i];
+        li.classList.toggle("is-on", onNow);
+        leaves[i] && leaves[i].classList.toggle("is-on", onNow);
       });
-      flowers.forEach(function (f) { f.classList.toggle("is-on", p >= 0.98); });
-      if (!picked && grown && grown !== lastDay) { lastDay = grown; show(grown - 1); }
+      flowers.forEach(function (f) { f.classList.toggle("is-on", p >= 0.995); });
     }
 
     scrollers.push(update);
+    var rt;
+    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(build, 150); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(build); else build();
     build();
-    window.addEventListener("resize", build);
   })();
 
-  /* 6. PÁSSAROS QUE LEVANTAM VOO (CTA final) ------------------------------- */
+  /* 5. PÁSSAROS NO CTA FINAL: um bando pequeno cruza a seção em curva ------- */
   (function finalBirds() {
     var box = document.querySelector(".final__birds");
-    if (!box) return;
+    if (!box || reduced) return;
     var section = box.closest("section");
-    var s = svg("0 0 600 140", box);
-    var branchPath = el("path", { "class": "final__branch", d: "M-10,118 C90,104 180,112 280,100 S440,84 520,90" }, s);
-    leafAt(s, branchPath, 0.12, 1, 22, "leaf");
-    leafAt(s, branchPath, 0.5, -1, 20, "leaf");
-    leafAt(s, branchPath, 0.86, 1, 18, "leaf");
-    var len = branchPath.getTotalLength();
-    var PERCH = "M-8,1 L-1,-1 C0,-6 6,-8 9,-6 C10,-10 15,-11 16,-7 L19,-6.5 L16,-5.5 C16,-1 11,2 4,1.5 C1.5,1.3 0,0.5 -1,-1";
-    [0.22, 0.34, 0.47, 0.62, 0.74].forEach(function (f, i) {
-      var pt = branchPath.getPointAtLength(len * f);
-      var g = el("g", { transform: "translate(" + pt.x.toFixed(1) + "," + (pt.y - 5).toFixed(1) + ") scale(1.45)" }, s);
-      var bird = el("g", {
-        "class": "pbird",
-        style: "--dx:" + (180 + i * 50) + "px;--dy:" + (-170 - (i % 3) * 40) + "px;--delay:" + (i * 140) + "ms"
-      }, g);
-      var perch = el("g", { "class": "pbird__perch" }, bird);
-      el("path", { d: PERCH }, perch);
-      el("circle", { cx: 12.5, cy: -6.5, r: 0.8, "class": "pbird__eye" }, perch);
-      el("path", { d: "M5,1.5 L5,5 M8,1.5 L8,5" }, perch);
-      var fly = flyingBird(bird, 0.9);
-      fly.setAttribute("class", "fbird pbird__fly");
-      fly.setAttribute("transform", "translate(-4,-10)");
+    var flock = [
+      // [início x, início y, controle x, controle y, fim x, fim y] em % da seção; escala; atraso (s)
+      [-6, 26, 40, -6, 108, 10, 1, 0],
+      [-8, 20, 44, -10, 108, 4, 0.8, 0.45],
+      [-4, 32, 36, 0, 110, 16, 0.9, 0.9],
+      [-10, 24, 30, -2, 106, 20, 0.65, 1.3]
+    ];
+    var birds = flock.map(function (b) {
+      var wrap = document.createElement("div");
+      wrap.className = "flyer";
+      wrap.style.setProperty("--s", b[6]);
+      wrap.style.animationDelay = b[7] + "s";
+      var s = svg("0 0 26 12", wrap);
+      flyingBird(s, 1);
+      box.appendChild(wrap);
+      return { el: wrap, pts: b };
     });
-    if (reduced) return;
-    function takeOff() { section.classList.add("birds-away"); }
-    onceVisible(section, function () { setTimeout(takeOff, 1600); }, 0.55);
+    function paths() {
+      var W = section.offsetWidth, H = section.offsetHeight;
+      birds.forEach(function (b) {
+        var p = b.pts;
+        b.el.style.offsetPath = 'path("M' + (p[0] * W / 100) + "," + (p[1] * H / 100) +
+          " Q" + (p[2] * W / 100) + "," + (p[3] * H / 100) + " " + (p[4] * W / 100) + "," + (p[5] * H / 100) + '")';
+      });
+    }
+    function fly() {
+      paths();
+      section.classList.remove("flock-go");
+      void section.offsetWidth;
+      section.classList.add("flock-go");
+    }
+    onceVisible(section, function () { setTimeout(fly, 700); }, 0.5);
     var btn = section.querySelector(".btn");
-    if (btn) btn.addEventListener("mouseenter", takeOff);
+    var last = 0;
+    if (btn) btn.addEventListener("mouseenter", function () {
+      if (Date.now() - last > 9000) { last = Date.now(); fly(); }
+    });
+    window.addEventListener("resize", paths);
   })();
 
-  /* 7. PÉTALAS NA OFERTA ---------------------------------------------------- */
+  /* 6. PÉTALAS NA OFERTA ---------------------------------------------------- */
   (function petals() {
     if (!on("petalas") || reduced) return;
     var offer = document.querySelector(".offer");

@@ -462,32 +462,32 @@ p { text-wrap: pretty; }
 .flower__petal { fill: var(--color-blush); stroke: #C99A8C; stroke-width: 0.5; }
 .flower__core { fill: var(--color-mustard); }
 
-/* Galho seco que floresce */
-.branch { --p: 0; width: min(100%, 340px); margin-top: var(--space-8); }
-.branch svg { width: 100%; overflow: visible; }
-.branch__line {
-  fill: none; stroke-linecap: round;
-  stroke: color-mix(in srgb, var(--color-twig) calc(var(--p) * 100%), #B9B0A6);
-  stroke-width: 2.2;
-}
-.branch__twig { stroke-width: 1.5; }
-
-/* 20 dos 1.440 minutos */
-.minutes { background: var(--color-bg); }
-.minutes__grid { display: grid; gap: var(--space-12); align-items: center; justify-items: center; }
-.minutes__text { max-width: 34rem; }
-.minutes__text p:last-child { color: var(--color-text-muted); margin-top: var(--space-6); }
-.minutes__ring { position: relative; width: 260px; }
+/* 20 dos 1.440 minutos: seção alta com conteúdo fixo, animada pela rolagem */
+.minutes { --swap: 0; --line2: 0; --line3: 0; position: relative; height: 260vh; background: var(--color-bg); }
+.minutes__sticky { position: sticky; top: 68px; height: calc(100vh - 68px); display: flex; align-items: center; }
+.minutes__grid { display: grid; gap: var(--space-8); align-items: center; justify-items: center; width: 100%; }
+.minutes__text { max-width: 34rem; text-align: center; }
+.minutes__line2 { display: block; opacity: var(--line2); transform: translateY(calc((1 - var(--line2)) * 12px)); }
+.minutes__line3 { color: var(--color-text-muted); margin-top: var(--space-6); opacity: var(--line3); transform: translateY(calc((1 - var(--line3)) * 12px)); }
+.minutes__ring { position: relative; width: min(240px, 62vw); }
 .minutes__ring svg { width: 100%; height: auto; overflow: visible; transform: rotate(-90deg); }
-.minutes__ticks line { stroke: var(--color-border); stroke-width: 1.2; }
-.minutes__track { fill: none; stroke: #D9CBB8; stroke-width: 1.5; stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke-dashoffset 1.6s var(--ease-out); }
-.minutes__slice { fill: none; stroke: var(--color-brand); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 0 1440; transition: stroke-dasharray 900ms 1.4s var(--ease-out); }
-.minutes.is-on .minutes__track { stroke-dashoffset: 0; }
-.minutes.is-on .minutes__slice { stroke-dasharray: 20 1440; }
-.minutes__center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; font-family: var(--font-display); line-height: 1; }
-.minutes__center span { font-size: 4rem; color: var(--color-brand); }
-.minutes__center small { font-family: var(--font-body); font-size: var(--text-xs); letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); margin-top: var(--space-2); }
-@media (min-width: 900px) { .minutes__grid { grid-template-columns: 0.8fr 1.2fr; justify-items: start; gap: var(--space-24); } .minutes__ring { justify-self: end; width: 300px; } }
+.minutes__ticks line { stroke: #CDBBA4; stroke-width: 1.2; transition: opacity 300ms; }
+.minutes__track { fill: none; stroke: #CDBBA4; stroke-width: 1.5; stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+.minutes__slice { fill: none; stroke: var(--color-brand); stroke-width: 14; stroke-linecap: round; stroke-dasharray: 0 1440; opacity: 0; }
+.minutes__center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+.minutes__label { grid-area: 1 / 1; display: grid; justify-items: center; }
+.minutes__label--day { opacity: calc(1 - var(--swap)); transform: scale(calc(1 - var(--swap) * 0.15)); }
+.minutes__label--you { opacity: var(--swap); transform: scale(calc(0.85 + var(--swap) * 0.15)); }
+.minutes__num { font-family: var(--font-display); font-size: clamp(2.6rem, 9vw, 3.6rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.minutes__num--green { color: var(--color-brand); font-size: clamp(3.2rem, 11vw, 4.4rem); }
+.minutes__label small { font-size: var(--text-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); margin-top: var(--space-2); max-width: 9rem; line-height: 1.4; }
+@media (min-width: 900px) {
+  .minutes__grid { grid-template-columns: 0.9fr 1.1fr; justify-items: start; gap: var(--space-24); }
+  .minutes__ring { justify-self: end; width: 320px; }
+  .minutes__text { text-align: left; }
+}
+.fx-reduced .minutes { height: auto; padding-block: var(--section-y); }
+.fx-reduced .minutes__sticky { position: static; height: auto; }
 
 /* Ninho com 3 filhotes */
 .story__media { position: relative; }
@@ -498,15 +498,15 @@ p { text-wrap: pretty; }
   -webkit-tap-highlight-color: transparent;
 }
 .nest svg { width: 100%; overflow: visible; }
-.nest__branch { fill: none; stroke: var(--color-twig); stroke-width: 2.4; stroke-linecap: round; }
-.nest__bowl { fill: #C9A985; stroke: var(--color-twig); stroke-width: 1.4; stroke-linejoin: round; }
-.nest__twig { fill: none; stroke: var(--color-twig); stroke-width: 1; stroke-linecap: round; opacity: 0.7; }
+.nest__branch { fill: none; stroke: #8A6A52; stroke-width: 1.8; stroke-linecap: round; }
+.nest__bowl { fill: #DCC6A8; stroke: #8A6A52; stroke-width: 1.1; stroke-linejoin: round; }
+.nest__twig { fill: none; stroke: #8A6A52; stroke-width: 0.8; stroke-linecap: round; opacity: 0.55; }
 .chick { transform-box: fill-box; transform-origin: 50% 100%; transform: translateY(18px); transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--d); }
 .nest.is-on .chick { transform: none; }
-.chick__body { fill: #F3E6D3; stroke: var(--color-twig); stroke-width: 1.3; }
-.chick__eye { fill: var(--color-text); }
-.chick__tuft { fill: none; stroke: var(--color-twig); stroke-width: 1; stroke-linecap: round; }
-.chick__beak-up, .chick__beak-down { fill: var(--color-mustard); stroke: #9C7434; stroke-width: 0.6; stroke-linejoin: round; }
+.chick__body { fill: #FBF5EC; stroke: #8A6A52; stroke-width: 1; }
+.chick__eye { fill: #5A4232; }
+.chick__tuft { fill: none; stroke: #8A6A52; stroke-width: 0.8; stroke-linecap: round; }
+.chick__beak-up, .chick__beak-down { fill: #D9B477; stroke: none; }
 .chick__beak-up { transform-origin: 0 1px; }
 .chick__beak-down { transform-origin: 0 1.5px; transform: scaleY(0.3); }
 .chick__chirp path { fill: none; stroke: var(--color-brand); stroke-width: 1.1; stroke-linecap: round; }
@@ -520,42 +520,42 @@ p { text-wrap: pretty; }
 .nest:focus-visible { outline-offset: 6px; }
 @media (min-width: 900px) { .nest { right: -18%; bottom: -6%; } }
 
-/* Jardim de 14 dias */
-.garden { margin-bottom: var(--space-16); }
-.garden__svg svg { width: 100%; height: auto; overflow: visible; display: block; }
-.garden__ghost { fill: none; stroke: rgba(58, 37, 25, 0.12); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; }
-.garden__stem { fill: none; stroke: var(--color-twig); stroke-width: 2.4; stroke-linecap: round; transition: stroke-dashoffset 120ms linear; }
-.garden__leaf { cursor: pointer; outline: none; }
-.garden__leaf .leaf__shape { transition: fill var(--dur-fast); }
-.garden__leaf:hover .leaf__shape, .garden__leaf:focus-visible .leaf__shape { fill: #9FAE82; }
-.garden__leaf.is-active .leaf__shape { fill: var(--color-brand); }
-.garden__leaf.is-active .leaf__vein { stroke: var(--color-on-dark); opacity: 0.8; }
-.garden__hit { fill: transparent; }
-.garden__day { display: flex; gap: var(--space-4); align-items: baseline; justify-content: center; margin-top: var(--space-4); min-height: 2.5rem; }
-.garden__n { font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-brand); }
-.garden__t { font-family: var(--font-display); font-size: var(--text-lg); font-style: italic; }
-.garden__hint { text-align: center; font-size: var(--text-xs); color: var(--color-text-muted); }
-
-/* Pássaros que levantam voo no final */
-.final { position: relative; overflow: hidden; }
-.final__birds { position: absolute; top: 0; left: 0; width: min(680px, 100%); color: var(--color-on-dark); pointer-events: none; }
-.final__birds svg { width: 100%; overflow: visible; }
-.final__branch { fill: none; stroke: #8A6A52; stroke-width: 2.2; stroke-linecap: round; }
-.final__birds .leaf__shape { fill: #7C8B63; }
-.pbird__perch path { fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
-.pbird__perch .pbird__eye { fill: currentColor; }
-.pbird__fly { opacity: 0; }
-.birds-away .pbird { animation: takeoff 3.2s cubic-bezier(0.45, 0, 0.6, 1) var(--delay) forwards; }
-.birds-away .pbird__perch { animation: fade-out 200ms var(--delay) forwards; }
-.birds-away .pbird__fly { animation: fade-in 200ms var(--delay) forwards; }
-@keyframes takeoff {
-  0% { transform: none; }
-  15% { transform: translate(calc(var(--dx) * 0.08), calc(var(--dy) * 0.18)); }
-  100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+/* Caminho de 14 dias (vertical) */
+.journey { margin-top: var(--space-24); }
+.journey__head { text-align: center; margin-bottom: var(--space-12); }
+.journey__title { font-size: var(--text-2xl); }
+.journey__hint { font-size: var(--text-xs); margin-top: var(--space-3); }
+.journey__body { position: relative; max-width: 860px; margin-inline: auto; }
+.journey__stem { position: absolute; top: 0; bottom: 0; left: 0; width: 44px; pointer-events: none; }
+.journey__stem svg { position: absolute; inset: 0; overflow: visible; }
+.journey__ghost { fill: none; stroke: rgba(58, 37, 25, 0.13); stroke-width: 1.6; stroke-dasharray: 2 7; stroke-linecap: round; }
+.journey__line { fill: none; stroke: var(--color-twig); stroke-width: 2.2; stroke-linecap: round; }
+.journey__list { display: grid; gap: var(--space-8); padding-left: 64px; }
+.day { opacity: 0.18; transform: translateX(10px); transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); }
+.day.is-on { opacity: 1; transform: none; }
+.day__n { font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-brand); }
+.day h3 { font-size: var(--text-lg); margin-top: var(--space-2); }
+.day p { color: var(--color-text-muted); margin-top: var(--space-2); max-width: 30rem; font-size: var(--text-sm); }
+.day:last-child h3 { font-style: italic; color: var(--color-brand); }
+@media (min-width: 900px) {
+  .journey__stem { left: 50%; translate: -50% 0; }
+  .journey__list { padding-left: 0; grid-template-columns: 1fr 1fr; column-gap: 120px; row-gap: 0; grid-auto-rows: minmax(4.5rem, auto); }
+  .day { grid-row: var(--row) / span 2; padding-block: var(--space-2) var(--space-6); }
+  .day:nth-child(odd) { grid-column: 2; transform: translateX(-10px); }
+  .day:nth-child(even) { grid-column: 1; text-align: right; transform: translateX(10px); }
+  .day:nth-child(even) p { margin-left: auto; }
+  .day.is-on { transform: none; }
 }
-@keyframes fade-out { to { opacity: 0; } }
-@keyframes fade-in { to { opacity: 1; } }
-.final__grid { position: relative; padding-top: var(--space-16); }
+.fx-reduced .day { opacity: 1; transform: none; }
+
+/* Pássaros no CTA final: bando pequeno em curva */
+.final { position: relative; overflow: hidden; }
+.final__birds { position: absolute; inset: 0; pointer-events: none; z-index: 0; color: rgba(234, 219, 200, 0.85); }
+.final__grid { position: relative; z-index: 1; }
+.flyer { position: absolute; top: 0; left: 0; width: calc(46px * var(--s)); offset-rotate: auto; offset-distance: 0%; opacity: 0; }
+.flyer svg { width: 100%; overflow: visible; }
+.flock-go .flyer { animation: flock 7.5s cubic-bezier(0.35, 0.05, 0.55, 1) forwards; }
+@keyframes flock { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
 
 /* Pétalas na oferta */
 .offer { position: relative; overflow: hidden; }
@@ -657,7 +657,6 @@ p { text-wrap: pretty; }
         <div>
           <p class="eyebrow">Se você está aqui</p>
           <h2>Talvez você conheça esse cansaço.</h2>
-          <div class="branch" data-fx="galhoSeco" aria-hidden="true"></div>
         </div>
         <ul class="pain__list" data-reveal-stagger="90">
           <li>O dia inteiro é dos filhos, da casa, do trabalho. Para você, sobra o que sobra.</li>
@@ -668,21 +667,26 @@ p { text-wrap: pretty; }
       </div>
     </section>
 
-    <!-- 20 DOS 1.440 MINUTOS -->
-    <section class="section minutes" data-fx="minutos">
-      <div class="container minutes__grid">
-        <div class="minutes__ring" aria-hidden="true">
-          <svg viewBox="0 0 220 220" width="260" height="260">
-            <g class="minutes__ticks"></g>
-            <circle class="minutes__track" cx="110" cy="110" r="90" pathLength="1000"/>
-            <circle class="minutes__slice" cx="110" cy="110" r="90" pathLength="1440"/>
-          </svg>
-          <div class="minutes__center"><span data-counter="20">20</span><small>min</small></div>
-        </div>
-        <div class="minutes__text" data-reveal>
-          <p class="eyebrow">A conta é simples</p>
-          <h2>Seu dia tem 1.440 minutos. <em>20 são seus.</em></h2>
-          <p>É pouco mais de 1% do seu dia, menos que uma ida ao mercado. E é o suficiente para, dia após dia, voltar a se sentir bem no próprio corpo.</p>
+    <!-- 20 DOS 1.440 MINUTOS (anima conforme a rolagem, nos dois sentidos) -->
+    <section class="minutes" data-fx="minutos">
+      <div class="minutes__sticky">
+        <div class="container minutes__grid">
+          <div class="minutes__ring" aria-hidden="true">
+            <svg viewBox="0 0 220 220" width="260" height="260">
+              <g class="minutes__ticks"></g>
+              <circle class="minutes__track" cx="110" cy="110" r="90" pathLength="1000"/>
+              <circle class="minutes__slice" cx="110" cy="110" r="90" pathLength="1440"/>
+            </svg>
+            <div class="minutes__center">
+              <div class="minutes__label minutes__label--day"><span class="minutes__num">1.440</span><small>minutos no seu dia</small></div>
+              <div class="minutes__label minutes__label--you"><span class="minutes__num minutes__num--green">20</span><small>minutos para você</small></div>
+            </div>
+          </div>
+          <div class="minutes__text">
+            <p class="eyebrow">A conta é simples</p>
+            <h2><span class="minutes__line1">Seu dia tem 1.440 minutos.</span> <em class="minutes__line2">20 são seus.</em></h2>
+            <p class="minutes__line3">É pouco mais de 1% do seu dia, menos que uma ida ao mercado. E é o suficiente para, dia após dia, voltar a se sentir bem no próprio corpo.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -719,11 +723,6 @@ p { text-wrap: pretty; }
           <h2>14 dias para criar o seu ritual.</h2>
           <p class="section-head__lead">Um passo por dia. Você não precisa de motivação para começar, ela aparece no caminho.</p>
         </div>
-        <div class="garden" data-fx="jardim14">
-          <div class="garden__svg"></div>
-          <p class="garden__day" aria-live="polite"><span class="garden__n">Dia 1</span><span class="garden__t">O primeiro passo</span></p>
-          <p class="garden__hint">Toque nas folhas para ver cada dia · <mark class="ph">temas de exemplo, a Lidia confirma</mark></p>
-        </div>
         <ol class="steps" data-reveal-stagger="100">
           <li>
             <span class="steps__n">01</span>
@@ -746,6 +745,89 @@ p { text-wrap: pretty; }
             <p><mark class="ph">[confirmar: grupo no WhatsApp? comunidade? acompanhamento?]</mark></p>
           </li>
         </ol>
+
+        <div class="journey" data-fx="jardim14">
+          <div class="journey__head">
+            <p class="eyebrow">Dia a dia</p>
+            <h3 class="journey__title">Seu caminho de 14 dias</h3>
+            <p class="journey__hint"><mark class="ph">temas e descrições de exemplo, a Lidia confirma</mark></p>
+          </div>
+          <div class="journey__body">
+            <div class="journey__stem" aria-hidden="true"></div>
+            <ol class="journey__list">
+          <li class="day" style="--i:0;--row:1">
+            <span class="day__n">Dia 1</span>
+            <h3>O primeiro passo</h3>
+            <p>Seu primeiro treino de 20 minutos. Só de começar, você já fez o mais difícil.</p>
+          </li>
+          <li class="day" style="--i:1;--row:2">
+            <span class="day__n">Dia 2</span>
+            <h3>Acordar o corpo</h3>
+            <p>Movimentos leves para soltar as articulações e voltar a respirar fundo.</p>
+          </li>
+          <li class="day" style="--i:2;--row:3">
+            <span class="day__n">Dia 3</span>
+            <h3>Força nas pernas</h3>
+            <p>Agachamentos adaptados, no seu ritmo, para pernas mais firmes no dia a dia.</p>
+          </li>
+          <li class="day" style="--i:3;--row:4">
+            <span class="day__n">Dia 4</span>
+            <h3>Abdômen e postura</h3>
+            <p>Fortalecer o centro do corpo, que a gestação tanto exigiu.</p>
+          </li>
+          <li class="day" style="--i:4;--row:5">
+            <span class="day__n">Dia 5</span>
+            <h3>Mais energia</h3>
+            <p>Um treino para sentir o coração acelerar e o ânimo voltar.</p>
+          </li>
+          <li class="day" style="--i:5;--row:6">
+            <span class="day__n">Dia 6</span>
+            <h3>Mobilidade</h3>
+            <p>Cuidar das costas, do quadril e do pescoço, que carregam a rotina inteira.</p>
+          </li>
+          <li class="day" style="--i:6;--row:7">
+            <span class="day__n">Dia 7</span>
+            <h3>Metade do caminho</h3>
+            <p>Uma pausa para perceber o que já mudou em você em uma semana.</p>
+          </li>
+          <li class="day" style="--i:7;--row:8">
+            <span class="day__n">Dia 8</span>
+            <h3>Glúteos</h3>
+            <p>Força e forma, com exercícios simples que cabem na sala de casa.</p>
+          </li>
+          <li class="day" style="--i:8;--row:9">
+            <span class="day__n">Dia 9</span>
+            <h3>Braços e costas</h3>
+            <p>Para pegar filho no colo, carregar sacola e não sentir dor.</p>
+          </li>
+          <li class="day" style="--i:9;--row:10">
+            <span class="day__n">Dia 10</span>
+            <h3>Resistência</h3>
+            <p>Você vai notar: o mesmo treino do começo agora parece mais leve.</p>
+          </li>
+          <li class="day" style="--i:10;--row:11">
+            <span class="day__n">Dia 11</span>
+            <h3>Corpo inteiro</h3>
+            <p>Tudo o que você aprendeu, junto num treino só.</p>
+          </li>
+          <li class="day" style="--i:11;--row:12">
+            <span class="day__n">Dia 12</span>
+            <h3>Constância</h3>
+            <p>O treino já tem horário na sua rotina. Virou ritual.</p>
+          </li>
+          <li class="day" style="--i:12;--row:13">
+            <span class="day__n">Dia 13</span>
+            <h3>Confiança</h3>
+            <p>Olhar no espelho e gostar do que vê, de novo.</p>
+          </li>
+          <li class="day" style="--i:13;--row:14">
+            <span class="day__n">Dia 14</span>
+            <h3>De volta pra mim</h3>
+            <p>Você se reconhece. E está pronta para o próximo passo.</p>
+          </li>
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -921,7 +1003,6 @@ p { text-wrap: pretty; }
     window.MEU_RITU_FX = {
       sombraFolhas: true,   // sombra de folhas balançando na primeira tela
       passarosTopo: true,   // passarinhos cruzando a primeira tela
-      galhoSeco: true,      // galho seco que floresce na seção do cansaço
       minutos: true,        // círculo "20 dos seus 1.440 minutos"
       ninho: true,          // ninho com 3 filhotes na história
       jardim14: true,       // jardim de 14 dias em "Como funciona"
@@ -1311,58 +1392,56 @@ p { text-wrap: pretty; }
     }
   })();
 
-  /* 2. GALHO SECO QUE FLORESCE (seção do cansaço) -------------------------- */
-  (function branch() {
-    var box = document.querySelector(".branch");
-    if (!box) return;
-    var section = box.closest("section");
-    var s = svg("0 0 300 190", box);
-    var main = el("path", { "class": "branch__line", d: "M6,182 C70,160 110,130 160,96 S250,40 294,26" }, s);
-    var twigs = [
-      "M112,128 C116,108 128,96 142,86",
-      "M196,66 C200,52 212,44 226,42",
-      "M66,158 C56,144 56,128 64,116",
-      "M244,48 C248,34 256,24 266,18"
-    ].map(function (d) { return el("path", { "class": "branch__line branch__twig", d: d }, s); });
-
-    var leaves = [];
-    [0.18, 0.3, 0.42, 0.55, 0.68, 0.8, 0.92].forEach(function (f, i) {
-      leaves.push(leafAt(s, main, f, i % 2 ? 1 : -1, 22 + (i % 2) * 4, "leaf leaf--grow"));
-    });
-    twigs.forEach(function (t, i) { leaves.push(leafAt(s, t, 0.6, i % 2 ? -1 : 1, 18, "leaf leaf--grow")); });
-    var flowers = [[142, 86, 9], [226, 42, 8], [64, 116, 7], [266, 18, 8], [294, 26, 6]].map(function (f, i) {
-      return flower(s, f[0], f[1], f[2], i * 90);
-    });
-
-    function update(vh) {
-      var r = section.getBoundingClientRect();
-      var p = reduced ? 1 : clamp((vh * 0.75 - r.top) / (r.height * 0.75), 0, 1);
-      box.style.setProperty("--p", p.toFixed(3));
-      leaves.forEach(function (l, i) { l.classList.toggle("is-on", p > 0.12 + i * (0.6 / leaves.length)); });
-      flowers.forEach(function (f) { f.classList.toggle("is-on", p > 0.82); });
-    }
-    scrollers.push(update);
-    update(window.innerHeight);
-  })();
-
-  /* 3. 20 DOS 1.440 MINUTOS ------------------------------------------------- */
+  /* 2. 20 DOS 1.440 MINUTOS: anima com a rolagem (e desfaz ao voltar) ------- */
   (function minutes() {
     var sec = document.querySelector(".minutes");
     if (!sec) return;
     var ticks = sec.querySelector(".minutes__ticks");
+    var tickEls = [];
     for (var h = 0; h < 24; h++) {
       var a = h / 24 * Math.PI * 2;
       var r1 = 100, r2 = h % 6 === 0 ? 92 : 96;
-      el("line", {
+      tickEls.push(el("line", {
         x1: (110 + Math.sin(a) * r1).toFixed(1), y1: (110 - Math.cos(a) * r1).toFixed(1),
         x2: (110 + Math.sin(a) * r2).toFixed(1), y2: (110 - Math.cos(a) * r2).toFixed(1)
-      }, ticks);
+      }, ticks));
     }
-    onceVisible(sec, function () { sec.classList.add("is-on"); }, 0.4);
-    if (reduced) sec.classList.add("is-on");
+    var track = sec.querySelector(".minutes__track");
+    var slice = sec.querySelector(".minutes__slice");
+    var dayNum = sec.querySelector(".minutes__label--day .minutes__num");
+    var youNum = sec.querySelector(".minutes__label--you .minutes__num");
+    function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+    function stage(p, a, b) { return ease(clamp((p - a) / (b - a), 0, 1)); }
+
+    // Fases (p de 0 a 1 ao longo da seção alta):
+    // 0.05–0.45 relógio do dia se desenha e conta até 1.440
+    // 0.50–0.62 troca o centro para "minutos para você"
+    // 0.55–0.85 a fatia verde cresce devagar de 0 a 20
+    // 0.85–0.95 frase final aparece
+    function update(vh) {
+      var p;
+      if (reduced) p = 1;
+      else {
+        var r = sec.getBoundingClientRect();
+        p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+      }
+      var day = stage(p, 0.05, 0.45);
+      track.style.strokeDashoffset = (1000 * (1 - day)).toFixed(1);
+      tickEls.forEach(function (t, i) { t.style.opacity = day * 24 > i ? 1 : 0; });
+      dayNum.textContent = Math.round(1440 * day).toLocaleString("pt-BR");
+      var swap = stage(p, 0.5, 0.62);
+      sec.style.setProperty("--swap", swap.toFixed(3));
+      var mine = stage(p, 0.55, 0.85);
+      slice.style.strokeDasharray = (20 * mine).toFixed(2) + " 1440";
+      slice.style.opacity = mine > 0 ? 1 : 0;
+      youNum.textContent = Math.round(20 * mine);
+      sec.style.setProperty("--line2", stage(p, 0.55, 0.7).toFixed(3));
+      sec.style.setProperty("--line3", stage(p, 0.82, 0.95).toFixed(3));
+    }
+    scrollers.push(update);
   })();
 
-  /* 4. NINHO COM 3 FILHOTES ------------------------------------------------- */
+  /* 3. NINHO COM 3 FILHOTES ------------------------------------------------- */
   (function nest() {
     var btn = document.querySelector(".nest");
     if (!btn) return;
@@ -1403,117 +1482,127 @@ p { text-wrap: pretty; }
     if (reduced) btn.classList.add("is-on");
   })();
 
-  /* 5. JARDIM DE 14 DIAS ---------------------------------------------------- */
-  (function garden() {
-    var box = document.querySelector(".garden");
+  /* 4. CAMINHO DE 14 DIAS (vertical): o caule cresce enquanto você desce ---- */
+  (function journey() {
+    var box = document.querySelector(".journey");
     if (!box) return;
-    var holder = box.querySelector(".garden__svg");
-    var nEl = box.querySelector(".garden__n");
-    var tEl = box.querySelector(".garden__t");
-    var DAYS = [
-      "O primeiro passo", "Acordar o corpo", "Força nas pernas", "Abdômen e postura",
-      "Mais energia", "Mobilidade", "Metade do caminho", "Glúteos",
-      "Braços e costas", "Resistência", "Corpo inteiro", "Constância",
-      "Confiança", "De volta pra mim"
-    ];
-    var leaves = [], flowers = [], stem, stemLen, picked = false, lastDay = 0, mode = "";
+    var holder = box.querySelector(".journey__stem");
+    var list = box.querySelector(".journey__list");
+    var days = Array.prototype.slice.call(list.querySelectorAll(".day"));
+    var stem, stemLen, leaves = [], flowers = [], marks = [];
 
     function build() {
-      var wide = window.innerWidth >= 700;
-      if ((wide ? "w" : "n") === mode) return;
-      mode = wide ? "w" : "n";
       holder.innerHTML = "";
-      leaves = []; flowers = [];
-      var s = wide ? svg("0 0 1000 230", holder) : svg("0 0 600 300", holder);
-      var d = wide
-        ? "M20,170 C170,120 260,200 420,150 S690,80 900,118"
-        : "M14,230 C110,170 170,260 280,190 S440,90 540,140";
-      el("path", { "class": "garden__ghost", d: d }, s);
-      stem = el("path", { "class": "garden__stem", d: d }, s);
+      leaves = []; flowers = []; marks = [];
+      var w = holder.offsetWidth, h = list.offsetHeight;
+      if (!w || !h) return;
+      var cx = w / 2, top = 0, bottom = h - 20;
+      var s = svg("0 0 " + w + " " + h, holder);
+      s.setAttribute("width", w); s.setAttribute("height", h);
+      // Caule com ondulação suave
+      var d = "M" + cx + "," + top, steps = 24;
+      for (var k = 1; k <= steps; k++) {
+        var y = top + (bottom - top) * k / steps;
+        var yPrev = top + (bottom - top) * (k - 1) / steps;
+        var x = cx + Math.sin(k * 1.3) * 6;
+        d += " Q" + (cx + Math.sin(k * 1.3 - 0.65) * 12).toFixed(1) + "," + ((y + yPrev) / 2).toFixed(1) + " " + x.toFixed(1) + "," + y.toFixed(1);
+      }
+      el("path", { "class": "journey__ghost", d: d }, s);
+      stem = el("path", { "class": "journey__line", d: d }, s);
       stemLen = stem.getTotalLength();
       stem.style.strokeDasharray = stemLen;
-      DAYS.forEach(function (t, i) {
-        var frac = 0.05 + i * (0.86 / 13);
-        var leaf = leafAt(s, stem, frac, i % 2 ? 1 : -1, wide ? 40 : 46, "leaf leaf--grow garden__leaf");
-        var hit = el("circle", { "class": "garden__hit", cx: 15, cy: 0, r: 17 }, leaf);
-        leaf.setAttribute("tabindex", "0");
-        leaf.setAttribute("role", "button");
-        leaf.setAttribute("aria-label", "Dia " + (i + 1) + ": " + t);
-        leaf.addEventListener("click", function () { picked = true; show(i); });
-        leaf.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); picked = true; show(i); }
-        });
-        leaves.push(leaf);
+      var listTop = list.getBoundingClientRect().top;
+      days.forEach(function (li, i) {
+        var y = li.getBoundingClientRect().top - listTop + 14;
+        // Ponto do caule nessa altura (busca simples)
+        var lo = 0, hi = stemLen;
+        for (var n = 0; n < 18; n++) {
+          var mid = (lo + hi) / 2;
+          if (stem.getPointAtLength(mid).y < y) lo = mid; else hi = mid;
+        }
+        marks.push(lo / stemLen);
+        var pt = stem.getPointAtLength(lo);
+        var side = i % 2 ? -1 : 1;
+        var outer = el("g", { transform: "translate(" + pt.x.toFixed(1) + "," + pt.y.toFixed(1) + ") rotate(" + (side > 0 ? -35 : 215) + ") scale(0.85)" }, s);
+        var g = el("g", { "class": "leaf leaf--grow" }, outer);
+        el("path", { "class": "leaf__shape", d: LEAF }, g);
+        el("path", { "class": "leaf__vein", d: LEAF_VEIN }, g);
+        leaves.push(g);
       });
       var end = stem.getPointAtLength(stemLen);
-      var fs = wide ? 1 : 1.25;
-      [[0, -4, 11], [-16, 10, 8], [14, 14, 7], [-4, 26, 6]].forEach(function (f, i) {
-        flowers.push(flower(s, end.x + f[0] * fs, end.y + f[1] * fs, f[2] * fs, i * 140));
+      [[0, 0, 9], [-12, -10, 6.5], [11, -8, 6]].forEach(function (f, i) {
+        flowers.push(flower(s, end.x + f[0], end.y + f[1], f[2], i * 140));
       });
       runScroll();
     }
 
-    function show(i) {
-      leaves.forEach(function (l, k) { l.classList.toggle("is-active", k === i); });
-      nEl.textContent = "Dia " + (i + 1);
-      tEl.textContent = DAYS[i];
-    }
-
     function update(vh) {
       if (!stem) return;
-      var r = box.getBoundingClientRect();
-      var p = reduced ? 1 : clamp((vh * 0.9 - r.top) / (vh * 0.55), 0, 1);
+      var r = list.getBoundingClientRect();
+      // A ponta do caule acompanha uma linha imaginária a 65% da altura da tela
+      var p = reduced ? 1 : clamp((vh * 0.65 - r.top) / r.height, 0, 1);
       stem.style.strokeDashoffset = (stemLen * (1 - p)).toFixed(1);
-      var grown = 0;
-      leaves.forEach(function (l, i) {
-        var onNow = p >= 0.05 + i * (0.86 / 13);
-        l.classList.toggle("is-on", onNow);
-        if (onNow) grown = i + 1;
+      days.forEach(function (li, i) {
+        var onNow = p >= marks[i];
+        li.classList.toggle("is-on", onNow);
+        leaves[i] && leaves[i].classList.toggle("is-on", onNow);
       });
-      flowers.forEach(function (f) { f.classList.toggle("is-on", p >= 0.98); });
-      if (!picked && grown && grown !== lastDay) { lastDay = grown; show(grown - 1); }
+      flowers.forEach(function (f) { f.classList.toggle("is-on", p >= 0.995); });
     }
 
     scrollers.push(update);
+    var rt;
+    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(build, 150); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(build); else build();
     build();
-    window.addEventListener("resize", build);
   })();
 
-  /* 6. PÁSSAROS QUE LEVANTAM VOO (CTA final) ------------------------------- */
+  /* 5. PÁSSAROS NO CTA FINAL: um bando pequeno cruza a seção em curva ------- */
   (function finalBirds() {
     var box = document.querySelector(".final__birds");
-    if (!box) return;
+    if (!box || reduced) return;
     var section = box.closest("section");
-    var s = svg("0 0 600 140", box);
-    var branchPath = el("path", { "class": "final__branch", d: "M-10,118 C90,104 180,112 280,100 S440,84 520,90" }, s);
-    leafAt(s, branchPath, 0.12, 1, 22, "leaf");
-    leafAt(s, branchPath, 0.5, -1, 20, "leaf");
-    leafAt(s, branchPath, 0.86, 1, 18, "leaf");
-    var len = branchPath.getTotalLength();
-    var PERCH = "M-8,1 L-1,-1 C0,-6 6,-8 9,-6 C10,-10 15,-11 16,-7 L19,-6.5 L16,-5.5 C16,-1 11,2 4,1.5 C1.5,1.3 0,0.5 -1,-1";
-    [0.22, 0.34, 0.47, 0.62, 0.74].forEach(function (f, i) {
-      var pt = branchPath.getPointAtLength(len * f);
-      var g = el("g", { transform: "translate(" + pt.x.toFixed(1) + "," + (pt.y - 5).toFixed(1) + ") scale(1.45)" }, s);
-      var bird = el("g", {
-        "class": "pbird",
-        style: "--dx:" + (180 + i * 50) + "px;--dy:" + (-170 - (i % 3) * 40) + "px;--delay:" + (i * 140) + "ms"
-      }, g);
-      var perch = el("g", { "class": "pbird__perch" }, bird);
-      el("path", { d: PERCH }, perch);
-      el("circle", { cx: 12.5, cy: -6.5, r: 0.8, "class": "pbird__eye" }, perch);
-      el("path", { d: "M5,1.5 L5,5 M8,1.5 L8,5" }, perch);
-      var fly = flyingBird(bird, 0.9);
-      fly.setAttribute("class", "fbird pbird__fly");
-      fly.setAttribute("transform", "translate(-4,-10)");
+    var flock = [
+      // [início x, início y, controle x, controle y, fim x, fim y] em % da seção; escala; atraso (s)
+      [-6, 26, 40, -6, 108, 10, 1, 0],
+      [-8, 20, 44, -10, 108, 4, 0.8, 0.45],
+      [-4, 32, 36, 0, 110, 16, 0.9, 0.9],
+      [-10, 24, 30, -2, 106, 20, 0.65, 1.3]
+    ];
+    var birds = flock.map(function (b) {
+      var wrap = document.createElement("div");
+      wrap.className = "flyer";
+      wrap.style.setProperty("--s", b[6]);
+      wrap.style.animationDelay = b[7] + "s";
+      var s = svg("0 0 26 12", wrap);
+      flyingBird(s, 1);
+      box.appendChild(wrap);
+      return { el: wrap, pts: b };
     });
-    if (reduced) return;
-    function takeOff() { section.classList.add("birds-away"); }
-    onceVisible(section, function () { setTimeout(takeOff, 1600); }, 0.55);
+    function paths() {
+      var W = section.offsetWidth, H = section.offsetHeight;
+      birds.forEach(function (b) {
+        var p = b.pts;
+        b.el.style.offsetPath = 'path("M' + (p[0] * W / 100) + "," + (p[1] * H / 100) +
+          " Q" + (p[2] * W / 100) + "," + (p[3] * H / 100) + " " + (p[4] * W / 100) + "," + (p[5] * H / 100) + '")';
+      });
+    }
+    function fly() {
+      paths();
+      section.classList.remove("flock-go");
+      void section.offsetWidth;
+      section.classList.add("flock-go");
+    }
+    onceVisible(section, function () { setTimeout(fly, 700); }, 0.5);
     var btn = section.querySelector(".btn");
-    if (btn) btn.addEventListener("mouseenter", takeOff);
+    var last = 0;
+    if (btn) btn.addEventListener("mouseenter", function () {
+      if (Date.now() - last > 9000) { last = Date.now(); fly(); }
+    });
+    window.addEventListener("resize", paths);
   })();
 
-  /* 7. PÉTALAS NA OFERTA ---------------------------------------------------- */
+  /* 6. PÉTALAS NA OFERTA ---------------------------------------------------- */
   (function petals() {
     if (!on("petalas") || reduced) return;
     var offer = document.querySelector(".offer");

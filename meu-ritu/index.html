@@ -54,7 +54,6 @@
         <div>
           <p class="eyebrow">Se você está aqui</p>
           <h2>Talvez você conheça esse cansaço.</h2>
-          <div class="branch" data-fx="galhoSeco" aria-hidden="true"></div>
         </div>
         <ul class="pain__list" data-reveal-stagger="90">
           <li>O dia inteiro é dos filhos, da casa, do trabalho. Para você, sobra o que sobra.</li>
@@ -65,21 +64,26 @@
       </div>
     </section>
 
-    <!-- 20 DOS 1.440 MINUTOS -->
-    <section class="section minutes" data-fx="minutos">
-      <div class="container minutes__grid">
-        <div class="minutes__ring" aria-hidden="true">
-          <svg viewBox="0 0 220 220" width="260" height="260">
-            <g class="minutes__ticks"></g>
-            <circle class="minutes__track" cx="110" cy="110" r="90" pathLength="1000"/>
-            <circle class="minutes__slice" cx="110" cy="110" r="90" pathLength="1440"/>
-          </svg>
-          <div class="minutes__center"><span data-counter="20">20</span><small>min</small></div>
-        </div>
-        <div class="minutes__text" data-reveal>
-          <p class="eyebrow">A conta é simples</p>
-          <h2>Seu dia tem 1.440 minutos. <em>20 são seus.</em></h2>
-          <p>É pouco mais de 1% do seu dia, menos que uma ida ao mercado. E é o suficiente para, dia após dia, voltar a se sentir bem no próprio corpo.</p>
+    <!-- 20 DOS 1.440 MINUTOS (anima conforme a rolagem, nos dois sentidos) -->
+    <section class="minutes" data-fx="minutos">
+      <div class="minutes__sticky">
+        <div class="container minutes__grid">
+          <div class="minutes__ring" aria-hidden="true">
+            <svg viewBox="0 0 220 220" width="260" height="260">
+              <g class="minutes__ticks"></g>
+              <circle class="minutes__track" cx="110" cy="110" r="90" pathLength="1000"/>
+              <circle class="minutes__slice" cx="110" cy="110" r="90" pathLength="1440"/>
+            </svg>
+            <div class="minutes__center">
+              <div class="minutes__label minutes__label--day"><span class="minutes__num">1.440</span><small>minutos no seu dia</small></div>
+              <div class="minutes__label minutes__label--you"><span class="minutes__num minutes__num--green">20</span><small>minutos para você</small></div>
+            </div>
+          </div>
+          <div class="minutes__text">
+            <p class="eyebrow">A conta é simples</p>
+            <h2><span class="minutes__line1">Seu dia tem 1.440 minutos.</span> <em class="minutes__line2">20 são seus.</em></h2>
+            <p class="minutes__line3">É pouco mais de 1% do seu dia, menos que uma ida ao mercado. E é o suficiente para, dia após dia, voltar a se sentir bem no próprio corpo.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -116,11 +120,6 @@
           <h2>14 dias para criar o seu ritual.</h2>
           <p class="section-head__lead">Um passo por dia. Você não precisa de motivação para começar, ela aparece no caminho.</p>
         </div>
-        <div class="garden" data-fx="jardim14">
-          <div class="garden__svg"></div>
-          <p class="garden__day" aria-live="polite"><span class="garden__n">Dia 1</span><span class="garden__t">O primeiro passo</span></p>
-          <p class="garden__hint">Toque nas folhas para ver cada dia · <mark class="ph">temas de exemplo, a Lidia confirma</mark></p>
-        </div>
         <ol class="steps" data-reveal-stagger="100">
           <li>
             <span class="steps__n">01</span>
@@ -143,6 +142,89 @@
             <p><mark class="ph">[confirmar: grupo no WhatsApp? comunidade? acompanhamento?]</mark></p>
           </li>
         </ol>
+
+        <div class="journey" data-fx="jardim14">
+          <div class="journey__head">
+            <p class="eyebrow">Dia a dia</p>
+            <h3 class="journey__title">Seu caminho de 14 dias</h3>
+            <p class="journey__hint"><mark class="ph">temas e descrições de exemplo, a Lidia confirma</mark></p>
+          </div>
+          <div class="journey__body">
+            <div class="journey__stem" aria-hidden="true"></div>
+            <ol class="journey__list">
+          <li class="day" style="--i:0;--row:1">
+            <span class="day__n">Dia 1</span>
+            <h3>O primeiro passo</h3>
+            <p>Seu primeiro treino de 20 minutos. Só de começar, você já fez o mais difícil.</p>
+          </li>
+          <li class="day" style="--i:1;--row:2">
+            <span class="day__n">Dia 2</span>
+            <h3>Acordar o corpo</h3>
+            <p>Movimentos leves para soltar as articulações e voltar a respirar fundo.</p>
+          </li>
+          <li class="day" style="--i:2;--row:3">
+            <span class="day__n">Dia 3</span>
+            <h3>Força nas pernas</h3>
+            <p>Agachamentos adaptados, no seu ritmo, para pernas mais firmes no dia a dia.</p>
+          </li>
+          <li class="day" style="--i:3;--row:4">
+            <span class="day__n">Dia 4</span>
+            <h3>Abdômen e postura</h3>
+            <p>Fortalecer o centro do corpo, que a gestação tanto exigiu.</p>
+          </li>
+          <li class="day" style="--i:4;--row:5">
+            <span class="day__n">Dia 5</span>
+            <h3>Mais energia</h3>
+            <p>Um treino para sentir o coração acelerar e o ânimo voltar.</p>
+          </li>
+          <li class="day" style="--i:5;--row:6">
+            <span class="day__n">Dia 6</span>
+            <h3>Mobilidade</h3>
+            <p>Cuidar das costas, do quadril e do pescoço, que carregam a rotina inteira.</p>
+          </li>
+          <li class="day" style="--i:6;--row:7">
+            <span class="day__n">Dia 7</span>
+            <h3>Metade do caminho</h3>
+            <p>Uma pausa para perceber o que já mudou em você em uma semana.</p>
+          </li>
+          <li class="day" style="--i:7;--row:8">
+            <span class="day__n">Dia 8</span>
+            <h3>Glúteos</h3>
+            <p>Força e forma, com exercícios simples que cabem na sala de casa.</p>
+          </li>
+          <li class="day" style="--i:8;--row:9">
+            <span class="day__n">Dia 9</span>
+            <h3>Braços e costas</h3>
+            <p>Para pegar filho no colo, carregar sacola e não sentir dor.</p>
+          </li>
+          <li class="day" style="--i:9;--row:10">
+            <span class="day__n">Dia 10</span>
+            <h3>Resistência</h3>
+            <p>Você vai notar: o mesmo treino do começo agora parece mais leve.</p>
+          </li>
+          <li class="day" style="--i:10;--row:11">
+            <span class="day__n">Dia 11</span>
+            <h3>Corpo inteiro</h3>
+            <p>Tudo o que você aprendeu, junto num treino só.</p>
+          </li>
+          <li class="day" style="--i:11;--row:12">
+            <span class="day__n">Dia 12</span>
+            <h3>Constância</h3>
+            <p>O treino já tem horário na sua rotina. Virou ritual.</p>
+          </li>
+          <li class="day" style="--i:12;--row:13">
+            <span class="day__n">Dia 13</span>
+            <h3>Confiança</h3>
+            <p>Olhar no espelho e gostar do que vê, de novo.</p>
+          </li>
+          <li class="day" style="--i:13;--row:14">
+            <span class="day__n">Dia 14</span>
+            <h3>De volta pra mim</h3>
+            <p>Você se reconhece. E está pronta para o próximo passo.</p>
+          </li>
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -318,7 +400,6 @@
     window.MEU_RITU_FX = {
       sombraFolhas: true,   // sombra de folhas balançando na primeira tela
       passarosTopo: true,   // passarinhos cruzando a primeira tela
-      galhoSeco: true,      // galho seco que floresce na seção do cansaço
       minutos: true,        // círculo "20 dos seus 1.440 minutos"
       ninho: true,          // ninho com 3 filhotes na história
       jardim14: true,       // jardim de 14 dias em "Como funciona"

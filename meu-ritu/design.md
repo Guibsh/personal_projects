@@ -48,10 +48,10 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 ## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
 
 - **Primeira tela:** título palavra por palavra, folha do eyebrow se desenha, sombra de galhos balançando (único loop da página, lento e sutil), 3 passarinhos cruzam uma vez.
-- **Galho seco → flor** (cansaço): cor e folhas acompanham o scroll; flores no fim.
-- **20 dos 1.440 minutos:** relógio do dia se desenha e a fatia verde de 20 min aparece.
+- **Seção do cansaço:** sem animação por enquanto (o galho seco saiu; ideias novas em discussão).
+- **20 dos 1.440 minutos:** seção alta com o relógio fixo na tela; a rolagem desenha o dia (conta até 1.440), troca para "minutos para você" e enche a fatia verde devagar até 20. Voltando a rolagem, desfaz.
 - **Ninho com 3 filhotes** (história): filhotes sobem e piam; tocar faz piar de novo.
-- **Jardim de 14 dias** (como funciona): caule cresce com o scroll, uma folha por dia, flores no dia 14; tocar na folha mostra o tema do dia.
-- **Pássaros levantam voo** no CTA final (ao aparecer ou passar o mouse no botão).
+- **Caminho de 14 dias** (como funciona): caule vertical cresce enquanto desce; cada dia acende com folha, título e descrição; florzinhas no dia 14. No computador os dias alternam dos dois lados do caule.
+- **Bando no CTA final:** 4 passarinhos em traço fino cruzam o alto da seção em curva (ao aparecer ou passar o mouse no botão).
 - **Pétalas** caem uma vez na oferta. Folhinha brota no botão no hover.
 - Tudo entra uma vez e para. CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final.
