@@ -28,21 +28,24 @@
 
     <!-- HERO -->
     <section class="hero">
-      <div class="container hero__grid">
+      <img class="hero__photo" src="assets/img/parede-quente.jpg" alt="Lidia Vicente encostada numa parede de tom terroso, com roupa de treino rosa" width="555" height="900" fetchpriority="high">
+      <div class="hero__shadows" data-fx="sombraFolhas" aria-hidden="true"></div>
+      <div class="hero__birds" data-fx="passarosTopo" aria-hidden="true"></div>
+      <div class="container hero__inner">
         <div class="hero__text">
-          <p class="eyebrow" data-reveal>Desafio de 14 dias · De Volta Pra Mim</p>
-          <h1 data-reveal data-reveal-delay="80">20 minutos por dia, em casa, para voltar a <em>se reconhecer.</em></h1>
-          <p class="hero__lead" data-reveal data-reveal-delay="160">Treinos curtos para mães que cuidam de todo mundo e ficaram por último. Sem academia, sem horário fixo, no tempo que a sua rotina deixa.</p>
-          <div class="hero__cta" data-reveal data-reveal-delay="240">
-            <a href="#oferta" class="btn btn--lg">Quero começar por R$ 47</a>
-            <p class="microcopy">Acesso por 30 dias · Garantia de 7 dias</p>
+          <p class="eyebrow eyebrow--hero">
+            <svg class="hero__leaf" viewBox="0 0 40 24" width="34" height="20" aria-hidden="true"><path class="hero__leaf-stem" d="M2,20 C10,18 14,14 18,12"/><path class="hero__leaf-shape" d="M16,13 C20,2 32,0 38,2 C36,10 28,18 16,13Z"/><path class="hero__leaf-vein" d="M18,12 C24,9 30,6 35,3"/></svg>
+            Desafio de 14 dias · De Volta Pra Mim
+          </p>
+          <h1 class="hero__title">20 minutos por dia, em casa, para voltar a <em>se reconhecer.</em></h1>
+          <p class="hero__lead">Treinos curtos para mães que cuidam de todo mundo e ficaram por último. Sem academia, sem horário fixo, no tempo que a sua rotina deixa.</p>
+          <div class="hero__cta">
+            <a href="#oferta" class="btn btn--lg btn--light">Quero começar por R$ 47</a>
+            <p class="microcopy microcopy--light">Acesso por 30 dias · Garantia de 7 dias</p>
           </div>
         </div>
-        <figure class="hero__media" data-reveal data-reveal-delay="120">
-          <div class="arch"><img src="assets/img/parede-quente.jpg" alt="Lidia Vicente encostada em uma parede de tom terroso, com roupa de treino rosa" width="555" height="900" data-parallax="0.06" fetchpriority="high"></div>
-          <figcaption>Lidia Vicente, 39 anos, mãe de 3</figcaption>
-        </figure>
       </div>
+      <p class="hero__caption">Lidia Vicente · 39 anos · mãe de 3</p>
     </section>
 
     <!-- DOR -->
@@ -51,6 +54,7 @@
         <div>
           <p class="eyebrow">Se você está aqui</p>
           <h2>Talvez você conheça esse cansaço.</h2>
+          <div class="branch" data-fx="galhoSeco" aria-hidden="true"></div>
         </div>
         <ul class="pain__list" data-reveal-stagger="90">
           <li>O dia inteiro é dos filhos, da casa, do trabalho. Para você, sobra o que sobra.</li>
@@ -61,11 +65,31 @@
       </div>
     </section>
 
+    <!-- 20 DOS 1.440 MINUTOS -->
+    <section class="section minutes" data-fx="minutos">
+      <div class="container minutes__grid">
+        <div class="minutes__ring" aria-hidden="true">
+          <svg viewBox="0 0 220 220" width="260" height="260">
+            <g class="minutes__ticks"></g>
+            <circle class="minutes__track" cx="110" cy="110" r="90" pathLength="1000"/>
+            <circle class="minutes__slice" cx="110" cy="110" r="90" pathLength="1440"/>
+          </svg>
+          <div class="minutes__center"><span data-counter="20">20</span><small>min</small></div>
+        </div>
+        <div class="minutes__text" data-reveal>
+          <p class="eyebrow">A conta é simples</p>
+          <h2>Seu dia tem 1.440 minutos. <em>20 são seus.</em></h2>
+          <p>É pouco mais de 1% do seu dia, menos que uma ida ao mercado. E é o suficiente para, dia após dia, voltar a se sentir bem no próprio corpo.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- HISTÓRIA -->
     <section class="section story">
       <div class="container story__grid">
         <figure class="story__media" data-reveal>
           <div class="arch"><img src="assets/img/porta-bracos-cima.jpg" alt="Lidia em frente a uma porta de madeira antiga" width="900" height="1200" loading="lazy"></div>
+          <button type="button" class="nest" data-fx="ninho" aria-label="Ninho com três filhotes, como os três filhos da Lidia"></button>
         </figure>
         <div class="story__text">
           <p class="eyebrow" data-reveal>Quem conduz</p>
@@ -91,6 +115,11 @@
           <p class="eyebrow">Como funciona</p>
           <h2>14 dias para criar o seu ritual.</h2>
           <p class="section-head__lead">Um passo por dia. Você não precisa de motivação para começar, ela aparece no caminho.</p>
+        </div>
+        <div class="garden" data-fx="jardim14">
+          <div class="garden__svg"></div>
+          <p class="garden__day" aria-live="polite"><span class="garden__n">Dia 1</span><span class="garden__t">O primeiro passo</span></p>
+          <p class="garden__hint">Toque nas folhas para ver cada dia · <mark class="ph">temas de exemplo, a Lidia confirma</mark></p>
         </div>
         <ol class="steps" data-reveal-stagger="100">
           <li>
@@ -248,6 +277,7 @@
 
     <!-- CTA FINAL -->
     <section class="final">
+      <div class="final__birds" data-fx="passarosFinal" aria-hidden="true"></div>
       <div class="container final__grid">
         <div class="final__inner" data-reveal>
           <p class="eyebrow eyebrow--light">Seu primeiro passo</p>
@@ -283,8 +313,22 @@
   <script>
     // Troque pelo link real do checkout (Hotmart, Kiwify, Eduzz...)
     window.CHECKOUT_URL = "";
+
+    // Liga/desliga cada animação (true = ligada, false = desligada)
+    window.MEU_RITU_FX = {
+      sombraFolhas: true,   // sombra de folhas balançando na primeira tela
+      passarosTopo: true,   // passarinhos cruzando a primeira tela
+      galhoSeco: true,      // galho seco que floresce na seção do cansaço
+      minutos: true,        // círculo "20 dos seus 1.440 minutos"
+      ninho: true,          // ninho com 3 filhotes na história
+      jardim14: true,       // jardim de 14 dias em "Como funciona"
+      passarosFinal: true,  // pássaros levantando voo no final
+      petalas: true,        // pétalas caindo na oferta
+      folhaBotao: true      // folhinha que brota no botão ao passar o mouse
+    };
   </script>
   <script src="scroll-kit.js" defer></script>
   <script src="main.js" defer></script>
+  <script src="fx.js" defer></script>
 </body>
 </html>

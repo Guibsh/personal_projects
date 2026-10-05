@@ -14,7 +14,7 @@ css = re.sub(r'url\("(assets/[^"]+)"\)', lambda m: f'url("{data_uri(m.group(1))}
 
 html = re.sub(r'\s*<link rel="preload"[^>]*>', "", html)
 html = html.replace('<link rel="stylesheet" href="styles.css">', f"<style>\n{css}\n</style>")
-for js in ("scroll-kit.js", "main.js"):
+for js in ("scroll-kit.js", "main.js", "fx.js"):
     code = (root / js).read_text(encoding="utf-8").replace("</script", "<\\/script")
     html = html.replace(f'<script src="{js}" defer></script>', f"<script>\n{code}\n</script>")
 # Scripts inline rodam na hora: o DOM acima já existe porque estão no fim do body.

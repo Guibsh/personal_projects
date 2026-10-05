@@ -24,6 +24,9 @@
 | `--color-text-muted` | `#7A6656` | Texto secundário |
 | `--color-brand` | `#56693F` | Verde sálvia escuro — CTA |
 | `--color-leaf` | `#8A9A6E` | Verde folha — detalhes |
+| `--color-wall` | `#6E5139` | Parede quente — fundo da primeira tela |
+| `--color-blush` | `#E6C3B8` | Pétalas das florzinhas (rosé suave) |
+| `--color-mustard` | `#C99A4B` | Miolo das flores, bico dos filhotes (ecoa o batente amarelo) |
 
 Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única seção escura (oferta/CTA final) em marrom café. O rosa da roupa vive só nas fotos.
 
@@ -37,11 +40,18 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 ## 4. Forma
 
-- Fotos com **topo em arco** (assinatura orgânica). Demais cantos retos.
+- Primeira tela: foto quente sem moldura, fundindo com a parede. Da segunda foto em diante: **topo em arco**. Demais cantos retos.
+- Ilustrações em **traço fino** (marrom/creme), folhas verde-sálvia, **florzinhas pequenas e delicadas** (5 pétalas rosé).
 - Botões em pílula (999px). Nada de 16px genérico em tudo.
 - Sem sombras; separação por cor de fundo e borda 1px.
 
-## 5. Movimento
+## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
 
-- Reveal suave no scroll (scroll-kit.js), stagger em listas, parallax leve na foto do hero.
-- CTA nunca espera animação. `prefers-reduced-motion` desliga tudo.
+- **Primeira tela:** título palavra por palavra, folha do eyebrow se desenha, sombra de galhos balançando (único loop da página, lento e sutil), 3 passarinhos cruzam uma vez.
+- **Galho seco → flor** (cansaço): cor e folhas acompanham o scroll; flores no fim.
+- **20 dos 1.440 minutos:** relógio do dia se desenha e a fatia verde de 20 min aparece.
+- **Ninho com 3 filhotes** (história): filhotes sobem e piam; tocar faz piar de novo.
+- **Jardim de 14 dias** (como funciona): caule cresce com o scroll, uma folha por dia, flores no dia 14; tocar na folha mostra o tema do dia.
+- **Pássaros levantam voo** no CTA final (ao aparecer ou passar o mouse no botão).
+- **Pétalas** caem uma vez na oferta. Folhinha brota no botão no hover.
+- Tudo entra uma vez e para. CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final.

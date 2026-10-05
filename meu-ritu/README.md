@@ -8,6 +8,7 @@ HTML + CSS + JS puro, sem build.
 | Arquivo | O que é |
 |---|---|
 | `index.html`, `styles.css`, `main.js`, `scroll-kit.js` | O site |
+| `fx.js` | Animações de natureza (liga/desliga em `MEU_RITU_FX` no `index.html`) |
 | `assets/img/`, `assets/fonts/` | Fotos (otimizadas), logos transparentes e fontes locais |
 | `design.md` | Diretriz visual (cores, fontes, regras) |
 | `esboco-meu-ritu.html` | Versão em arquivo único para enviar à cliente (gerada) |
