@@ -47,13 +47,13 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 ## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
 
-- **Abertura "amanhecer":** a primeira tela abre mais escura, uma luz quente entra pela esquerda e passa pela foto, a sombra de folhas surge com a luz; título palavra por palavra; passarinhos cruzam depois (~3s). CTA visível em ~1,5s.
-- **O ciclo que se abre** (cansaço): uma bolinha gira num círculo fino enquanto a pessoa lê; ~3s depois da última frase, o círculo se abre e a bolinha sai por um caminho que termina em folhas e flor. Saindo da seção, volta a girar.
-- **Sombra de janela em arco** (cansaço, para quem é, dúvidas): mancha de luz quente com o desenho da janela, que desliza e muda de inclinação com a rolagem, como o sol mudando de lado.
-- **20 dos 1.440 minutos:** sem travar a rolagem; o relógio acompanha a posição da seção de forma contínua e suavizada (desenha o dia → troca para "para você" → fatia verde até 20). Reversível.
+- **Abertura "respiração":** a foto se afasta devagar (6,5s, como quem inspira) e depois respira de leve em loop; o título entra palavra por palavra, saindo do desfoque, no mesmo ritmo; sombra de folhas surge aos poucos. CTA visível em ~2s.
+- **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura fica nítida, as já lidas ficam claras; quando a última frase passa, a neblina some e a luz quente da janela esquenta o fundo.
+- **Sombra de janela em arco** (cansaço, para quem é, dúvidas): luz quente com o desenho da janela, que desliza e muda de inclinação com a rolagem.
+- **20 dos 1.440 minutos:** animação contínua de ~8s que toca uma vez quando o relógio aparece (desenha o dia até 1.440 → troca para "para você" → fatia verde cresce até 20 → frases). Curvas suaves, sem depender da rolagem.
 - **Ninho com 3 filhotes** (história), traço suave.
-- **Caminho de 14 dias** vertical; folhas variam de tamanho e ângulo; dias 3, 6, 9, 11 e 13 brotam com uma florzinha.
-- **Borboleta visitante:** até 4 visitas por página, uma por alvo (títulos da história, caminho, "para quem é", card da oferta, dúvidas), com 12s de intervalo; pousa, abre e fecha as asas, vai embora após ~6s ou ao toque.
-- **Folhas que brotam** nos marcadores de "É para você se…".
+- **Caminho de 14 dias** vertical; folhas variadas e 12 enfeites espalhados pelo galho (flor solta, par de flores ou botão com folhinha), em posições e lados variados, que brotam quando o galho chega neles.
+- **Visitantes:** depois que a pessoa passa da primeira tela, de vez em quando (a cada 14–26s, até 7 vezes) uma borboleta pequena, um passarinho (bate asas e plana) ou uma abelhinha (voo com voltinhas) cruza o meio da tela, de forma fluida.
+- **Folhas que brotam** nos marcadores de "É para você se…"; **folhinha que se abre** ao lado da pergunta aberta nas dúvidas.
 - **Bando no CTA final**, **pétalas** na oferta e **folhinha no botão**.
-- CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem borboleta nem loops.
+- CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem visitantes nem loops.

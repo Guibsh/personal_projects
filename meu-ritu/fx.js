@@ -39,6 +39,7 @@
     if (!on(n.getAttribute("data-fx"))) n.remove();
   });
   if (on("folhaBotao")) root.classList.add("fx-btn-leaf");
+  if (on("folhaFaq")) root.classList.add("fx-faq-leaf");
   if (reduced) root.classList.add("fx-reduced");
 
   // Formas reutilizadas --------------------------------------------------------
@@ -124,7 +125,7 @@
         });
       })(title);
     }
-    if (on("amanhecer") && !reduced) root.classList.add("fx-dawn");
+    if (on("respiracao") && !reduced) root.classList.add("fx-breath");
     requestAnimationFrame(function () { root.classList.add("hero-in"); });
 
     var shadows = document.querySelector(".hero__shadows");
@@ -144,91 +145,41 @@
     if (birds && !reduced) {
       var s = svg("0 0 400 120", birds);
       [[0, 30, 1.1, 0], [40, 55, 0.85, 0.35], [-25, 70, 0.7, 0.7]].forEach(function (b, idx) {
-        var g = el("g", { "class": "hero-bird", style: "animation-delay:" + (3.2 + b[3]) + "s" }, s);
+        var g = el("g", { "class": "hero-bird", style: "animation-delay:" + (2.6 + b[3]) + "s" }, s);
         var inner = flyingBird(g, b[2]);
         inner.setAttribute("transform", "translate(" + b[0] + "," + b[1] + ")");
       });
     }
   })();
 
-  /* 1b. O CICLO QUE SE ABRE (seção do cansaço) ----------------------------- */
-  (function cycle() {
-    var box = document.querySelector(".cycle");
-    if (!box) return;
-    var section = box.closest("section");
-    var s = svg("0 0 340 240", box);
-    var cx = 84, cy = 84, R = 58, C = 2 * Math.PI * R;
-    var ox = cx + R, oy = cy;  // ponto onde o ciclo se abre (lado direito)
-    var ring = el("path", { "class": "cycle__ring", d: "M" + ox + "," + oy + " A" + R + "," + R + " 0 1 1 " + (cx - R) + "," + cy + " A" + R + "," + R + " 0 1 1 " + ox + "," + oy }, s);
-    var tail = el("path", { "class": "cycle__tail", d: "M" + ox + "," + oy + " C" + ox + "," + (oy + 46) + " " + (ox + 24) + "," + (oy + 96) + " " + (ox + 80) + "," + (oy + 112) + " S" + (ox + 160) + "," + (oy + 116) + " " + (ox + 178) + "," + (oy + 84) }, s);
-    var tailLen = tail.getTotalLength();
-    tail.style.strokeDasharray = tailLen;
-    var end = tail.getPointAtLength(tailLen);
-    var sprout = el("g", { transform: "translate(" + end.x.toFixed(1) + "," + end.y.toFixed(1) + ")" }, s);
-    var l1 = el("g", { transform: "rotate(-70) scale(0.8)" }, sprout);
-    var g1 = el("g", { "class": "leaf leaf--grow" }, l1);
-    el("path", { "class": "leaf__shape", d: LEAF }, g1); el("path", { "class": "leaf__vein", d: LEAF_VEIN }, g1);
-    var l2 = el("g", { transform: "rotate(-130) scale(0.6)" }, sprout);
-    var g2 = el("g", { "class": "leaf leaf--grow" }, l2);
-    el("path", { "class": "leaf__shape", d: LEAF }, g2); el("path", { "class": "leaf__vein", d: LEAF_VEIN }, g2);
-    var fl = flower(sprout, 6, -26, 8, 120);
-    var dot = el("circle", { "class": "cycle__dot", r: 4.5 }, s);
+  /* 1b. NEBLINA QUE SOME (seção do cansaço) -------------------------------- */
+  (function fog() {
+    if (!on("neblina")) return;
+    var section = document.querySelector(".pain");
+    if (!section) return;
+    var items = Array.prototype.slice.call(section.querySelectorAll(".pain__list li"));
+    if (!items.length) return;
+    section.classList.add("is-foggy");
+    var last = items[items.length - 1];
+    if (reduced) { section.style.setProperty("--warm", 1); section.classList.add("is-clear"); return; }
 
-    var mode = "orbit", ang = -Math.PI / 2, o = 0, oTarget = 0, visible = false, last = 0;
-    var TWO = Math.PI * 2;
-
-    function draw() {
-      var oo = mode === "exit" ? o : 0;
-      ring.style.strokeDasharray = (C * (1 - 0.24 * oo)).toFixed(1) + " " + C.toFixed(1);
-      ring.style.opacity = (1 - 0.45 * oo).toFixed(2);
-      tail.style.strokeDashoffset = (tailLen * (1 - oo)).toFixed(1);
-      var x, y;
-      if (mode === "exit") { var p = tail.getPointAtLength(tailLen * o); x = p.x; y = p.y; }
-      else { x = cx + Math.cos(ang) * R; y = cy + Math.sin(ang) * R; }
-      dot.setAttribute("cx", x.toFixed(1)); dot.setAttribute("cy", y.toFixed(1));
-      var bloom = mode === "exit" && o > 0.96;
-      g1.classList.toggle("is-on", bloom); g2.classList.toggle("is-on", bloom); fl.classList.toggle("is-on", bloom);
-    }
-
-    function frame(t) {
-      var dt = last ? Math.min(0.05, (t - last) / 1000) : 0.016;
-      last = t;
-      o += (oTarget - o) * (mode === "exit" ? 0.035 : 0.1);
-      if (mode === "orbit") {
-        var before = ang;
-        ang += dt * (oTarget > 0.02 ? 4.2 : 1.6);            // gira; acelera para sair
-        var crossed = Math.floor(before / TWO) !== Math.floor(ang / TWO);
-        if (oTarget > 0.02 && crossed) { mode = "exit"; o = 0; }
-      } else if (oTarget <= 0.01 && o < 0.02) {
-        mode = "orbit"; ang = 0;                                 // volta para o ciclo
-      }
-      draw();
-      if (visible) requestAnimationFrame(frame); else last = 0;
-    }
-
-    // Gira enquanto a pessoa lê; abre ~3s depois que a última frase aparece.
-    // Se a seção sai da tela, o ciclo volta a girar (e se abre de novo na volta).
-    var lastPhrase = section.querySelector(".pain__list li:last-child") || box;
-    var openTimer;
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (e) {
-        if (e[0].isIntersecting) {
-          clearTimeout(openTimer);
-          openTimer = setTimeout(function () { oTarget = 1; }, 3000);
-        }
-      }, { threshold: 1 }).observe(lastPhrase);
-      new IntersectionObserver(function (e) {
-        if (!e[0].isIntersecting) { clearTimeout(openTimer); oTarget = 0; o = 0; mode = "orbit"; }
-      }).observe(section);
-    }
-
-    if (reduced) { mode = "exit"; o = 1; draw(); return; }
-    new IntersectionObserver(function (e) {
-      var was = visible;
-      visible = e[0].isIntersecting;
-      if (visible && !was) requestAnimationFrame(frame);
-    }).observe(box);
-    draw();
+    scrollers.push(function (vh) {
+      var r = section.getBoundingClientRect();
+      if (r.bottom < -100 || r.top > vh + 100) return;
+      var line = vh * 0.42;                       // linha de leitura
+      var lr = last.getBoundingClientRect();
+      // A luz esquenta quando a última frase passa pela linha de leitura
+      var warm = clamp((line + vh * 0.12 - (lr.top + lr.height / 2)) / (vh * 0.22), 0, 1);
+      section.style.setProperty("--warm", warm.toFixed(3));
+      items.forEach(function (li) {
+        var b = li.getBoundingClientRect();
+        var sdist = (b.top + b.height / 2 - line) / (vh * 0.32);
+        // Já lida (acima): fica clara. Por ler (abaixo): na neblina.
+        var clarity = sdist < 0 ? Math.max(0.7, 1 + sdist * 0.6) : 1 - Math.min(1, sdist);
+        clarity = Math.max(clarity, warm);
+        li.style.setProperty("--clarity", clarity.toFixed(3));
+      });
+    });
   })();
 
   /* 1c. SOMBRA DE JANELA EM ARCO (o sol muda de lado com a rolagem) -------- */
@@ -256,7 +207,7 @@
     });
   })();
 
-  /* 2. 20 DOS 1.440 MINUTOS: acompanha a rolagem de forma contínua -------- */
+  /* 2. 20 DOS 1.440 MINUTOS: animação contínua, toca uma vez ao aparecer --- */
   (function minutes() {
     var sec = document.querySelector(".minutes");
     if (!sec) return;
@@ -274,38 +225,34 @@
     var slice = sec.querySelector(".minutes__slice");
     var dayNum = sec.querySelector(".minutes__label--day .minutes__num");
     var youNum = sec.querySelector(".minutes__label--you .minutes__num");
-    function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
-    function stage(p, a, b) { return ease(clamp((p - a) / (b - a), 0, 1)); }
+    // Curvas suaves (sem "trancos")
+    function inOut(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
+    function out(t) { return 1 - Math.pow(1 - t, 3); }
+    function seg(ms, a, b, fn) { return (fn || inOut)(clamp((ms - a) / (b - a), 0, 1)); }
 
-    function render(p) {
-      var day = stage(p, 0.02, 0.4);
+    function render(ms) {
+      var day = seg(ms, 0, 3200);
       track.style.strokeDashoffset = (1000 * (1 - day)).toFixed(1);
-      tickEls.forEach(function (t, i) { t.style.opacity = day * 24 > i ? 1 : 0; });
+      tickEls.forEach(function (t, i) { t.style.opacity = clamp(day * 24 - i, 0, 1).toFixed(2); });
       dayNum.textContent = Math.round(1440 * day).toLocaleString("pt-BR");
-      sec.style.setProperty("--swap", stage(p, 0.42, 0.54).toFixed(3));
-      var mine = stage(p, 0.46, 0.8);
+      sec.style.setProperty("--swap", seg(ms, 3900, 5000).toFixed(3));
+      var mine = seg(ms, 4300, 7300, out);
       slice.style.strokeDasharray = (20 * mine).toFixed(2) + " 1440";
-      slice.style.opacity = mine > 0 ? 1 : 0;
+      slice.style.opacity = Math.min(1, mine * 8).toFixed(2);
       youNum.textContent = Math.round(20 * mine);
-      sec.style.setProperty("--line2", stage(p, 0.46, 0.62).toFixed(3));
-      sec.style.setProperty("--line3", stage(p, 0.74, 0.88).toFixed(3));
+      sec.style.setProperty("--line2", seg(ms, 4600, 6000).toFixed(3));
+      sec.style.setProperty("--line3", seg(ms, 6800, 8200).toFixed(3));
     }
-
-    // Sem travar a página: o progresso segue a posição da seção na tela,
-    // suavizado a cada quadro para o movimento ficar contínuo.
-    var target = 0, cur = 0, raf = 0;
-    function tick() {
-      cur += (target - cur) * 0.12;
-      if (Math.abs(target - cur) < 0.0008) { cur = target; raf = 0; } else raf = requestAnimationFrame(tick);
-      render(cur);
-    }
-    function update(vh) {
-      var r = sec.getBoundingClientRect();
-      target = reduced ? 1 : clamp((vh * 0.9 - r.top) / (vh * 0.6 + r.height * 0.9), 0, 1);
-      if (reduced) { cur = target; render(cur); return; }
-      if (!raf) raf = requestAnimationFrame(tick);
-    }
-    scrollers.push(update);
+    render(0);
+    if (reduced) { render(99999); return; }
+    onceVisible(sec.querySelector(".minutes__ring"), function () {
+      var t0 = performance.now();
+      (function frame(now) {
+        var ms = now - t0;
+        render(ms);
+        if (ms < 8300) requestAnimationFrame(frame);
+      })(t0);
+    }, 0.7);
   })();
 
   /* 3. NINHO COM 3 FILHOTES ------------------------------------------------- */
@@ -357,11 +304,13 @@
     var list = box.querySelector(".journey__list");
     var days = Array.prototype.slice.call(list.querySelectorAll(".day"));
     var stem, stemLen, leaves = [], flowers = [], marks = [];
-    var FLOWER_DAYS = [2, 5, 8, 10, 12];
+    var decos = [];
+    // Gerador pseudoaleatório com semente: mesma "planta" a cada visita
+    function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
 
     function build() {
       holder.innerHTML = "";
-      leaves = []; flowers = []; marks = [];
+      leaves = []; flowers = []; marks = []; decos = [];
       var w = holder.offsetWidth, h = list.offsetHeight;
       if (!w || !h) return;
       var cx = w / 2, top = 0, bottom = h - 20;
@@ -397,17 +346,37 @@
         var g = el("g", { "class": "leaf leaf--grow" }, outer);
         el("path", { "class": "leaf__shape", d: LEAF }, g);
         el("path", { "class": "leaf__vein", d: LEAF_VEIN }, g);
-        if (FLOWER_DAYS.indexOf(i) > -1) {
-          // Alguns dias brotam com uma florzinha do outro lado do caule
-          var fo = el("g", { transform: "translate(" + pt.x.toFixed(1) + "," + pt.y.toFixed(1) + ")" }, s);
-          var stalk = el("g", { "class": "leaf leaf--grow" }, fo);
-          var fx2 = -side * 22, fy2 = -18;
-          el("path", { "class": "journey__stalk", d: "M0,0 Q" + (fx2 * 0.4) + "," + (fy2 * 0.2) + " " + fx2 + "," + fy2 }, stalk);
-          var f = flower(fo, fx2, fy2, 8.5 + (i % 3), 250);
-          g.__flower = f; g.__stalk = stalk;
-        }
         leaves.push(g);
       });
+      // Flores espalhadas pelo galho, em posições e formatos variados
+      var R = rng(11), N = 12;
+      for (var q = 0; q < N; q++) {
+        var f = clamp(0.05 + q * (0.88 / N) + (R() - 0.5) * 0.05, 0.02, 0.93);
+        var pp = stem.getPointAtLength(stemLen * f);
+        var sd = R() < 0.5 ? -1 : 1;
+        var kind = R();
+        var dx = sd * (8 + R() * 20), dy = -(2 + R() * 16);
+        var go = el("g", { transform: "translate(" + pp.x.toFixed(1) + "," + pp.y.toFixed(1) + ")" }, s);
+        var stalk = el("g", { "class": "leaf leaf--grow" }, go);
+        el("path", { "class": "journey__stalk", d: "M0,0 Q" + (dx * 0.5).toFixed(1) + "," + (dy * 0.1).toFixed(1) + " " + dx.toFixed(1) + "," + dy.toFixed(1) }, stalk);
+        var parts = [stalk];
+        if (kind < 0.45) {
+          parts.push(flower(go, dx, dy, 6 + R() * 4, 120));
+        } else if (kind < 0.75) {
+          parts.push(flower(go, dx, dy, 6 + R() * 2.5, 120));
+          parts.push(flower(go, dx + sd * 9, dy + 6, 4 + R() * 1.5, 320));
+        } else {
+          // botão ainda fechado + folhinha
+          var bud = el("g", { "class": "flower" }, el("g", { transform: "translate(" + dx.toFixed(1) + "," + dy.toFixed(1) + ") rotate(" + (sd * 25) + ")" }, go));
+          el("ellipse", { "class": "flower__petal", cx: 0, cy: -3, rx: 2.6, ry: 4.2 }, bud);
+          parts.push(bud);
+          var lo2 = el("g", { transform: "translate(" + (dx * 0.5).toFixed(1) + "," + (dy * 0.2).toFixed(1) + ") rotate(" + (sd > 0 ? 20 : 160) + ") scale(0.45)" }, go);
+          var lg = el("g", { "class": "leaf leaf--grow" }, lo2);
+          el("path", { "class": "leaf__shape", d: LEAF }, lg);
+          parts.push(lg);
+        }
+        decos.push({ f: f, parts: parts });
+      }
       var end = stem.getPointAtLength(stemLen);
       [[0, 0, 9], [-12, -10, 6.5], [11, -8, 6]].forEach(function (f, i) {
         flowers.push(flower(s, end.x + f[0], end.y + f[1], f[2], i * 140));
@@ -424,11 +393,11 @@
       days.forEach(function (li, i) {
         var onNow = p >= marks[i];
         li.classList.toggle("is-on", onNow);
-        var lf = leaves[i];
-        if (lf) {
-          lf.classList.toggle("is-on", onNow);
-          if (lf.__flower) { lf.__flower.classList.toggle("is-on", onNow); lf.__stalk.classList.toggle("is-on", onNow); }
-        }
+        if (leaves[i]) leaves[i].classList.toggle("is-on", onNow);
+      });
+      decos.forEach(function (dd) {
+        var onD = p >= dd.f + 0.01;
+        dd.parts.forEach(function (n) { n.classList.toggle("is-on", onD); });
       });
       flowers.forEach(function (f) { f.classList.toggle("is-on", p >= 0.995); });
     }
@@ -510,102 +479,112 @@
     }, 0.25);
   })();
 
-  /* 7. BORBOLETA VISITANTE: aparece algumas vezes, pousa e vai embora ------ */
-  (function butterfly() {
-    if (!on("borboleta") || reduced) return;
-    var targets = [".story h2", ".journey__title", ".fit h2", ".offer__card", ".faq h2"]
-      .map(function (q) { return document.querySelector(q); }).filter(Boolean);
-    if (!targets.length) return;
-
+  /* 7. VISITANTES: borboleta, passarinho ou abelhinha cruzam a tela às vezes */
+  (function visitors() {
+    if (!on("visitantes") || reduced) return;
     var layer = document.createElement("div");
-    layer.className = "bfly-layer";
+    layer.className = "visitors";
     layer.setAttribute("aria-hidden", "true");
-    var b = document.createElement("div");
-    b.className = "bfly";
-    var s = svg("-20 -16 40 32", b);
-    var WING_UP = "M-1,-2 C-7,-15 -20,-15 -18,-4 C-17,2 -8,2 -1,0Z";
-    var WING_LOW = "M-1,1 C-8,2 -15,8 -11,13 C-8,16 -3,10 -1,3Z";
-    ["bfly__wl", "bfly__wr"].forEach(function (cls, k) {
-      var side = el("g", { transform: k ? "scale(-1,1)" : "" }, s);
-      var w = el("g", { "class": "bfly__wing " + cls }, side);
-      el("path", { "class": "bfly__up", d: WING_UP }, w);
-      el("path", { "class": "bfly__low", d: WING_LOW }, w);
-      el("path", { "class": "bfly__vein", d: "M-2,-1 C-7,-6 -11,-9 -15,-9 M-2,2 C-5,5 -8,8 -10,11" }, w);
-    });
-    el("path", { "class": "bfly__body", d: "M0,-6 L0,9" }, s);
-    el("path", { "class": "bfly__ant", d: "M0,-6 C-1,-10 -3,-12 -6,-13 M0,-6 C1,-10 3,-12 6,-13" }, s);
-    layer.appendChild(b);
     document.body.appendChild(layer);
 
-    var state = "idle", visits = 0, lastVisit = 0, born = Date.now(), pos = { x: 0, y: 0 }, timer;
-    var MAX_VISITS = 4;
-
-    function place(x, y, tilt) {
-      pos.x = x; pos.y = y;
-      b.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) rotate(" + (tilt || 0).toFixed(1) + "deg)";
+    function makeButterfly() {
+      var d = document.createElement("div");
+      d.className = "visitor visitor--bfly";
+      var s = svg("-20 -16 40 32", d);
+      var UP = "M-1,-2 C-7,-15 -20,-15 -18,-4 C-17,2 -8,2 -1,0Z";
+      var LOW = "M-1,1 C-8,2 -15,8 -11,13 C-8,16 -3,10 -1,3Z";
+      [0, 1].forEach(function (k) {
+        var side = el("g", { transform: k ? "scale(-1,1)" : "" }, s);
+        var w = el("g", { "class": "vwing" }, side);
+        el("path", { "class": "bf-up", d: UP }, w);
+        el("path", { "class": "bf-low", d: LOW }, w);
+      });
+      el("path", { "class": "bf-body", d: "M0,-6 L0,9" }, s);
+      el("path", { "class": "bf-ant", d: "M0,-6 C-1,-10 -3,-12 -6,-13 M0,-6 C1,-10 3,-12 6,-13" }, s);
+      return d;
     }
-    function fly(to, done) {
-      var from = { x: pos.x, y: pos.y };
-      var dx = to.x - from.x, dy = to.y - from.y;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      var dur = clamp(dist / 0.23, 1600, 5200);
-      var c1 = { x: from.x + dx * 0.3 + (Math.random() - 0.5) * 220, y: from.y + dy * 0.2 - 80 - Math.random() * 120 };
-      var c2 = { x: from.x + dx * 0.75 + (Math.random() - 0.5) * 160, y: to.y - 60 - Math.random() * 80 };
-      var t0 = performance.now();
-      b.classList.add("is-flying");
-      (function step(now) {
+    function makeBee() {
+      var d = document.createElement("div");
+      d.className = "visitor visitor--bee";
+      var s = svg("-12 -11 24 20", d);
+      var flip = el("g", { "class": "vflip" }, s);
+      el("ellipse", { "class": "bee-wing vwing", cx: 1, cy: -5, rx: 4, ry: 3, transform: "rotate(-20 1 -5)" }, flip);
+      el("ellipse", { "class": "bee-wing vwing", cx: 3, cy: -4.5, rx: 3.4, ry: 2.6, transform: "rotate(15 3 -4.5)" }, flip);
+      el("ellipse", { "class": "bee-body", cx: 1, cy: 1, rx: 6.5, ry: 4.2 }, flip);
+      el("path", { "class": "bee-stripe", d: "M0,-3 Q-1,1 0,5 M3,-3 Q2,1 3,5" }, flip);
+      el("circle", { "class": "bee-head", cx: -6.2, cy: 0.5, r: 2.4 }, flip);
+      el("path", { "class": "bee-sting", d: "M7.4,1 L9.4,1.4" }, flip);
+      return d;
+    }
+    function makeBird() {
+      var d = document.createElement("div");
+      d.className = "visitor visitor--bird";
+      var s = svg("0 -2 24 12", d);
+      var p = el("path", { "class": "bird-line", d: BIRD_UP }, s);
+      d.__wing = p;
+      return d;
+    }
+
+    var KINDS = {
+      bfly: { make: makeButterfly, dur: [12000, 16000], amp: [34, 12], freq: [1.6, 4.1], tilt: 0.35 },
+      bird: { make: makeBird, dur: [6500, 8500], amp: [0, 0], freq: [0, 0], tilt: 0.6, arc: 70 },
+      bee:  { make: makeBee, dur: [8000, 10000], amp: [16, 6], freq: [1.2, 3.3], tilt: 0, loop: 26 }
+    };
+    var order = ["bfly", "bird", "bfly", "bee", "bfly", "bird", "bee"];
+    var count = 0, busy = false, started = false;
+
+    function fly(kind) {
+      var k = KINDS[kind];
+      var node = k.make();
+      layer.appendChild(node);
+      busy = true;
+      var W = window.innerWidth, H = window.innerHeight;
+      var ltr = Math.random() > 0.5;
+      var x0 = ltr ? -50 : W + 50, x1 = ltr ? W + 50 : -50;
+      var y0 = H * (0.25 + Math.random() * 0.35), y1 = H * (0.2 + Math.random() * 0.4);
+      var dur = k.dur[0] + Math.random() * (k.dur[1] - k.dur[0]);
+      var ph1 = Math.random() * 6, ph2 = Math.random() * 6;
+      var t0 = performance.now(), px = x0, py = y0, ang = 0, glide = 0, wing = 0;
+      if (kind === "bee") node.querySelector(".vflip").setAttribute("transform", ltr ? "scale(-1,1)" : "");
+
+      (function frame(now) {
         var t = clamp((now - t0) / dur, 0, 1);
-        var e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        var u = 1 - e;
-        var x = u * u * u * from.x + 3 * u * u * e * c1.x + 3 * u * e * e * c2.x + e * e * e * to.x;
-        var y = u * u * u * from.y + 3 * u * u * e * c1.y + 3 * u * e * e * c2.y + e * e * e * to.y;
-        y += Math.sin(t * Math.PI * 7) * 9 * (1 - e);           // voo ondulado
-        place(x, y, Math.sin(t * Math.PI * 5) * 14 * (1 - e));
-        if (t < 1) requestAnimationFrame(step);
-        else { b.classList.remove("is-flying"); done && done(); }
+        var s = t;
+        if (kind === "bee") s = t + 0.06 * Math.sin(t * Math.PI * 2);           // para um pouco no meio
+        var x = x0 + (x1 - x0) * s;
+        var y = y0 + (y1 - y0) * s;
+        y += k.amp[0] * Math.sin(t * Math.PI * 2 * k.freq[0] + ph1) + k.amp[1] * Math.sin(t * Math.PI * 2 * k.freq[1] + ph2);
+        if (k.arc) y -= k.arc * Math.sin(Math.PI * t);
+        if (k.loop) { x += k.loop * Math.cos(t * Math.PI * 2 * 2.4); y += k.loop * 0.7 * Math.sin(t * Math.PI * 2 * 2.4); }
+        var vx = x - px, vy = y - py;
+        px = x; py = y;
+        var target = Math.atan2(vy, Math.abs(vx) + 0.001) * 180 / Math.PI * k.tilt * (ltr ? 1 : -1);
+        ang += (target - ang) * 0.08;
+        node.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + ang.toFixed(1) + "deg)";
+        if (kind === "bird") {
+          // bate as asas e plana, alternando
+          var cyc = (now - t0) / 1000;
+          glide = (Math.sin(cyc * 0.9) > 0.35) ? Math.min(1, glide + 0.04) : Math.max(0, glide - 0.04);
+          wing += 0.19 * (1 - glide * 0.85);
+          var kk = (1 + Math.sin(wing)) / 2 * (1 - glide) + 0.35 * glide;
+          var tips = 6 - 4 * kk, ctrl = -1 + 10 * kk;
+          node.__wing.setAttribute("d", "M0," + tips.toFixed(2) + " Q6," + ctrl.toFixed(2) + " 12,6 Q18," + ctrl.toFixed(2) + " 24," + tips.toFixed(2));
+        }
+        if (t < 1) requestAnimationFrame(frame);
+        else { node.remove(); busy = false; schedule(); }
       })(t0);
     }
-    function landingPoint(t) {
-      var rect;
-      if (t.matches(".offer__card")) rect = t.getBoundingClientRect();
-      else { var rg = document.createRange(); rg.selectNodeContents(t); rect = rg.getBoundingClientRect(); }
-      var x = t.matches(".offer__card") ? rect.left + rect.width * 0.78 : rect.right - 8;
-      return { x: x + window.scrollX, y: rect.top + window.scrollY - 12 };
-    }
-    function leave() {
-      if (state !== "landed") return;
-      clearTimeout(timer);
-      state = "leaving";
-      b.classList.remove("is-landed");
-      var right = Math.random() > 0.5;
-      fly({ x: window.scrollX + (right ? window.innerWidth + 60 : -60), y: window.scrollY - 40 }, function () {
-        state = "idle"; b.classList.remove("is-on");
-      });
-    }
-    function visit(t) {
-      state = "arriving"; visits++; lastVisit = Date.now();
-      var fromRight = Math.random() > 0.5;
-      place(window.scrollX + (fromRight ? window.innerWidth + 50 : -50), window.scrollY + window.innerHeight * (0.15 + Math.random() * 0.3));
-      b.classList.add("is-on");
-      fly(landingPoint(t), function () {
-        state = "landed";
-        b.classList.add("is-landed");
-        timer = setTimeout(leave, 5500 + Math.random() * 2500);
-      });
-    }
-    b.addEventListener("click", leave);
-    b.addEventListener("mouseenter", function () { if (state === "landed") setTimeout(leave, 250); });
 
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting || state !== "idle" || visits >= MAX_VISITS) return;
-        if (Date.now() - born < 4000 || Date.now() - lastVisit < 12000) return;
-        if (en.target.dataset.visited) return;
-        en.target.dataset.visited = "1";
-        visit(en.target);
-      });
-    }, { threshold: 0.9, rootMargin: "0px 0px -15% 0px" });
-    targets.forEach(function (t) { io.observe(t); });
+    function schedule(first) {
+      if (count >= 7) return;
+      setTimeout(function tryFly() {
+        if (document.hidden || busy) return setTimeout(tryFly, 3000);
+        fly(order[count++ % order.length]);
+      }, first ? 2500 : 14000 + Math.random() * 12000);
+    }
+    window.addEventListener("scroll", function () {
+      if (!started && window.scrollY > window.innerHeight * 0.9) { started = true; schedule(true); }
+    }, { passive: true });
   })();
 
   /* 8. FOLHAS QUE BROTAM NA LISTA "É PARA VOCÊ SE…" ------------------------ */
