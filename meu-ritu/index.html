@@ -29,6 +29,8 @@
     <!-- HERO -->
     <section class="hero">
       <img class="hero__photo" src="assets/img/parede-quente.jpg" alt="Lidia Vicente encostada numa parede de tom terroso, com roupa de treino rosa" width="555" height="900" fetchpriority="high">
+      <div class="hero__veil" data-fx="amanhecer" aria-hidden="true"></div>
+      <div class="hero__sun" data-fx="amanhecer" aria-hidden="true"></div>
       <div class="hero__shadows" data-fx="sombraFolhas" aria-hidden="true"></div>
       <div class="hero__birds" data-fx="passarosTopo" aria-hidden="true"></div>
       <div class="container hero__inner">
@@ -50,10 +52,12 @@
 
     <!-- DOR -->
     <section class="section pain">
+      <div class="sunwin" data-fx="sombraJanela" aria-hidden="true"></div>
       <div class="container pain__grid">
         <div>
           <p class="eyebrow">Se você está aqui</p>
           <h2>Talvez você conheça esse cansaço.</h2>
+          <div class="cycle" data-fx="ciclo" aria-hidden="true"></div>
         </div>
         <ul class="pain__list" data-reveal-stagger="90">
           <li>O dia inteiro é dos filhos, da casa, do trabalho. Para você, sobra o que sobra.</li>
@@ -239,6 +243,7 @@
 
     <!-- PARA QUEM É -->
     <section class="section fit">
+      <div class="sunwin" data-fx="sombraJanela" aria-hidden="true"></div>
       <div class="container fit__grid">
         <div data-reveal>
           <h2>É para você se…</h2>
@@ -323,6 +328,7 @@
 
     <!-- FAQ -->
     <section class="section faq">
+      <div class="sunwin" data-fx="sombraJanela" aria-hidden="true"></div>
       <div class="container faq__grid">
         <div>
           <p class="eyebrow">Dúvidas</p>
@@ -398,13 +404,18 @@
 
     // Liga/desliga cada animação (true = ligada, false = desligada)
     window.MEU_RITU_FX = {
+      amanhecer: true,      // abertura: tela mais escura e a luz do sol entrando
       sombraFolhas: true,   // sombra de folhas balançando na primeira tela
       passarosTopo: true,   // passarinhos cruzando a primeira tela
+      ciclo: true,          // ciclo que se abre na seção do cansaço
+      sombraJanela: true,   // sombra de janela em arco que anda com a rolagem
       minutos: true,        // círculo "20 dos seus 1.440 minutos"
       ninho: true,          // ninho com 3 filhotes na história
       jardim14: true,       // jardim de 14 dias em "Como funciona"
       passarosFinal: true,  // pássaros levantando voo no final
       petalas: true,        // pétalas caindo na oferta
+      borboleta: true,      // borboleta que visita a página algumas vezes
+      folhasLista: true,    // folhas que brotam na lista "É para você se…"
       folhaBotao: true      // folhinha que brota no botão ao passar o mouse
     };
   </script>

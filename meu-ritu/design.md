@@ -47,11 +47,13 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 ## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
 
-- **Primeira tela:** título palavra por palavra, folha do eyebrow se desenha, sombra de galhos balançando (único loop da página, lento e sutil), 3 passarinhos cruzam uma vez.
-- **Seção do cansaço:** sem animação por enquanto (o galho seco saiu; ideias novas em discussão).
-- **20 dos 1.440 minutos:** seção alta com o relógio fixo na tela; a rolagem desenha o dia (conta até 1.440), troca para "minutos para você" e enche a fatia verde devagar até 20. Voltando a rolagem, desfaz.
-- **Ninho com 3 filhotes** (história): filhotes sobem e piam; tocar faz piar de novo.
-- **Caminho de 14 dias** (como funciona): caule vertical cresce enquanto desce; cada dia acende com folha, título e descrição; florzinhas no dia 14. No computador os dias alternam dos dois lados do caule.
-- **Bando no CTA final:** 4 passarinhos em traço fino cruzam o alto da seção em curva (ao aparecer ou passar o mouse no botão).
-- **Pétalas** caem uma vez na oferta. Folhinha brota no botão no hover.
-- Tudo entra uma vez e para. CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final.
+- **Abertura "amanhecer":** a primeira tela abre mais escura, uma luz quente entra pela esquerda e passa pela foto, a sombra de folhas surge com a luz; título palavra por palavra; passarinhos cruzam depois (~3s). CTA visível em ~1,5s.
+- **O ciclo que se abre** (cansaço): uma bolinha gira num círculo fino enquanto a pessoa lê; ~3s depois da última frase, o círculo se abre e a bolinha sai por um caminho que termina em folhas e flor. Saindo da seção, volta a girar.
+- **Sombra de janela em arco** (cansaço, para quem é, dúvidas): mancha de luz quente com o desenho da janela, que desliza e muda de inclinação com a rolagem, como o sol mudando de lado.
+- **20 dos 1.440 minutos:** sem travar a rolagem; o relógio acompanha a posição da seção de forma contínua e suavizada (desenha o dia → troca para "para você" → fatia verde até 20). Reversível.
+- **Ninho com 3 filhotes** (história), traço suave.
+- **Caminho de 14 dias** vertical; folhas variam de tamanho e ângulo; dias 3, 6, 9, 11 e 13 brotam com uma florzinha.
+- **Borboleta visitante:** até 4 visitas por página, uma por alvo (títulos da história, caminho, "para quem é", card da oferta, dúvidas), com 12s de intervalo; pousa, abre e fecha as asas, vai embora após ~6s ou ao toque.
+- **Folhas que brotam** nos marcadores de "É para você se…".
+- **Bando no CTA final**, **pétalas** na oferta e **folhinha no botão**.
+- CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem borboleta nem loops.

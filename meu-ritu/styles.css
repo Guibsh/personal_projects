@@ -325,6 +325,8 @@ p { text-wrap: pretty; }
   background: var(--color-leaf);
   border-radius: 0 100% 0 100%;   /* folha */
 }
+.fx-checks .checks:not(.checks--no) li::before { transform: scale(0) rotate(-50deg); transform-origin: 0% 100%; transition: transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms; }
+.fx-checks .checks:not(.checks--no) li.is-on::before { transform: none; }
 .checks--no li { color: var(--color-text-muted); }
 .checks--no li::before { background: var(--color-border); border-radius: 0; height: 1.5px; top: 1.45rem; }
 @media (min-width: 900px) { .fit__grid { grid-template-columns: 1.2fr 0.8fr; gap: var(--space-24); } }
@@ -450,8 +452,8 @@ p { text-wrap: pretty; }
 .flower__core { fill: var(--color-mustard); }
 
 /* 20 dos 1.440 minutos: seção alta com conteúdo fixo, animada pela rolagem */
-.minutes { --swap: 0; --line2: 0; --line3: 0; position: relative; height: 260vh; background: var(--color-bg); }
-.minutes__sticky { position: sticky; top: 68px; height: calc(100vh - 68px); display: flex; align-items: center; }
+.minutes { --swap: 0; --line2: 0; --line3: 0; position: relative; padding-block: clamp(5rem, 14vw, 10rem); background: var(--color-bg); }
+.minutes__sticky { display: flex; align-items: center; }
 .minutes__grid { display: grid; gap: var(--space-8); align-items: center; justify-items: center; width: 100%; }
 .minutes__text { max-width: 34rem; text-align: center; }
 .minutes__line2 { display: block; opacity: var(--line2); transform: translateY(calc((1 - var(--line2)) * 12px)); }
@@ -473,8 +475,6 @@ p { text-wrap: pretty; }
   .minutes__ring { justify-self: end; width: 320px; }
   .minutes__text { text-align: left; }
 }
-.fx-reduced .minutes { height: auto; padding-block: var(--section-y); }
-.fx-reduced .minutes__sticky { position: static; height: auto; }
 
 /* Ninho com 3 filhotes */
 .story__media { position: relative; }
@@ -579,6 +579,72 @@ p { text-wrap: pretty; }
   pointer-events: none;
 }
 .fx-btn-leaf .btn:hover::after, .fx-btn-leaf .btn:focus-visible::after { transform: scale(1) rotate(-30deg); }
+
+/* Amanhecer: a tela abre mais escura e a luz entra pela esquerda */
+.hero__veil, .hero__sun { position: absolute; inset: 0; pointer-events: none; }
+.hero__veil { z-index: 1; background: #24160D; opacity: 0; }
+.hero__sun {
+  z-index: 1; inset: -10% -30%;
+  background: radial-gradient(38% 55% at 50% 38%, rgba(255, 214, 160, 0.55), rgba(255, 196, 130, 0.18) 45%, transparent 70%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+}
+.fx-dawn .hero__veil { opacity: 0.62; animation: dawn-veil 3s cubic-bezier(0.3, 0, 0.3, 1) 0.15s forwards; }
+.fx-dawn .hero__sun { animation: dawn-sun 4.2s cubic-bezier(0.2, 0.6, 0.2, 1) 0.1s forwards; }
+.fx-dawn .hero__shadows { opacity: 0; animation: dawn-shadows 2.6s ease-out 1.3s forwards; }
+@keyframes dawn-veil { to { opacity: 0; } }
+@keyframes dawn-sun { 0% { opacity: 0; transform: translateX(-55%); } 25% { opacity: 1; } 100% { opacity: 1; transform: translateX(12%); } }
+@keyframes dawn-shadows { to { opacity: 0.5; } }
+.fx-dawn .hero__title .word { transition-delay: calc(550ms + var(--i) * 60ms); }
+.fx-dawn.js.hero-in .hero__lead { transition-delay: 1250ms; }
+.fx-dawn.js.hero-in .hero__cta { transition-delay: 1400ms; }
+.fx-dawn.js.hero-in .hero__caption { transition-delay: 2200ms; }
+.fx-dawn .eyebrow--hero { transition-delay: 450ms; }
+.fx-dawn .hero__leaf path { animation-delay: 700ms; }
+
+/* O ciclo que se abre (seção do cansaço) */
+.cycle { width: min(100%, 330px); margin-top: var(--space-8); }
+.cycle svg { width: 100%; overflow: visible; }
+.cycle__ring { fill: none; stroke: #BFAF9C; stroke-width: 1.6; stroke-linecap: round; }
+.cycle__tail { fill: none; stroke: var(--color-twig); stroke-width: 1.8; stroke-linecap: round; }
+.cycle__dot { fill: var(--color-brand); }
+
+/* Sombra de janela em arco: o sol muda de lado conforme a rolagem */
+.pain, .fit, .faq { position: relative; overflow: clip; isolation: isolate; }
+.pain > .container, .fit > .container, .faq > .container { position: relative; z-index: 1; }
+.sunwin {
+  --q: 0.5;
+  position: absolute; z-index: 0; pointer-events: none;
+  top: 8%; left: 50%;
+  width: clamp(240px, 34vw, 460px);
+  opacity: 0.42;
+  filter: blur(18px);
+  transform: translateX(calc(-50% + (var(--q) - 0.5) * 70vw)) skewX(calc(-28deg + var(--q) * 36deg)) scaleY(1.15);
+  transform-origin: 50% 100%;
+}
+.sunwin svg { width: 100%; height: auto; display: block; }
+.sunwin__light { fill: rgba(255, 226, 178, 0.75); }
+.fit .sunwin { top: auto; bottom: -10%; }
+.faq .sunwin { left: 30%; }
+
+/* Borboleta visitante */
+.bfly-layer { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 35; }
+.bfly { position: absolute; top: -19px; left: -24px; width: 48px; height: 38px; opacity: 0; transition: opacity 400ms; cursor: pointer; will-change: transform; }
+.bfly.is-on { opacity: 1; }
+.bfly svg { width: 100%; height: 100%; overflow: visible; }
+.bfly__up { fill: #EBCFC4; stroke: #8A6A52; stroke-width: 0.8; stroke-linejoin: round; }
+.bfly__low { fill: #E3BBAE; stroke: #8A6A52; stroke-width: 0.8; stroke-linejoin: round; }
+.bfly__vein { fill: none; stroke: #8A6A52; stroke-width: 0.5; opacity: 0.6; }
+.bfly__body { fill: none; stroke: #5A4232; stroke-width: 1.8; stroke-linecap: round; }
+.bfly__ant { fill: none; stroke: #5A4232; stroke-width: 0.7; stroke-linecap: round; }
+.bfly__wing { transform-box: fill-box; transform-origin: 100% 50%; }
+.bfly.is-flying .bfly__wing { animation: flap 0.22s ease-in-out infinite alternate; }
+.bfly.is-landed .bfly__wing { animation: rest 2.6s ease-in-out infinite; }
+@keyframes flap { from { transform: scaleX(1); } to { transform: scaleX(0.2); } }
+@keyframes rest { 0%, 60%, 100% { transform: scaleX(1); } 75% { transform: scaleX(0.35); } }
+
+/* Caminho de 14 dias: flores em alguns dias */
+.journey__stalk { fill: none; stroke: var(--color-twig); stroke-width: 1.2; stroke-linecap: round; }
 
 /* Movimento reduzido: tudo no estado final, sem loops */
 .fx-reduced .hero__branch { animation: none; }
