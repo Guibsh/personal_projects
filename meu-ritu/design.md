@@ -49,11 +49,11 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 - **Abertura "respiração":** a foto se afasta devagar (6,5s, como quem inspira) e depois respira de leve em loop; o título entra palavra por palavra, saindo do desfoque, no mesmo ritmo; sombra de folhas surge aos poucos. CTA visível em ~2s.
 - **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura fica nítida, as já lidas ficam claras; quando a última frase passa, a neblina some e a luz quente da janela esquenta o fundo.
-- **Sombra de janela em arco** (cansaço, para quem é, dúvidas): luz quente com o desenho da janela, que desliza e muda de inclinação com a rolagem.
+- **Luz de janela em arco** só na seção do cansaço: é a luz que esquenta quando a neblina some (saiu de "para quem é" e "dúvidas", onde no celular parecia uma mancha).
 - **20 dos 1.440 minutos:** animação contínua de ~8s que toca uma vez quando o relógio aparece (desenha o dia até 1.440 → troca para "para você" → fatia verde cresce até 20 → frases). Curvas suaves, sem depender da rolagem.
 - **Ninho com 3 filhotes** (história), traço suave.
 - **Caminho de 14 dias** vertical; folhas variadas e 12 enfeites espalhados pelo galho (flor solta, par de flores ou botão com folhinha), em posições e lados variados, que brotam quando o galho chega neles.
-- **Visitantes:** depois que a pessoa passa da primeira tela, de vez em quando (a cada 14–26s, até 7 vezes) uma borboleta pequena, um passarinho (bate asas e plana) ou uma abelhinha (voo com voltinhas) cruza o meio da tela, de forma fluida.
+- **Visitantes:** depois que a pessoa passa da primeira tela, de vez em quando (a cada 14–26s, até 7 vezes) cruza o meio da tela uma borboleta (asas em degradê rosé, batidas em série e planeio, sobe a cada batida), um passarinho (bate asas e plana) ou uma abelhinha (paira no ar e vira de lado suavemente). Voo por "direção que muda aos poucos", sem trajetos em zigue-zague.
 - **Folhas que brotam** nos marcadores de "É para você se…"; **folhinha que se abre** ao lado da pergunta aberta nas dúvidas.
 - **Bando no CTA final**, **pétalas** na oferta e **folhinha no botão**.
 - CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem visitantes nem loops.

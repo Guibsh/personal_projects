@@ -479,100 +479,171 @@
     }, 0.25);
   })();
 
-  /* 7. VISITANTES: borboleta, passarinho ou abelhinha cruzam a tela às vezes */
+  /* 7. VISITANTES: borboleta, passarinho ou abelhinha cruzam a tela às vezes
+     Voo orgânico: a direção muda aos poucos (como um ser vivo pilotando),
+     a velocidade respira, e as asas são animadas quadro a quadro. */
   (function visitors() {
     if (!on("visitantes") || reduced) return;
     var layer = document.createElement("div");
     layer.className = "visitors";
     layer.setAttribute("aria-hidden", "true");
     document.body.appendChild(layer);
+    var uid = 0;
 
+    function grad(defs, id, a, b) {
+      var g = el("linearGradient", { id: id, x1: "1", y1: "0", x2: "0", y2: "0" }, defs);
+      el("stop", { offset: "0", "stop-color": a }, g);
+      el("stop", { offset: "1", "stop-color": b }, g);
+    }
     function makeButterfly() {
       var d = document.createElement("div");
       d.className = "visitor visitor--bfly";
-      var s = svg("-20 -16 40 32", d);
-      var UP = "M-1,-2 C-7,-15 -20,-15 -18,-4 C-17,2 -8,2 -1,0Z";
-      var LOW = "M-1,1 C-8,2 -15,8 -11,13 C-8,16 -3,10 -1,3Z";
-      [0, 1].forEach(function (k) {
-        var side = el("g", { transform: k ? "scale(-1,1)" : "" }, s);
-        var w = el("g", { "class": "vwing" }, side);
-        el("path", { "class": "bf-up", d: UP }, w);
-        el("path", { "class": "bf-low", d: LOW }, w);
+      var s = svg("-22 -18 44 36", d);
+      var id = "bf" + (++uid);
+      var defs = el("defs", {}, s);
+      grad(defs, id + "a", "#FBF1EA", "#D7A497");
+      grad(defs, id + "b", "#F7E6DE", "#CB988C");
+      var fore = [], hind = [];
+      [1, -1].forEach(function (side) {
+        var g = el("g", { transform: side < 0 ? "scale(-1,1)" : "" }, s);
+        var h = el("g", {}, g);
+        el("path", { "class": "bf-wing", fill: "url(#" + id + "b)", d: "M-1,0.5 C-5,0.5 -11.5,2 -13.5,6.5 C-15,10.5 -12.5,14 -8.5,13 C-5.5,12 -2.5,7 -1,2.5 Z" }, h);
+        el("path", { "class": "bf-line", d: "M-2,2 C-5,4 -8,7 -10,10.5" }, h);
+        var f = el("g", {}, g);
+        el("path", { "class": "bf-wing", fill: "url(#" + id + "a)", d: "M-1,-2 C-3,-9 -9,-16 -17,-17 C-20.5,-17.4 -21.5,-13 -19.5,-9 C-16.5,-3.5 -8.5,-0.5 -1,0 Z" }, f);
+        el("path", { "class": "bf-line", d: "M-2,-1.5 C-7,-5 -12,-10 -16.5,-14.5" }, f);
+        el("path", { "class": "bf-edge", d: "M-17,-17 C-20.5,-17.4 -21.5,-13 -19.5,-9" }, f);
+        el("circle", { "class": "bf-dot", cx: -15.5, cy: -12.5, r: 1.2 }, f);
+        el("circle", { "class": "bf-dot", cx: -17.8, cy: -10, r: 0.75 }, f);
+        fore.push(f); hind.push(h);
       });
-      el("path", { "class": "bf-body", d: "M0,-6 L0,9" }, s);
-      el("path", { "class": "bf-ant", d: "M0,-6 C-1,-10 -3,-12 -6,-13 M0,-6 C1,-10 3,-12 6,-13" }, s);
+      el("ellipse", { "class": "bf-body", cx: 0, cy: 2, rx: 1.3, ry: 7 }, s);
+      el("circle", { "class": "bf-body", cx: 0, cy: -6, r: 1.7 }, s);
+      el("path", { "class": "bf-ant", d: "M-0.6,-7 C-2,-12 -4,-14 -6.5,-15.5 M0.6,-7 C2,-12 4,-14 6.5,-15.5" }, s);
+      el("circle", { "class": "bf-body", cx: -6.5, cy: -15.5, r: 0.8 }, s);
+      el("circle", { "class": "bf-body", cx: 6.5, cy: -15.5, r: 0.8 }, s);
+      d.__fore = fore; d.__hind = hind;
       return d;
     }
     function makeBee() {
       var d = document.createElement("div");
       d.className = "visitor visitor--bee";
       var s = svg("-12 -11 24 20", d);
-      var flip = el("g", { "class": "vflip" }, s);
-      el("ellipse", { "class": "bee-wing vwing", cx: 1, cy: -5, rx: 4, ry: 3, transform: "rotate(-20 1 -5)" }, flip);
-      el("ellipse", { "class": "bee-wing vwing", cx: 3, cy: -4.5, rx: 3.4, ry: 2.6, transform: "rotate(15 3 -4.5)" }, flip);
+      var flip = el("g", {}, s);
+      el("ellipse", { "class": "bee-wing", cx: 1, cy: -5, rx: 4, ry: 3, transform: "rotate(-20 1 -5)" }, flip);
+      el("ellipse", { "class": "bee-wing", cx: 3, cy: -4.5, rx: 3.4, ry: 2.6, transform: "rotate(15 3 -4.5)" }, flip);
       el("ellipse", { "class": "bee-body", cx: 1, cy: 1, rx: 6.5, ry: 4.2 }, flip);
       el("path", { "class": "bee-stripe", d: "M0,-3 Q-1,1 0,5 M3,-3 Q2,1 3,5" }, flip);
       el("circle", { "class": "bee-head", cx: -6.2, cy: 0.5, r: 2.4 }, flip);
       el("path", { "class": "bee-sting", d: "M7.4,1 L9.4,1.4" }, flip);
+      d.__flip = flip;
       return d;
     }
     function makeBird() {
       var d = document.createElement("div");
       d.className = "visitor visitor--bird";
       var s = svg("0 -2 24 12", d);
-      var p = el("path", { "class": "bird-line", d: BIRD_UP }, s);
-      d.__wing = p;
+      d.__wing = el("path", { "class": "bird-line", d: BIRD_UP }, s);
       return d;
     }
 
+    function angDiff(a, b) { var d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; }
+
     var KINDS = {
-      bfly: { make: makeButterfly, dur: [12000, 16000], amp: [34, 12], freq: [1.6, 4.1], tilt: 0.35 },
-      bird: { make: makeBird, dur: [6500, 8500], amp: [0, 0], freq: [0, 0], tilt: 0.6, arc: 70 },
-      bee:  { make: makeBee, dur: [8000, 10000], amp: [16, 6], freq: [1.2, 3.3], tilt: 0, loop: 26 }
+      //       velocidade px/s  vaguear (rad)  rapidez da curva
+      bfly: { make: makeButterfly, speed: 62, wander: 1.0, turn: 1.6 },
+      bee:  { make: makeBee,       speed: 78, wander: 1.3, turn: 2.6 },
+      bird: { make: makeBird,      speed: 170, wander: 0.18, turn: 1.2 }
     };
     var order = ["bfly", "bird", "bfly", "bee", "bfly", "bird", "bee"];
     var count = 0, busy = false, started = false;
 
     function fly(kind) {
-      var k = KINDS[kind];
-      var node = k.make();
+      var K = KINDS[kind];
+      var node = K.make();
       layer.appendChild(node);
       busy = true;
       var W = window.innerWidth, H = window.innerHeight;
       var ltr = Math.random() > 0.5;
-      var x0 = ltr ? -50 : W + 50, x1 = ltr ? W + 50 : -50;
-      var y0 = H * (0.25 + Math.random() * 0.35), y1 = H * (0.2 + Math.random() * 0.4);
-      var dur = k.dur[0] + Math.random() * (k.dur[1] - k.dur[0]);
-      var ph1 = Math.random() * 6, ph2 = Math.random() * 6;
-      var t0 = performance.now(), px = x0, py = y0, ang = 0, glide = 0, wing = 0;
-      if (kind === "bee") node.querySelector(".vflip").setAttribute("transform", ltr ? "scale(-1,1)" : "");
+      var x = ltr ? -40 : W + 40, y = H * (0.3 + Math.random() * 0.3);
+      var goalY = H * (0.25 + Math.random() * 0.4);
+      var heading = ltr ? 0 : Math.PI, speed = K.speed;
+      var seeds = [Math.random() * 9, Math.random() * 9, Math.random() * 9];
+      var flapPhase = 0, flapping = true, flapsLeft = 4, glideT = 0, wOpen = 1;
+      var hoverT = 0, nextHover = 2 + Math.random() * 2, facing = ltr ? 1 : -1, tilt = 0;
+      var birdWing = 0, glide = 0;
+      var last = performance.now(), born = last;
 
       (function frame(now) {
-        var t = clamp((now - t0) / dur, 0, 1);
-        var s = t;
-        if (kind === "bee") s = t + 0.06 * Math.sin(t * Math.PI * 2);           // para um pouco no meio
-        var x = x0 + (x1 - x0) * s;
-        var y = y0 + (y1 - y0) * s;
-        y += k.amp[0] * Math.sin(t * Math.PI * 2 * k.freq[0] + ph1) + k.amp[1] * Math.sin(t * Math.PI * 2 * k.freq[1] + ph2);
-        if (k.arc) y -= k.arc * Math.sin(Math.PI * t);
-        if (k.loop) { x += k.loop * Math.cos(t * Math.PI * 2 * 2.4); y += k.loop * 0.7 * Math.sin(t * Math.PI * 2 * 2.4); }
-        var vx = x - px, vy = y - py;
-        px = x; py = y;
-        var target = Math.atan2(vy, Math.abs(vx) + 0.001) * 180 / Math.PI * k.tilt * (ltr ? 1 : -1);
-        ang += (target - ang) * 0.08;
-        node.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + ang.toFixed(1) + "deg)";
+        var dt = Math.min(0.05, (now - last) / 1000); last = now;
+        var t = (now - born) / 1000;
+        // Direção: rumo ao outro lado + vaguear suave (soma de senos lentos)
+        var tx = ltr ? W + 200 : -200;
+        var toward = Math.atan2(goalY - y, tx - x);
+        var wander = K.wander * (0.6 * Math.sin(t * 0.7 + seeds[0]) + 0.3 * Math.sin(t * 1.9 + seeds[1]) + 0.1 * Math.sin(t * 4.3 + seeds[2]));
+        var desired = toward + wander;
+        heading += angDiff(desired, heading) * Math.min(1, K.turn * dt);
+        var spd = speed;
+
+        if (kind === "bfly") {
+          // Batidas em série, depois plana com as asas abertas
+          if (flapping) {
+            flapPhase += dt * 2 * Math.PI * 6.5;
+            if (flapPhase >= 2 * Math.PI) { flapPhase -= 2 * Math.PI; if (--flapsLeft <= 0) { flapping = false; glideT = 0.35 + Math.random() * 0.55; } }
+            wOpen = 0.55 + 0.45 * Math.cos(flapPhase);
+            spd *= 1.15;
+          } else {
+            glideT -= dt;
+            wOpen += (0.92 + 0.05 * Math.sin(t * 9) - wOpen) * Math.min(1, dt * 10);
+            spd *= 0.75;
+            if (glideT <= 0) { flapping = true; flapsLeft = 2 + Math.floor(Math.random() * 4); flapPhase = 0; }
+          }
+          var lift = flapping ? -Math.sin(flapPhase) * 2.2 : 0.6;   // sobe a cada batida, desce ao planar
+          y += lift * dt * 20;
+          var hindW = 0.6 + 0.4 * wOpen;
+          node.__fore.forEach(function (f) { f.setAttribute("transform", "scale(" + Math.max(0.12, wOpen).toFixed(3) + ",1)"); });
+          node.__hind.forEach(function (h) { h.setAttribute("transform", "scale(" + Math.max(0.15, hindW * wOpen + 0.08).toFixed(3) + ",1)"); });
+        }
+        if (kind === "bee") {
+          // De vez em quando para no ar, como se olhasse uma flor
+          nextHover -= dt;
+          if (nextHover <= 0 && hoverT <= 0) { hoverT = 0.9 + Math.random() * 0.8; nextHover = 2.5 + Math.random() * 2.5; }
+          if (hoverT > 0) { hoverT -= dt; spd *= 0.12 + 0.88 * Math.pow(Math.max(0, 1 - hoverT) , 2); }
+        }
         if (kind === "bird") {
-          // bate as asas e plana, alternando
-          var cyc = (now - t0) / 1000;
-          glide = (Math.sin(cyc * 0.9) > 0.35) ? Math.min(1, glide + 0.04) : Math.max(0, glide - 0.04);
-          wing += 0.19 * (1 - glide * 0.85);
-          var kk = (1 + Math.sin(wing)) / 2 * (1 - glide) + 0.35 * glide;
+          var cyc = Math.sin(t * 0.9 + seeds[0]);
+          glide += ((cyc > 0.3 ? 1 : 0) - glide) * Math.min(1, dt * 3);
+          birdWing += dt * 11 * (1 - glide * 0.85);
+          var kk = (1 + Math.sin(birdWing)) / 2 * (1 - glide) + 0.35 * glide;
           var tips = 6 - 4 * kk, ctrl = -1 + 10 * kk;
           node.__wing.setAttribute("d", "M0," + tips.toFixed(2) + " Q6," + ctrl.toFixed(2) + " 12,6 Q18," + ctrl.toFixed(2) + " 24," + tips.toFixed(2));
         }
-        if (t < 1) requestAnimationFrame(frame);
+
+        x += Math.cos(heading) * spd * dt;
+        y += Math.sin(heading) * spd * dt;
+        if (y < H * 0.12) goalY = H * 0.45;                       // fica no meio da tela
+        if (y > H * 0.82) goalY = H * 0.4;
+
+        var tf;
+        if (kind === "bfly") {
+          tf = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + (heading * 180 / Math.PI + 90).toFixed(1) + "deg)";
+        } else if (kind === "bee") {
+          var vx = Math.cos(heading);
+          facing += ((vx >= 0 ? -1 : 1) - facing) * Math.min(1, dt * 4);   // vira de lado suavemente
+          tilt += (Math.sin(heading) * 18 - tilt) * Math.min(1, dt * 5);
+          var bob = Math.sin(t * 5.2) * 2;
+          tf = "translate3d(" + x.toFixed(1) + "px," + (y + bob).toFixed(1) + "px,0) rotate(" + (tilt * (vx >= 0 ? 1 : -1)).toFixed(1) + "deg)";
+          node.__flip.setAttribute("transform", "scale(" + (Math.sign(facing) * Math.max(0.2, Math.abs(facing))).toFixed(3) + ",1)");
+        } else {
+          tilt += (Math.sin(heading) * 25 * (ltr ? 1 : -1) - tilt) * Math.min(1, dt * 3);
+          tf = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + tilt.toFixed(1) + "deg)";
+        }
+        node.style.transform = tf;
+
+        var out = ltr ? x > W + 60 : x < -60;
+        if (!out && t < 40) requestAnimationFrame(frame);
         else { node.remove(); busy = false; schedule(); }
-      })(t0);
+      })(last);
     }
 
     function schedule(first) {

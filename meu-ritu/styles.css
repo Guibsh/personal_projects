@@ -645,22 +645,20 @@ p { text-wrap: pretty; }
 }
 .sunwin svg { width: 100%; height: auto; display: block; }
 .sunwin__light { fill: rgba(255, 226, 178, 0.75); }
-.fit .sunwin { top: auto; bottom: -10%; }
-.faq .sunwin { left: 30%; }
 
 /* Visitantes: borboleta, passarinho, abelhinha */
 .visitors { position: fixed; inset: 0; pointer-events: none; z-index: 35; overflow: hidden; }
 .visitor { position: absolute; top: 0; left: 0; will-change: transform; }
 .visitor svg { width: 100%; height: 100%; overflow: visible; display: block; }
-.visitor--bfly { width: 26px; height: 21px; margin: -10px 0 0 -13px; }
-.visitor--bee { width: 20px; height: 17px; margin: -8px 0 0 -10px; }
+.visitor--bfly { width: 32px; height: 26px; margin: -13px 0 0 -16px; }
+.visitor--bee { width: 22px; height: 18px; margin: -9px 0 0 -11px; }
 .visitor--bird { width: 30px; height: 15px; margin: -7px 0 0 -15px; }
-.bf-up { fill: #EFD6CC; stroke: #9A7B66; stroke-width: 0.7; }
-.bf-low { fill: #E6C3B8; stroke: #9A7B66; stroke-width: 0.7; }
-.bf-body { fill: none; stroke: #5A4232; stroke-width: 1.6; stroke-linecap: round; }
-.bf-ant { fill: none; stroke: #5A4232; stroke-width: 0.6; stroke-linecap: round; }
-.visitor--bfly .vwing { transform-box: fill-box; transform-origin: 100% 50%; animation: flutter 0.32s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
-@keyframes flutter { 0% { transform: scaleX(1); } 100% { transform: scaleX(0.18); } }
+.bf-wing { stroke: #A07467; stroke-width: 0.55; stroke-linejoin: round; }
+.bf-line { fill: none; stroke: #B48A7D; stroke-width: 0.4; opacity: 0.7; stroke-linecap: round; }
+.bf-dot { fill: #B98376; opacity: 0.75; }
+.bf-edge { fill: none; stroke: #A9786B; stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+.bf-body { fill: #5A4232; }
+.bf-ant { fill: none; stroke: #5A4232; stroke-width: 0.55; stroke-linecap: round; }
 .bee-body { fill: #E2B85C; stroke: #5A4232; stroke-width: 0.7; }
 .bee-stripe { fill: none; stroke: #5A4232; stroke-width: 1.1; }
 .bee-head { fill: #5A4232; }
