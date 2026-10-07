@@ -100,9 +100,8 @@
     <section class="section story">
       <div class="container story__grid">
         <figure class="story__media" data-reveal>
-          <div class="daylight__patch" data-fx="luzDoDia" aria-hidden="true"></div>
-          <div class="daylight__shadow" data-fx="luzDoDia" aria-hidden="true"></div>
-          <div class="arch"><img src="assets/img/porta-bracos-cima.jpg" alt="Lidia em frente a uma porta de madeira antiga" width="900" height="1200" loading="lazy"><div class="daylight__glare" data-fx="luzDoDia" aria-hidden="true"></div></div>
+          <div class="arch"><img src="assets/img/porta-bracos-cima.jpg" alt="Lidia em frente a uma porta de madeira antiga" width="900" height="1200" loading="lazy"></div>
+          <div class="vine" data-fx="trepadeira" aria-hidden="true"></div>
           <button type="button" class="nest" data-fx="ninho" aria-label="Ninho com três filhotes, como os três filhos da Lidia"></button>
         </figure>
         <div class="story__text">
@@ -238,12 +237,24 @@
       </div>
     </section>
 
-    <!-- FAIXA DE FOTOS -->
+    <!-- VARAL DE FOTOS -->
     <section class="gallery" aria-label="Fotos da Lidia">
-      <div class="gallery__track">
-        <img src="assets/img/porta-sorriso.jpg" alt="Lidia sorrindo em frente a uma porta de madeira" width="900" height="1200" loading="lazy">
-        <img src="assets/img/parede-branca-maos-cintura.jpg" alt="Lidia com as mãos na cintura" width="900" height="1200" loading="lazy">
-        <img src="assets/img/porta-braco-cabeca.jpg" alt="Lidia apoiada na porta com o braço na cabeça" width="900" height="1200" loading="lazy">
+      <div class="clothesline">
+        <div class="clothesline__track">
+          <svg class="clothesline__string" aria-hidden="true"><path d=""/></svg>
+          <figure class="pin" style="--r:-4deg">
+            <span class="pin__peg" aria-hidden="true"></span>
+            <img src="assets/img/porta-sorriso.jpg" alt="Lidia sorrindo em frente a uma porta de madeira" width="900" height="1200" loading="lazy">
+          </figure>
+          <figure class="pin" style="--r:2.5deg">
+            <span class="pin__peg" aria-hidden="true"></span>
+            <img src="assets/img/parede-branca-maos-cintura.jpg" alt="Lidia com as mãos na cintura" width="900" height="1200" loading="lazy">
+          </figure>
+          <figure class="pin" style="--r:-1.5deg">
+            <span class="pin__peg" aria-hidden="true"></span>
+            <img src="assets/img/porta-braco-cabeca.jpg" alt="Lidia apoiada na porta com o braço na cabeça" width="900" height="1200" loading="lazy">
+          </figure>
+        </div>
       </div>
     </section>
 
@@ -412,8 +423,9 @@
       sombraFolhas: true,   // sombra de folhas balançando na primeira tela
       passarosTopo: true,   // passarinhos cruzando a primeira tela
       neblina: true,        // neblina que some na seção do cansaço
+      varal: true,          // fotos no varal balançando com a rolagem e ao toque
       sombraJanela: true,   // luz de janela em arco que esquenta no fim da seção do cansaço
-      luzDoDia: true,       // luz de janela passando pela foto do "Quem conduz"
+      trepadeira: true,     // ramos que florescem em volta da foto do "Quem conduz"
       minutos: true,        // círculo "20 dos seus 1.440 minutos"
       ninho: true,          // ninho com 3 filhotes na história
       jardim14: true,       // jardim de 14 dias em "Como funciona"
@@ -421,6 +433,7 @@
       petalas: true,        // pétalas caindo na oferta
       visitantes: true,     // borboletas, passarinho e abelhinha cruzando a tela às vezes
       folhasLista: true,    // folhas que brotam na lista "É para você se…"
+      folhaSeca: true,      // folha seca que cai nos marcadores de "Não é para você se…"
       folhaFaq: true,       // folhinha que se abre ao lado da pergunta aberta
       folhaBotao: true      // folhinha que brota no botão ao passar o mouse
     };

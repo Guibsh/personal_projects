@@ -87,6 +87,65 @@
     return g;
   }
 
+  // Borboleta vista de lado (olhando para a direita), em 3 espécies ---------
+  // setWings(k): k=1 asas para cima (fechadas), k~0.15 asas abertas/baixas.
+  var BF_SPECIES = {
+    rose:  { fore: ["#FDF0EA", "#E3A595"], hind: ["#FAE3DA", "#E8B5A8"], edge: "#B5705F", vein: "#C08A7C", veinW: 0.3, dots: "#FFFFFF", eye: true },
+    sky:   { fore: ["#EEF2FA", "#8EA3D3"], hind: ["#E2E8F6", "#A7B7E0"], edge: "#4F5B85", vein: "#8090BB", veinW: 0.3, dots: "#FFFFFF", eye: true },
+    honey: { fore: ["#FDEBC8", "#E39A3F"], hind: ["#FADFAE", "#EAAE5C"], edge: "#5E4030", vein: "#5E4030", veinW: 0.45, dots: "#FFF4E2", eye: false }
+  };
+  var bfUid = 0;
+  var BF_FORE = "M0,-1 C-2,-8 -1,-15 3,-21 C5,-23.5 10,-23.5 12,-21 C13,-19 12,-16 10,-13 C7,-8 3.5,-4 0.8,-0.6 Z";
+  var BF_HIND = "M-0.4,-0.6 C-4,-1 -10,-3 -13,-7.5 C-15,-11 -13,-15 -9.5,-14.5 C-6.5,-14 -4,-10.5 -2.5,-7 C-1.5,-4.5 -0.6,-2.5 0,-1 Z";
+  function sideButterfly(parent, species) {
+    var sp = BF_SPECIES[species] || BF_SPECIES.rose;
+    var id = "sbf" + (++bfUid);
+    var g = el("g", { "class": "sbf" }, parent);
+    var defs = el("defs", {}, g);
+    [["f", sp.fore], ["h", sp.hind]].forEach(function (p) {
+      var lg = el("linearGradient", { id: id + p[0], x1: "0", y1: "1", x2: "0.5", y2: "0" }, defs);
+      el("stop", { offset: "0", "stop-color": p[1][0] }, lg);
+      el("stop", { offset: "1", "stop-color": p[1][1] }, lg);
+    });
+    function wingSet() {
+      var w = el("g", {}, g);
+      var line = { fill: "none", stroke: sp.vein, "stroke-width": sp.veinW, "stroke-linecap": "round", opacity: 0.8 };
+      el("path", { d: BF_HIND, fill: "url(#" + id + "h)", stroke: sp.edge, "stroke-width": 0.4, "stroke-linejoin": "round" }, w);
+      el("path", Object.assign({ d: "M-0.6,-1 C-4,-4 -8,-8 -11,-11 M-0.6,-0.8 C-4,-2 -8,-4.5 -12,-7" }, line), w);
+      el("path", { d: "M-13,-7.5 C-15,-11 -13,-15 -9.5,-14.5", fill: "none", stroke: sp.edge, "stroke-width": 1.3, "stroke-linecap": "round", opacity: 0.75 }, w);
+      if (sp.eye) {
+        el("circle", { cx: -9.2, cy: -10.6, r: 1.5, fill: sp.edge, opacity: 0.85 }, w);
+        el("circle", { cx: -9.2, cy: -10.6, r: 0.6, fill: "#fff" }, w);
+      }
+      el("path", { d: BF_FORE, fill: "url(#" + id + "f)", stroke: sp.edge, "stroke-width": 0.4, "stroke-linejoin": "round" }, w);
+      el("path", Object.assign({ d: "M0.6,-1 C1,-8 2,-14 4.5,-19.5 M0.8,-1 C3,-7 6,-12 9.5,-16 M0.8,-0.8 C3.5,-4 6.5,-8 9.5,-11.5" }, line), w);
+      el("path", { d: "M3,-21 C5,-23.5 10,-23.5 12,-21 C13,-19 12,-16 10,-13", fill: "none", stroke: sp.edge, "stroke-width": 2.2, "stroke-linecap": "round", opacity: 0.9 }, w);
+      [[5.6, -21.9, 0.5], [8.4, -22.4, 0.55], [10.9, -20.6, 0.5], [11.4, -17.4, 0.45], [10.4, -14.6, 0.4]].forEach(function (d) {
+        el("circle", { cx: d[0], cy: d[1], r: d[2], fill: sp.dots }, w);
+      });
+      return w;
+    }
+    var far = wingSet();
+    far.setAttribute("opacity", "0.5");
+    var ink = "#45302A";
+    el("path", { d: "M-9,0.8 C-6,1.9 -1,1.9 2,0.9 C0,-0.5 -6,-0.5 -9,0.8 Z", fill: ink }, g);
+    el("path", { d: "M-7,0.2 L-7,1.4 M-5,0 L-5,1.6 M-3,0 L-3,1.6", stroke: "#6B5244", "stroke-width": 0.25 }, g);
+    el("ellipse", { cx: 3.4, cy: 0, rx: 2.2, ry: 1.5, fill: ink }, g);
+    el("circle", { cx: 6.4, cy: -0.5, r: 1.25, fill: ink }, g);
+    el("path", { d: "M6.8,-1.6 C8.2,-6 10,-9.5 12.6,-11.4 M6.4,-1.7 C7.2,-6 8.2,-10 9.8,-12.6 M2.2,1.3 L1.6,3.8 M4.2,1.3 L4.8,3.8", fill: "none", stroke: ink, "stroke-width": 0.38, "stroke-linecap": "round" }, g);
+    el("circle", { cx: 12.7, cy: -11.5, r: 0.6, fill: ink }, g);
+    el("circle", { cx: 9.9, cy: -12.7, r: 0.55, fill: ink }, g);
+    var near = wingSet();
+    return {
+      g: g,
+      setWings: function (k) {
+        near.setAttribute("transform", "translate(1.6,-1) scale(1," + k.toFixed(3) + ") translate(0,1)");
+        var kf = k * 0.92 - 0.06;
+        far.setAttribute("transform", "translate(0.4,-1.4) scale(0.95," + kf.toFixed(3) + ") translate(0,1)");
+      }
+    };
+  }
+
   // Atualização por scroll (um único listener, 1 rAF por frame) -------------
   var scrollers = [];
   var ticking = false;
@@ -191,49 +250,237 @@
     });
   })();
 
-  /* 1d. LUZ DO DIA NA FOTO DO "QUEM CONDUZ" -------------------------------
-     A foto em arco é uma janela: o sol atravessa de um lado para o outro,
-     projeta a luz da janela na parede e move a sombra, como o dia passando. */
-  (function daylight() {
-    var fig = document.querySelector(".story__media");
-    var patch = fig && fig.querySelector(".daylight__patch");
-    if (!patch) return;
-    var s = svg("0 0 200 320", patch);
-    var mask = el("mask", { id: "daymask" }, el("defs", {}, s));
-    el("path", { d: "M0,320 L0,100 A100,100 0 0 1 200,100 L200,320 Z", fill: "#fff" }, mask);
-    el("rect", { x: 96, y: 0, width: 8, height: 320, fill: "#000" }, mask);
-    el("rect", { x: 0, y: 150, width: 200, height: 7, fill: "#000" }, mask);
-    el("path", { d: "M34,100 A66,66 0 0 1 166,100", fill: "none", stroke: "#000", "stroke-width": 6 }, mask);
-    el("rect", { x: 0, y: 0, width: 200, height: 320, fill: "currentColor", mask: "url(#daymask)" }, s);
+  /* 1d. TREPADEIRA EM VOLTA DA FOTO DO "QUEM CONDUZ" ------------------------
+     Com a rolagem, ramos entrelaçados nascem nos cantos de baixo e sobem
+     contornando o arco, brotando folhas e flores de vários tipos. No fim,
+     uma borboleta sai de uma flor e fica visitando as outras. */
+  (function vine() {
+    var box = document.querySelector(".vine");
+    if (!box) return;
+    var fig = box.parentElement, arch = fig.querySelector(".arch");
+    var M = 30;                                   // folga em volta da foto (menor no celular)
+    var vines = [], decos = [], blooms = [], g = 0, target = 0, raf = 0, bfly = null;
 
-    var MORNING = [255, 244, 224], EVENING = [255, 208, 156];
-    function mix(a, b, t) { return a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(","); }
-    function apply(d) {
-      var side = 0.5 - d;                                      // +: sol à esquerda (manhã)
-      var len = Math.abs(side) * 2;                            // sombra mais longa nas pontas do dia
-      fig.style.setProperty("--sx", (side * 90).toFixed(1) + "px");
-      fig.style.setProperty("--sblur", (14 + len * 12).toFixed(1) + "px");
-      fig.style.setProperty("--sskew", (-side * 16).toFixed(1) + "deg");
-      fig.style.setProperty("--px", (-side * 105).toFixed(1) + "%");
-      fig.style.setProperty("--pskew", (side * 34).toFixed(1) + "deg");
-      fig.style.setProperty("--gx", (170 - d * 260).toFixed(1) + "%");
-      fig.style.setProperty("--warm", (d * d).toFixed(3));
-      fig.style.setProperty("--sun", mix(MORNING, EVENING, d));
+    // Florzinhas de tipos diferentes ------------------------------------
+    function daisy(p, x, y, r) {
+      var o = el("g", { transform: "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ")" }, p);
+      var f = el("g", { "class": "flower" }, o);
+      for (var i = 0; i < 11; i++) el("ellipse", { "class": "daisy__petal", cx: 0, cy: -r * 0.6, rx: r * 0.17, ry: r * 0.55, transform: "rotate(" + (i * 360 / 11).toFixed(1) + ")" }, f);
+      el("circle", { "class": "flower__core", r: r * 0.3 }, f);
+      return f;
     }
-    if (reduced) { apply(0.35); return; }
-    var target = 0, cur = 0, raf = 0;
+    function bell(p, x, y, r, ang) {
+      var o = el("g", { transform: "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ") rotate(" + (ang || 0) + ")" }, p);
+      var f = el("g", { "class": "flower" }, o);
+      el("path", { "class": "bell__stem", d: "M0,0 Q" + (r * 0.5) + "," + (r * 0.4) + " " + (r * 0.6) + "," + (r * 1.1) }, f);
+      el("path", { "class": "bell__cup", d: "M" + (r * 0.6 - r * 0.55) + "," + (r * 1.1) + " C" + (r * 0.6 - r * 0.6) + "," + (r * 2.1) + " " + (r * 0.6 + r * 0.6) + "," + (r * 2.1) + " " + (r * 0.6 + r * 0.55) + "," + (r * 1.1) + " L" + (r * 0.6 + r * 0.35) + "," + (r * 2.1) + " L" + (r * 0.6) + "," + (r * 1.8) + " L" + (r * 0.6 - r * 0.35) + "," + (r * 2.1) + " Z" }, f);
+      return f;
+    }
+    function forget(p, x, y, r) {
+      var o = el("g", { transform: "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ")" }, p);
+      var f = el("g", { "class": "flower" }, o);
+      for (var i = 0; i < 5; i++) el("circle", { "class": "forget__petal", cx: (Math.sin(i * 1.2566) * r * 0.55).toFixed(2), cy: (-Math.cos(i * 1.2566) * r * 0.55).toFixed(2), r: r * 0.45 }, f);
+      el("circle", { "class": "forget__core", r: r * 0.22 }, f);
+      return f;
+    }
+    function bud(p, x, y, ang) {
+      var o = el("g", { transform: "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ") rotate(" + ang + ")" }, p);
+      var f = el("g", { "class": "flower" }, o);
+      el("ellipse", { "class": "flower__petal", cx: 0, cy: -3.4, rx: 2.4, ry: 4 }, f);
+      el("path", { "class": "bud__sepal", d: "M-2.6,-1 Q0,1.5 2.6,-1 L0,0.8 Z" }, f);
+      return f;
+    }
+
+    function build() {
+      box.innerHTML = ""; vines = []; decos = []; blooms = [];
+      if (bfly) { bfly.stop(); bfly = null; }
+      var w = arch.offsetWidth, h = arch.offsetHeight;
+      if (!w || !h) return;
+      var small = w < 380;
+      M = small ? 16 : 30;
+      box.style.inset = (-M) + "px";
+      var W = w + 2 * M, H = h + 2 * M;
+      var s = svg("0 0 " + W + " " + H, box);
+      s.setAttribute("width", W); s.setAttribute("height", H);
+      var r = w / 2, side = h - r, arcL = Math.PI * r, L = 2 * side + arcL;
+      // Ponto no contorno do arco (s: 0 = canto inferior esquerdo, 1 = inferior direito)
+      function P(t, off) {
+        var d = t * L, x, y, nx, ny;
+        if (d < side) { x = 0; y = h - d; nx = -1; ny = 0; }
+        else if (d < side + arcL) { var a = Math.PI - (d - side) / r; x = r + r * Math.cos(a); y = r - r * Math.sin(a); nx = Math.cos(a); ny = -Math.sin(a); }
+        else { x = w; y = r + (d - side - arcL); nx = 1; ny = 0; }
+        return { x: M + x + nx * off, y: M + y + ny * off, nx: nx, ny: ny };
+      }
+      function smooth(pts) {
+        var d = "M" + pts[0].x.toFixed(1) + "," + pts[0].y.toFixed(1);
+        for (var i = 0; i < pts.length - 1; i++) {
+          var p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+          d += " C" + (p1.x + (p2.x - p0.x) / 6).toFixed(1) + "," + (p1.y + (p2.y - p0.y) / 6).toFixed(1) + " " +
+               (p2.x - (p3.x - p1.x) / 6).toFixed(1) + "," + (p2.y - (p3.y - p1.y) / 6).toFixed(1) + " " + p2.x.toFixed(1) + "," + p2.y.toFixed(1);
+        }
+        return d;
+      }
+      // Dois pares de ramos (um de cada lado), cada par se enrolando no outro
+      var defs = [
+        { a: 0, b: 0.57, phase: 0, cls: "vine__main", delay: 0 },
+        { a: 0, b: 0.5, phase: Math.PI, cls: "vine__twin", delay: 0.06 },
+        { a: 1, b: 0.43, phase: 0.8, cls: "vine__main", delay: 0.02 },
+        { a: 1, b: 0.5, phase: 0.8 + Math.PI, cls: "vine__twin", delay: 0.09 }
+      ];
+      var waves = Math.max(5, Math.round(L / 70));
+      defs.forEach(function (v, vi) {
+        var pts = [], n = 60;
+        for (var i = 0; i <= n; i++) {
+          var t = v.a + (v.b - v.a) * i / n;
+          var off = (small ? 5 : 9) + (small ? 4 : 6) * Math.sin(t * waves * Math.PI * 2 + v.phase);
+          pts.push(P(t, off));
+        }
+        var path = el("path", { "class": v.cls, d: smooth(pts) }, s);
+        var len = path.getTotalLength();
+        path.style.strokeDasharray = len;
+        path.style.strokeDashoffset = len;
+        vines.push({ path: path, len: len, delay: v.delay });
+        // Enfeites ao longo do ramo
+        var main = v.cls === "vine__main";
+        var step = main ? 24 : 40, k = 0, outS = v.a === 0 ? -1 : 1;
+        for (var dd = 18; dd < len - 6; dd += step + ((k * 7) % 11)) {
+          var p = path.getPointAtLength(dd), p2 = path.getPointAtLength(Math.min(len, dd + 1));
+          var ang = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI;
+          var frac = dd / len, sd = k % 2 ? 1 : -1;
+          var o = el("g", { transform: "translate(" + p.x.toFixed(1) + "," + p.y.toFixed(1) + ")" }, s);
+          var nodes = [];
+          // folha (às vezes duas)
+          var lo = el("g", { transform: "rotate(" + (ang + sd * (50 + (k * 13) % 25)).toFixed(1) + ") scale(" + (main ? 0.62 + (k % 3) * 0.1 : 0.48) + ")" }, o);
+          var lf = el("g", { "class": "leaf leaf--grow" }, lo);
+          el("path", { "class": "leaf__shape", d: LEAF }, lf); el("path", { "class": "leaf__vein", d: LEAF_VEIN }, lf);
+          nodes.push(lf);
+          if (main && k % 4 === 1) {
+            // gavinha enroladinha
+            var tg = el("g", { "class": "leaf leaf--grow", transform: "rotate(" + (ang - sd * 70).toFixed(1) + ")" }, o);
+            el("path", { "class": "vine__tendril", d: "M0,0 C4,-2 8,-2 9,1 C10,4 7,6 5.5,4.2 C4.5,3 5.6,1.6 6.8,2.4" }, tg);
+            nodes.push(tg);
+          }
+          // flores: mais concentradas no alto do arco
+          var nearTop = p.y < M + r * 1.15;
+          var pick = (k * 5 + vi * 3) % 7;
+          if (main && (nearTop ? k % 3 !== 1 : k % 3 === 2)) {
+            var na = (ang + outS * 90) * Math.PI / 180, dist = 8 + (k % 2) * 4;
+            var fx = dist * Math.cos(na), fy = dist * Math.sin(na);
+            var fl;
+            if (pick === 0 || pick === 4) fl = flower(o, fx, fy, 8.5, 0);
+            else if (pick === 1) fl = daisy(o, fx, fy, 9.5);
+            else if (pick === 2 || pick === 5) fl = forget(o, fx, fy, 6);
+            else if (pick === 3) fl = bell(o, fx, fy, 5.5, ang + outS * 60);
+            else fl = bud(o, fx, fy, ang - 90);
+            nodes.push(fl);
+            if (pick !== 6) blooms.push({ x: p.x + fx, y: p.y + fy, frac: frac, vine: vi });
+          } else if (!main && k % 3 === 1) {
+            nodes.push(forget(o, outS * 6 * Math.cos((ang + 90) * Math.PI / 180), outS * 6 * Math.sin((ang + 90) * Math.PI / 180), 4.4));
+          }
+          decos.push({ vine: vi, frac: frac, nodes: nodes });
+          k++;
+        }
+      });
+      bfly = butterflyLife(s);
+      apply(g);
+    }
+
+    function apply(gg) {
+      vines.forEach(function (v, i) {
+        var pv = clamp((gg - v.delay) / (1 - v.delay), 0, 1);
+        v.path.style.strokeDashoffset = (v.len * (1 - pv)).toFixed(1);
+        v.p = pv;
+      });
+      decos.forEach(function (d) {
+        var onD = vines[d.vine].p >= d.frac + 0.015;
+        d.nodes.forEach(function (n) { n.classList.toggle("is-on", onD); });
+      });
+      if (bfly) bfly.update(gg);
+    }
+
+    // A borboleta que mora na trepadeira ---------------------------------
+    function butterflyLife(s) {
+      if (reduced || !blooms.length) return null;
+      var top = blooms.slice().sort(function (a, b) { return a.y - b.y; }).slice(0, 5);
+      var low = blooms.slice().sort(function (a, b) { return b.y - a.y; })[0];
+      var wrap = el("g", { "class": "vine__bfly" }, s);
+      var flip = el("g", {}, wrap);
+      var bf = sideButterfly(flip, ["rose", "sky", "honey"][Math.floor(Math.random() * 3)]);
+      var state = "hidden", x = low.x, y = low.y, face = 1, scale = 0, wing = 1, t0 = 0, from = null, to = null, dur = 0, rest = 0, alive = true, rafB = 0;
+      var cur = 0;
+      function place() {
+        wrap.setAttribute("transform", "translate(" + x.toFixed(1) + "," + (y - 4).toFixed(1) + ") scale(" + (0.62 * scale).toFixed(3) + ")");
+        flip.setAttribute("transform", "scale(" + face.toFixed(3) + ",1)");
+        bf.setWings(wing);
+      }
+      function goTo(b) {
+        from = { x: x, y: y }; to = b; t0 = performance.now();
+        var dist = Math.hypot(b.x - x, b.y - y);
+        dur = 1800 + dist * 9; state = "flying";
+      }
+      function loop(now) {
+        if (!alive) return;
+        var t = now / 1000;
+        if (state === "emerging") {
+          var e = clamp((now - t0) / 1600, 0, 1);
+          scale = 1 - Math.pow(1 - e, 3);
+          wing = 1 - 0.5 * Math.sin(e * Math.PI);
+          if (e >= 1) goTo(cur = top[0]);
+        } else if (state === "flying") {
+          var u = clamp((now - t0) / dur, 0, 1), ee = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+          var cx = (from.x + to.x) / 2, cy = Math.min(from.y, to.y) - 40;
+          var nx = (1 - ee) * (1 - ee) * from.x + 2 * (1 - ee) * ee * cx + ee * ee * to.x;
+          var ny = (1 - ee) * (1 - ee) * from.y + 2 * (1 - ee) * ee * cy + ee * ee * to.y + Math.sin(u * Math.PI * 6) * 3 * (1 - ee);
+          var dir = nx >= x ? 1 : -1;
+          face += (dir - face) * 0.08;
+          x = nx; y = ny;
+          wing = 0.2 + 0.8 * (0.5 + 0.5 * Math.cos(t * 2 * Math.PI * 5));
+          if (u >= 1) { state = "resting"; rest = now + 5500 + Math.random() * 3500; }
+        } else if (state === "resting") {
+          // pousada: abre e fecha as asas devagar
+          wing = 0.55 + 0.45 * (0.5 + 0.5 * Math.cos(t * 1.6));
+          if (now > rest) {
+            var next = top[Math.floor(Math.random() * top.length)];
+            if (next === cur) next = top[(top.indexOf(cur) + 1) % top.length];
+            goTo(cur = next);
+          }
+        }
+        place();
+        rafB = requestAnimationFrame(loop);
+      }
+      place();
+      return {
+        update: function (gg) {
+          if (state === "hidden" && gg > 0.97) {
+            state = "emerging"; t0 = performance.now(); x = low.x; y = low.y; scale = 0;
+            wrap.classList.add("is-on");
+            if (!rafB) rafB = requestAnimationFrame(loop);
+          } else if (state !== "hidden" && gg < 0.55) {
+            state = "hidden"; scale = 0; wrap.classList.remove("is-on");
+            cancelAnimationFrame(rafB); rafB = 0; place();
+          }
+        },
+        stop: function () { alive = false; cancelAnimationFrame(rafB); }
+      };
+    }
+
     function tick() {
-      cur += (target - cur) * 0.08;
-      if (Math.abs(target - cur) < 0.0006) { cur = target; raf = 0; } else raf = requestAnimationFrame(tick);
-      apply(cur);
+      g += (target - g) * 0.07;
+      if (Math.abs(target - g) < 0.0005) { g = target; raf = 0; } else raf = requestAnimationFrame(tick);
+      apply(g);
     }
     scrollers.push(function (vh) {
       var r = fig.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > vh + 200) return;
-      target = clamp((vh * 0.95 - r.top) / (vh * 0.95 + r.height * 0.35), 0, 1);
+      if (r.bottom < -300 || r.top > vh + 300) return;
+      target = reduced ? 1 : clamp((vh * 0.92 - r.top) / (vh * 0.62 + r.height * 0.25), 0, 1);
+      if (reduced) { g = 1; apply(g); return; }
       if (!raf) raf = requestAnimationFrame(tick);
     });
-    apply(0);
+    var rt;
+    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(build, 200); });
+    var img = arch.querySelector("img");
+    if (img && !img.complete) img.addEventListener("load", build);
+    build();
   })();
 
   /* 1c. SOMBRA DE JANELA EM ARCO (o sol muda de lado com a rolagem) -------- */
@@ -533,50 +780,84 @@
     }, 0.25);
   })();
 
-  /* 7. VISITANTES: borboleta, passarinho ou abelhinha cruzam a tela às vezes
-     Voo orgânico: a direção muda aos poucos (como um ser vivo pilotando),
-     a velocidade respira, e as asas são animadas quadro a quadro. */
+  /* 6b. VARAL DE FOTOS: balançam com a rolagem, com a brisa e ao toque ---- */
+  (function clothesline() {
+    var track = document.querySelector(".clothesline__track");
+    if (!track) return;
+    var pins = Array.prototype.slice.call(track.querySelectorAll(".pin"));
+    var path = track.querySelector(".clothesline__string path");
+    var svgEl = track.querySelector(".clothesline__string");
+    var st = pins.map(function () { return { a: 0, v: 0 }; });
+
+    function layout() {
+      var W = track.scrollWidth, y0 = 18, sag = Math.min(56, W * 0.05);
+      svgEl.setAttribute("viewBox", "0 0 " + W + " 120");
+      svgEl.style.width = W + "px";
+      path.setAttribute("d", "M0," + y0 + " Q" + (W / 2) + "," + (y0 + sag * 2) + " " + W + "," + y0);
+      var tr = track.getBoundingClientRect();
+      pins.forEach(function (p) {
+        var r = p.getBoundingClientRect();
+        var cx = r.left - tr.left + track.scrollLeft + r.width / 2;
+        var u = cx / W;
+        var y = (1 - u) * (1 - u) * y0 + 2 * (1 - u) * u * (y0 + sag * 2) + u * u * y0;   // altura do barbante ali
+        p.style.setProperty("--hang", (y - 6).toFixed(1) + "px");
+      });
+    }
+    layout();
+    window.addEventListener("resize", layout);
+    if (!on("varal") || reduced) return;
+
+    var lastY = window.scrollY, lastT = performance.now(), running = false, visible = false;
+    function kick(amount, only) {
+      st.forEach(function (s, i) { if (only == null || only === i) s.v += amount * (0.8 + i * 0.15) * (i % 2 ? -1 : 1); });
+      start();
+    }
+    function start() { if (!running && visible) { running = true; lastT = performance.now(); requestAnimationFrame(step); } }
+    function step(now) {
+      var dt = Math.min(0.04, (now - lastT) / 1000); lastT = now;
+      var t = now / 1000, moving = false;
+      st.forEach(function (s, i) {
+        var breeze = Math.sin(t * 0.9 + i * 1.7) * 0.7 + Math.sin(t * 2.3 + i) * 0.25;   // brisa leve
+        var acc = -14 * (s.a - breeze) - 2.6 * s.v;                                    // mola amortecida
+        s.v += acc * dt; s.a += s.v * dt;
+        s.a = clamp(s.a, -14, 14);
+        pins[i].style.setProperty("--sw", s.a.toFixed(2) + "deg");
+        moving = true;
+      });
+      if (visible && moving) requestAnimationFrame(step); else running = false;
+    }
+    new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (visible) start(); }).observe(track);
+    window.addEventListener("scroll", function () {
+      var now = performance.now(), dy = window.scrollY - lastY, dtt = Math.max(16, now - lastT);
+      lastY = window.scrollY;
+      if (visible) kick(clamp(dy / dtt * 6, -20, 20));
+    }, { passive: true });
+    pins.forEach(function (p, i) {
+      p.addEventListener("click", function () {
+        var was = p.classList.contains("is-front");
+        pins.forEach(function (q) { q.classList.remove("is-front"); });
+        if (!was) p.classList.add("is-front");
+        kick(28, i);
+      });
+    });
+  })();
+
+  /* 7. VISITANTES: borboletas (3 espécies, de lado), passarinho ou abelhinha
+     Voo orgânico: direção e velocidade mudam sempre suavizadas (sem trancos). */
   (function visitors() {
     if (!on("visitantes") || reduced) return;
     var layer = document.createElement("div");
     layer.className = "visitors";
     layer.setAttribute("aria-hidden", "true");
     document.body.appendChild(layer);
-    var uid = 0;
 
-    function grad(defs, id, a, b) {
-      var g = el("linearGradient", { id: id, x1: "1", y1: "0", x2: "0", y2: "0" }, defs);
-      el("stop", { offset: "0", "stop-color": a }, g);
-      el("stop", { offset: "1", "stop-color": b }, g);
-    }
-    function makeButterfly() {
+    function makeButterfly(species) {
       var d = document.createElement("div");
       d.className = "visitor visitor--bfly";
-      var s = svg("-22 -18 44 36", d);
-      var id = "bf" + (++uid);
-      var defs = el("defs", {}, s);
-      grad(defs, id + "a", "#FBF1EA", "#D7A497");
-      grad(defs, id + "b", "#F7E6DE", "#CB988C");
-      var fore = [], hind = [];
-      [1, -1].forEach(function (side) {
-        var g = el("g", { transform: side < 0 ? "scale(-1,1)" : "" }, s);
-        var h = el("g", {}, g);
-        el("path", { "class": "bf-wing", fill: "url(#" + id + "b)", d: "M-1,0.5 C-5,0.5 -11.5,2 -13.5,6.5 C-15,10.5 -12.5,14 -8.5,13 C-5.5,12 -2.5,7 -1,2.5 Z" }, h);
-        el("path", { "class": "bf-line", d: "M-2,2 C-5,4 -8,7 -10,10.5" }, h);
-        var f = el("g", {}, g);
-        el("path", { "class": "bf-wing", fill: "url(#" + id + "a)", d: "M-1,-2 C-3,-9 -9,-16 -17,-17 C-20.5,-17.4 -21.5,-13 -19.5,-9 C-16.5,-3.5 -8.5,-0.5 -1,0 Z" }, f);
-        el("path", { "class": "bf-line", d: "M-2,-1.5 C-7,-5 -12,-10 -16.5,-14.5" }, f);
-        el("path", { "class": "bf-edge", d: "M-17,-17 C-20.5,-17.4 -21.5,-13 -19.5,-9" }, f);
-        el("circle", { "class": "bf-dot", cx: -15.5, cy: -12.5, r: 1.2 }, f);
-        el("circle", { "class": "bf-dot", cx: -17.8, cy: -10, r: 0.75 }, f);
-        fore.push(f); hind.push(h);
-      });
-      el("ellipse", { "class": "bf-body", cx: 0, cy: 2, rx: 1.3, ry: 7 }, s);
-      el("circle", { "class": "bf-body", cx: 0, cy: -6, r: 1.7 }, s);
-      el("path", { "class": "bf-ant", d: "M-0.6,-7 C-2,-12 -4,-14 -6.5,-15.5 M0.6,-7 C2,-12 4,-14 6.5,-15.5" }, s);
-      el("circle", { "class": "bf-body", cx: -6.5, cy: -15.5, r: 0.8 }, s);
-      el("circle", { "class": "bf-body", cx: 6.5, cy: -15.5, r: 0.8 }, s);
-      d.__fore = fore; d.__hind = hind;
+      var s = svg("-16 -26 32 32", d);
+      var flip = el("g", {}, s);
+      d.__bf = sideButterfly(flip, species);
+      d.__flip = flip;
       return d;
     }
     function makeBee() {
@@ -584,8 +865,8 @@
       d.className = "visitor visitor--bee";
       var s = svg("-12 -11 24 20", d);
       var flip = el("g", {}, s);
-      el("ellipse", { "class": "bee-wing", cx: 1, cy: -5, rx: 4, ry: 3, transform: "rotate(-20 1 -5)" }, flip);
-      el("ellipse", { "class": "bee-wing", cx: 3, cy: -4.5, rx: 3.4, ry: 2.6, transform: "rotate(15 3 -4.5)" }, flip);
+      el("ellipse", { "class": "bee-wing", cx: 1, cy: -5, rx: 4, ry: 3 }, flip);
+      el("ellipse", { "class": "bee-wing", cx: 3, cy: -4.5, rx: 3.4, ry: 2.6 }, flip);
       el("ellipse", { "class": "bee-body", cx: 1, cy: 1, rx: 6.5, ry: 4.2 }, flip);
       el("path", { "class": "bee-stripe", d: "M0,-3 Q-1,1 0,5 M3,-3 Q2,1 3,5" }, flip);
       el("circle", { "class": "bee-head", cx: -6.2, cy: 0.5, r: 2.4 }, flip);
@@ -600,116 +881,129 @@
       d.__wing = el("path", { "class": "bird-line", d: BIRD_UP }, s);
       return d;
     }
-
     function angDiff(a, b) { var d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; }
+    function approach(cur, target, rate, dt) { return cur + (target - cur) * (1 - Math.exp(-rate * dt)); }
 
     var KINDS = {
-      //       velocidade px/s  vaguear (rad)  rapidez da curva
-      bfly: { make: makeButterfly, speed: 62, wander: 1.0, turn: 1.6 },
-      bee:  { make: makeBee,       speed: 78, wander: 1.3, turn: 2.6 },
-      bird: { make: makeBird,      speed: 170, wander: 0.18, turn: 1.2 }
+      bfly: { speed: 58, wander: 0.9, turn: 1.3 },
+      bee:  { speed: 70, wander: 0.75, turn: 1.4 },
+      bird: { speed: 165, wander: 0.16, turn: 1.0 }
     };
-    var order = ["bfly", "bird", "bfly", "bee", "bfly", "bird", "bee"];
+    var order = [["bfly", "rose"], ["bird"], ["bfly", "sky"], ["bee"], ["bfly", "honey"], ["bird"], ["bee"], ["bfly", "rose"]];
     var count = 0, busy = false, started = false;
 
-    function fly(kind) {
+    function fly(kind, species) {
       var K = KINDS[kind];
-      var node = K.make();
+      var node = kind === "bfly" ? makeButterfly(species) : kind === "bee" ? makeBee() : makeBird();
       layer.appendChild(node);
       busy = true;
       var W = window.innerWidth, H = window.innerHeight;
       var ltr = Math.random() > 0.5;
       var x = ltr ? -40 : W + 40, y = H * (0.3 + Math.random() * 0.3);
       var goalY = H * (0.25 + Math.random() * 0.4);
-      var heading = ltr ? 0 : Math.PI, speed = K.speed;
+      var heading = ltr ? 0 : Math.PI, spd = K.speed, wanderV = 0;
       var seeds = [Math.random() * 9, Math.random() * 9, Math.random() * 9];
-      var flapPhase = 0, flapping = true, flapsLeft = 4, glideT = 0, wOpen = 1;
-      var hoverT = 0, nextHover = 2 + Math.random() * 2, facing = ltr ? 1 : -1, tilt = 0;
+      var flapPhase = 0, flapping = true, flapsLeft = 4, glideT = 0, wing = 0.6;
+      var hoverT = 0, nextHover = 2.5 + Math.random() * 2, facing = ltr ? 1 : -1, tilt = 0, bob = 0;
       var birdWing = 0, glide = 0;
       var last = performance.now(), born = last;
 
       (function frame(now) {
-        var dt = Math.min(0.05, (now - last) / 1000); last = now;
+        var dt = Math.min(0.04, (now - last) / 1000); last = now;
         var t = (now - born) / 1000;
-        // Direção: rumo ao outro lado + vaguear suave (soma de senos lentos)
         var tx = ltr ? W + 200 : -200;
         var toward = Math.atan2(goalY - y, tx - x);
-        var wander = K.wander * (0.6 * Math.sin(t * 0.7 + seeds[0]) + 0.3 * Math.sin(t * 1.9 + seeds[1]) + 0.1 * Math.sin(t * 4.3 + seeds[2]));
-        var desired = toward + wander;
-        heading += angDiff(desired, heading) * Math.min(1, K.turn * dt);
-        var spd = speed;
+        var wTarget = K.wander * (0.6 * Math.sin(t * 0.55 + seeds[0]) + 0.3 * Math.sin(t * 1.3 + seeds[1]) + 0.1 * Math.sin(t * 2.9 + seeds[2]));
+        wanderV = approach(wanderV, wTarget, 2.5, dt);
+        heading += angDiff(toward + wanderV, heading) * (1 - Math.exp(-K.turn * dt));
+        var spdTarget = K.speed;
 
         if (kind === "bfly") {
-          // Batidas em série, depois plana com as asas abertas
           if (flapping) {
-            flapPhase += dt * 2 * Math.PI * 6.5;
-            if (flapPhase >= 2 * Math.PI) { flapPhase -= 2 * Math.PI; if (--flapsLeft <= 0) { flapping = false; glideT = 0.35 + Math.random() * 0.55; } }
-            wOpen = 0.55 + 0.45 * Math.cos(flapPhase);
-            spd *= 1.15;
+            flapPhase += dt * 2 * Math.PI * 5.2;
+            if (flapPhase >= 2 * Math.PI) { flapPhase -= 2 * Math.PI; if (--flapsLeft <= 0) { flapping = false; glideT = 0.5 + Math.random() * 0.7; } }
+            var kTarget = 0.18 + 0.82 * (0.5 + 0.5 * Math.cos(flapPhase));
+            wing = approach(wing, kTarget, 40, dt);
+            spdTarget *= 1.1;
           } else {
             glideT -= dt;
-            wOpen += (0.92 + 0.05 * Math.sin(t * 9) - wOpen) * Math.min(1, dt * 10);
-            spd *= 0.75;
+            wing = approach(wing, 0.42 + 0.04 * Math.sin(t * 6), 8, dt);
+            spdTarget *= 0.8;
             if (glideT <= 0) { flapping = true; flapsLeft = 2 + Math.floor(Math.random() * 4); flapPhase = 0; }
           }
-          var lift = flapping ? -Math.sin(flapPhase) * 2.2 : 0.6;   // sobe a cada batida, desce ao planar
-          y += lift * dt * 20;
-          var hindW = 0.6 + 0.4 * wOpen;
-          node.__fore.forEach(function (f) { f.setAttribute("transform", "scale(" + Math.max(0.12, wOpen).toFixed(3) + ",1)"); });
-          node.__hind.forEach(function (h) { h.setAttribute("transform", "scale(" + Math.max(0.15, hindW * wOpen + 0.08).toFixed(3) + ",1)"); });
+          node.__bf.setWings(wing);
+          bob = approach(bob, flapping ? -Math.sin(flapPhase) * 3 : 2, 6, dt);
         }
         if (kind === "bee") {
-          // De vez em quando para no ar, como se olhasse uma flor
           nextHover -= dt;
-          if (nextHover <= 0 && hoverT <= 0) { hoverT = 0.9 + Math.random() * 0.8; nextHover = 2.5 + Math.random() * 2.5; }
-          if (hoverT > 0) { hoverT -= dt; spd *= 0.12 + 0.88 * Math.pow(Math.max(0, 1 - hoverT) , 2); }
+          if (nextHover <= 0 && hoverT <= 0) { hoverT = 1.2 + Math.random() * 0.8; nextHover = 3 + Math.random() * 2.5; }
+          if (hoverT > 0) { hoverT -= dt; spdTarget *= 0.1; }
+          bob = Math.sin(t * 3.4 + seeds[0]) * 1.8 + Math.sin(t * 1.3) * 1.2;
         }
         if (kind === "bird") {
           var cyc = Math.sin(t * 0.9 + seeds[0]);
-          glide += ((cyc > 0.3 ? 1 : 0) - glide) * Math.min(1, dt * 3);
+          glide = approach(glide, cyc > 0.3 ? 1 : 0, 3, dt);
           birdWing += dt * 11 * (1 - glide * 0.85);
           var kk = (1 + Math.sin(birdWing)) / 2 * (1 - glide) + 0.35 * glide;
           var tips = 6 - 4 * kk, ctrl = -1 + 10 * kk;
           node.__wing.setAttribute("d", "M0," + tips.toFixed(2) + " Q6," + ctrl.toFixed(2) + " 12,6 Q18," + ctrl.toFixed(2) + " 24," + tips.toFixed(2));
         }
 
+        spd = approach(spd, spdTarget, kind === "bee" ? 2.2 : 3, dt);
         x += Math.cos(heading) * spd * dt;
         y += Math.sin(heading) * spd * dt;
-        if (y < H * 0.12) goalY = H * 0.45;                       // fica no meio da tela
-        if (y > H * 0.82) goalY = H * 0.4;
+        if (y < H * 0.15) goalY = H * 0.45;
+        if (y > H * 0.8) goalY = H * 0.4;
 
         var tf;
-        if (kind === "bfly") {
-          tf = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + (heading * 180 / Math.PI + 90).toFixed(1) + "deg)";
-        } else if (kind === "bee") {
-          var vx = Math.cos(heading);
-          facing += ((vx >= 0 ? -1 : 1) - facing) * Math.min(1, dt * 4);   // vira de lado suavemente
-          tilt += (Math.sin(heading) * 18 - tilt) * Math.min(1, dt * 5);
-          var bob = Math.sin(t * 5.2) * 2;
-          tf = "translate3d(" + x.toFixed(1) + "px," + (y + bob).toFixed(1) + "px,0) rotate(" + (tilt * (vx >= 0 ? 1 : -1)).toFixed(1) + "deg)";
-          node.__flip.setAttribute("transform", "scale(" + (Math.sign(facing) * Math.max(0.2, Math.abs(facing))).toFixed(3) + ",1)");
-        } else {
-          tilt += (Math.sin(heading) * 25 * (ltr ? 1 : -1) - tilt) * Math.min(1, dt * 3);
+        if (kind === "bird") {
+          tilt = approach(tilt, Math.sin(heading) * 25 * (ltr ? 1 : -1), 3, dt);
           tf = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + tilt.toFixed(1) + "deg)";
+        } else {
+          // De lado: vira suavemente para onde está indo e inclina de leve
+          var vx = Math.cos(heading), dir = vx >= 0 ? 1 : -1;
+          var faceTarget = kind === "bee" ? -dir : dir;      // a abelha foi desenhada olhando para a esquerda
+          facing = approach(facing, faceTarget, 3.5, dt);
+          tilt = approach(tilt, Math.sin(heading) * (kind === "bee" ? 14 : 20) * dir, 4, dt);
+          node.__flip.setAttribute("transform", "scale(" + (Math.sign(facing) * Math.max(0.15, Math.abs(facing))).toFixed(3) + ",1)");
+          tf = "translate3d(" + x.toFixed(1) + "px," + (y + bob).toFixed(1) + "px,0) rotate(" + tilt.toFixed(1) + "deg)";
         }
         node.style.transform = tf;
 
         var out = ltr ? x > W + 60 : x < -60;
-        if (!out && t < 40) requestAnimationFrame(frame);
+        if (!out && t < 45) requestAnimationFrame(frame);
         else { node.remove(); busy = false; schedule(); }
       })(last);
     }
 
     function schedule(first) {
-      if (count >= 7) return;
+      if (count >= 8) return;
       setTimeout(function tryFly() {
         if (document.hidden || busy) return setTimeout(tryFly, 3000);
-        fly(order[count++ % order.length]);
+        var o = order[count++ % order.length];
+        fly(o[0], o[1]);
       }, first ? 2500 : 14000 + Math.random() * 12000);
     }
     window.addEventListener("scroll", function () {
       if (!started && window.scrollY > window.innerHeight * 0.9) { started = true; schedule(true); }
     }, { passive: true });
+  })();
+
+  /* 8b. FOLHA SECA QUE CAI nos marcadores de "Não é para você se…" ------- */
+  (function dryLeaves() {
+    if (!on("folhaSeca") || reduced || !("IntersectionObserver" in window)) return;
+    var items = document.querySelectorAll(".checks--no li");
+    if (!items.length) return;
+    root.classList.add("fx-dry");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en, k) {
+        if (!en.isIntersecting) return;
+        io.unobserve(en.target);
+        en.target.style.setProperty("--fall-delay", (k * 260) + "ms");
+        en.target.classList.add("is-on");
+      });
+    }, { threshold: 1, rootMargin: "0px 0px -10% 0px" });
+    items.forEach(function (li) { io.observe(li); });
   })();
 
   /* 8. FOLHAS QUE BROTAM NA LISTA "É PARA VOCÊ SE…" ------------------------ */
