@@ -297,7 +297,7 @@ p { text-wrap: pretty; }
 
 /* --- Varal de fotos ------------------------------------------------------- */
 .gallery { background: var(--color-sand); padding-block: var(--space-8) var(--space-16); }
-.clothesline { overflow-x: auto; overflow-y: visible; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.clothesline { padding-top: 110px; margin-top: -110px; overflow-x: auto; overflow-y: visible; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .clothesline::-webkit-scrollbar { display: none; }
 .clothesline__track {
   position: relative;
@@ -531,6 +531,15 @@ p { text-wrap: pretty; }
 /* Trepadeira em volta da foto do "Quem conduz" */
 .story { position: relative; overflow: clip; }
 .story__media .arch { position: relative; z-index: 1; }
+.story__media::before {
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  left: 0; right: 0; top: 0; aspect-ratio: 3 / 4;
+  border-radius: var(--arch);
+  background: linear-gradient(160deg, rgba(58, 37, 25, 0.12), rgba(58, 37, 25, 0.34) 70%);
+  filter: blur(16px);
+  transform: translate(26px, 22px) skewX(-9deg);
+  transform-origin: 50% 100%;
+}
 .story__media .nest { z-index: 3; }
 .vine { position: absolute; inset: -30px; z-index: 2; pointer-events: none; }
 .vine svg { position: absolute; inset: 0; overflow: visible; }
@@ -709,7 +718,7 @@ p { text-wrap: pretty; }
 .journey__stalk { fill: none; stroke: var(--color-twig); stroke-width: 1.2; stroke-linecap: round; }
 
 /* Depoimentos como bilhetes no varal */
-.clothesline--notes { margin-top: var(--space-4); }
+.clothesline--notes { padding-top: 0; margin-top: var(--space-4); }
 .pin--note { width: clamp(230px, 66vw, 310px); padding: 0; background: none; box-shadow: none; }
 .pin--note .note { min-height: 230px; box-shadow: 0 1px 2px rgba(58, 37, 25, 0.08), 0 10px 22px rgba(58, 37, 25, 0.12); }
 .note p, .note footer { font-family: "Caveat", cursive; }
