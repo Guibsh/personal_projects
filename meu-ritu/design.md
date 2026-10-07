@@ -41,6 +41,7 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 ## 4. Forma
 
+- Fotos em alta (1200×1600), versões originais guardadas em `assets/img/novas/`.
 - Primeira tela: foto quente sem moldura, fundindo com a parede. Da segunda foto em diante: **topo em arco**. Demais cantos retos.
 - Ilustrações em **traço fino** (marrom/creme), folhas verde-sálvia, **florzinhas pequenas e delicadas** (5 pétalas rosé).
 - Botões em pílula (999px). Nada de 16px genérico em tudo.
@@ -49,8 +50,7 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 ## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
 
 - **Abertura "respiração":** a foto já nasce ampliada (classe ligada no `<head>`, antes da primeira pintura, sem "travadinha") e se afasta devagar (6,5s, como quem inspira) e depois respira de leve em loop; o título entra palavra por palavra, saindo do desfoque, no mesmo ritmo; sombra de folhas surge aos poucos. CTA visível em ~2s.
-- **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura fica nítida e, descendo, nada volta a desfocar (só se a pessoa subir); quando a última frase passa, a neblina some e a luz quente da janela esquenta o fundo.
-- **Luz de janela em arco** só na seção do cansaço: é a luz que esquenta quando a neblina some (saiu de "para quem é" e "dúvidas", onde no celular parecia uma mancha).
+- **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura (60% da tela) fica nítida, e toda frase que aparece inteira clareia sozinha em sequência (~0,5s cada), para o notebook não ficar desfocado; descendo, nada volta a desfocar. No fim, a neblina some (sem luz de janela nem brilho quente).
 - **20 dos 1.440 minutos:** animação contínua de ~8s que toca uma vez quando o relógio aparece (desenha o dia até 1.440 → troca para "para você" → fatia verde cresce até 20 → frases). Curvas suaves, sem depender da rolagem.
 - **Trepadeira na foto do "Quem conduz":** com a rolagem, dois pares de ramos entrelaçados nascem nos cantos de baixo e sobem contornando o arco, brotando folhas, gavinhas e flores variadas (rosé de 5 pétalas, margaridinha, sininho lilás, miosótis azul, botão), sempre para fora da foto e mais concentradas no alto. Quando fecha o arco, uma borboleta sai de uma flor de baixo, voa até o topo e fica visitando as flores (pousa abrindo e fechando as asas). Subindo, a trepadeira recolhe.
 - **Sombra diagonal** atrás da foto do "Quem conduz" (sol vindo do alto, à esquerda): sombra em arco, desfocada, deslocada para baixo e para a direita.
@@ -63,6 +63,5 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 - **Depoimentos como bilhetes no varal:** papel pautado, print de WhatsApp (balões verdes) e papel kraft, com letra manuscrita (Caveat), presos com pregadores; balançam como o varal das fotos.
 - **Contagem regressiva** no card da oferta para a próxima turma (`MEU_RITU_TURMA` no `index.html`; data de EXEMPLO até a Lidia definir). Quando a data passa, troca para "Turma começando agora".
 - **Orvalho:** passar o mouse ou tocar numa folha do caminho de 14 dias ou da trepadeira faz a folha balançar e uma gotinha se formar na ponta e escorrer.
-- **Cursor de folhinha** (só computador com mouse): folha sálvia; sobre botões e links, folha verde-escura com uma florzinha.
-- **Bando no CTA final**, **pétalas** na oferta e **folhinha no botão**.
+- **CTA final** centralizado, sem foto, com o bando de passarinhos; **pétalas** na oferta e **folhinha no botão**.
 - CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem visitantes nem loops.

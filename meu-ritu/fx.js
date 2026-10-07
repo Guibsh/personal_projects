@@ -224,15 +224,29 @@
     if (reduced) { section.style.setProperty("--warm", 1); section.classList.add("is-clear"); return; }
 
     var lastY = window.scrollY, kept = items.map(function () { return 0; }), keptWarm = 0;
+    // Frase que aparece inteira na tela clareia sozinha em poucos instantes
+    // (no notebook a seção cabe toda na tela e ninguém precisa rolar para ler)
+    var seen = items.map(function () { return false; }), queue = 0;
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var i = items.indexOf(en.target);
+          io.unobserve(en.target);
+          setTimeout(function () { seen[i] = true; runScroll(); }, 450 + (queue++) * 550);
+        });
+      }, { threshold: 0.95 });
+      items.forEach(function (li) { io.observe(li); });
+    }
     scrollers.push(function (vh) {
       var r = section.getBoundingClientRect();
       var goingDown = window.scrollY >= lastY;
       lastY = window.scrollY;
       if (r.bottom < -100 || r.top > vh + 100) return;
-      var line = vh * 0.42;                       // linha de leitura
+      var line = vh * 0.6;                        // linha de leitura
       var lr = last.getBoundingClientRect();
       // A luz esquenta quando a última frase passa pela linha de leitura
-      var warm = clamp((line + vh * 0.12 - (lr.top + lr.height / 2)) / (vh * 0.22), 0, 1);
+      var warm = seen.every(Boolean) ? 1 : clamp((line + vh * 0.12 - (lr.top + lr.height / 2)) / (vh * 0.22), 0, 1);
       // Descendo, nada volta a desfocar; só subindo a neblina pode voltar
       warm = goingDown ? Math.max(warm, keptWarm) : warm;
       keptWarm = warm;
@@ -242,7 +256,7 @@
         var sdist = (b.top + b.height / 2 - line) / (vh * 0.32);
         // Já lida (acima): fica clara. Por ler (abaixo): na neblina.
         var clarity = sdist < 0 ? 1 : 1 - Math.min(1, sdist);
-        clarity = Math.max(clarity, warm);
+        clarity = Math.max(clarity, warm, seen[i] ? 1 : 0);
         if (goingDown) clarity = Math.max(clarity, kept[i]);
         kept[i] = clarity;
         li.style.setProperty("--clarity", clarity.toFixed(3));
@@ -1081,8 +1095,6 @@
     });
   })();
 
-  /* 13. CURSOR DE FOLHINHA (só em computador com mouse) ------------------- */
-  if (on("cursorFolha") && window.matchMedia("(pointer: fine)").matches) root.classList.add("fx-leaf-cursor");
 
   runScroll();
 })();

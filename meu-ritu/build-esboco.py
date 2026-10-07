@@ -17,7 +17,7 @@ def to_webp(path):
     if src.suffix == ".png":
         args = ["-resize", "420x>", "-quality", "82", "-define", "webp:alpha-quality=90"]
     else:
-        args = ["-resize", "760x>", "-quality", "68"]
+        args = ["-resize", "1000x>", "-quality", "72"]
     subprocess.run(["convert", str(src), *args, "-strip", str(out)], check=True)
     return out
 
