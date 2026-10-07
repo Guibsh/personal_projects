@@ -32,6 +32,7 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 ## 3. Tipografia
 
+- **Manuscrita:** Caveat — só nos bilhetes dos depoimentos
 - **Display:** Playfair Display 400/500 + itálico — títulos (mesma do banner "De Volta Pra Mim"; Cormorant foi descartada porque o circunflexo dela fica estranho em "você")
 - **Corpo:** Montserrat 400/500 — texto e UI (mesma do banner "Desafio de 14 dias")
 - **Escala:** 12 · 14 · 16 · 18 · 24 · 32 · 44 · 56 · 76
@@ -58,5 +59,11 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 - **Varal de fotos:** as 3 fotos impressas presas com pregadores de madeira num barbante; balançam com a rolagem e com uma brisa leve; tocar traz a foto para frente e balança. No celular, o varal desliza para o lado. Uma borboleta (espécie Céu) mora no varal: chega voando, pousa no barbante ou num pregador e, quando as fotos balançam forte ou alguém toca nelas, se assusta e pousa em outro ponto; sozinha, muda de lugar a cada 9–15s.
 - **Borboletas só em dois lugares:** na trepadeira da foto do "Quem conduz" e no varal. Saíram os visitantes que cruzavam a tela (borboletas, passarinho e abelha).
 - **Folhas que brotam** nos marcadores de "É para você se…"; **folhas secas que caem balançando** nos de "Não é para você se…"; **folhinha que se abre** ao lado da pergunta aberta nas dúvidas.
+- **Depoimentos como bilhetes no varal:** papel pautado, print de WhatsApp (balões verdes) e papel kraft, com letra manuscrita (Caveat), presos com pregadores; balançam como o varal das fotos.
+- **Contagem regressiva** no card da oferta para a próxima turma (`MEU_RITU_TURMA` no `index.html`; data de EXEMPLO até a Lidia definir). Quando a data passa, troca para "Turma começando agora".
+- **Oferta embrulhada:** o card chega coberto por papel kraft com barbante e um selo verde com folha; ao aparecer, o selo estoura e as abas se abrem como portas (~1,5s).
+- **Orvalho:** passar o mouse ou tocar numa folha do caminho de 14 dias ou da trepadeira faz a folha balançar e uma gotinha se formar na ponta e escorrer.
+- **Ramos divisórios:** no topo do relógio, da história e dos depoimentos, um ramo fino se desenha com a rolagem, brota folhas e uma florzinha; uma folhinha se solta e cai uma vez.
+- **Cursor de folhinha** (só computador com mouse): folha sálvia; sobre botões e links, folha verde-escura com uma florzinha.
 - **Bando no CTA final**, **pétalas** na oferta e **folhinha no botão**.
 - CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem visitantes nem loops.

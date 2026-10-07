@@ -74,6 +74,7 @@
 
     <!-- 20 DOS 1.440 MINUTOS (anima conforme a rolagem, nos dois sentidos) -->
     <section class="minutes" data-fx="minutos">
+      <div class="sprig" data-fx="ramos" aria-hidden="true"></div>
       <div class="minutes__sticky">
         <div class="container minutes__grid">
           <div class="minutes__ring" aria-hidden="true">
@@ -98,6 +99,7 @@
 
     <!-- HISTÓRIA -->
     <section class="section story">
+      <div class="sprig" data-fx="ramos" aria-hidden="true"></div>
       <div class="container story__grid">
         <figure class="story__media" data-reveal>
           <div class="arch"><img src="assets/img/porta-bracos-cima.jpg" alt="Lidia em frente a uma porta de madeira antiga" width="900" height="1200" loading="lazy"></div>
@@ -282,24 +284,38 @@
 
     <!-- DEPOIMENTOS -->
     <section class="section proof">
+      <div class="sprig" data-fx="ramos" aria-hidden="true"></div>
       <div class="container">
         <div class="section-head">
           <p class="eyebrow">Quem já começou</p>
           <h2>Mulheres reais, rotinas reais.</h2>
         </div>
-        <div class="quotes" data-reveal-stagger="100">
-          <blockquote>
-            <p><mark class="ph">[Depoimento real de aluna, em 2–3 linhas, de preferência com resultado concreto]</mark></p>
-            <footer>Nome da aluna · cidade</footer>
-          </blockquote>
-          <blockquote>
-            <p><mark class="ph">[Depoimento real de aluna, ou print de mensagem do WhatsApp/Instagram]</mark></p>
-            <footer>Nome da aluna · cidade</footer>
-          </blockquote>
-          <blockquote>
-            <p><mark class="ph">[Espaço para foto de antes e depois, se houver autorização]</mark></p>
-            <footer>Nome da aluna · cidade</footer>
-          </blockquote>
+        <div class="clothesline clothesline--notes">
+          <div class="clothesline__track">
+            <svg class="clothesline__string" aria-hidden="true"><path d=""/></svg>
+            <figure class="pin pin--note note--paper" style="--r:-3.5deg">
+              <span class="pin__peg" aria-hidden="true"></span>
+              <blockquote class="note">
+                <p><mark class="ph">[depoimento real de aluna, 2–3 linhas, de preferência com um resultado concreto]</mark></p>
+                <footer>Nome da aluna, cidade</footer>
+              </blockquote>
+            </figure>
+            <figure class="pin pin--note note--chat" style="--r:2deg">
+              <span class="pin__peg" aria-hidden="true"></span>
+              <div class="note note--whats">
+                <span class="note__who">Nome da aluna</span>
+                <p class="bubble"><mark class="ph">[print de mensagem do WhatsApp ou Instagram]</mark><span class="bubble__time">08:42 ✓✓</span></p>
+                <p class="bubble bubble--short"><mark class="ph">[segunda mensagem curta]</mark><span class="bubble__time">08:43 ✓✓</span></p>
+              </div>
+            </figure>
+            <figure class="pin pin--note note--kraft" style="--r:-1.5deg">
+              <span class="pin__peg" aria-hidden="true"></span>
+              <blockquote class="note">
+                <p><mark class="ph">[depoimento ou foto de antes e depois, se houver autorização]</mark></p>
+                <footer>Nome da aluna, cidade</footer>
+              </blockquote>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
@@ -312,6 +328,12 @@
           <p class="offer__name">Desafio<br><em>De Volta Pra Mim</em></p>
         </div>
         <div class="offer__card" data-reveal data-reveal-delay="100">
+          <div class="gift" data-fx="presente" aria-hidden="true">
+            <div class="gift__flap gift__flap--l"></div>
+            <div class="gift__flap gift__flap--r"></div>
+            <div class="gift__twine"></div>
+            <div class="gift__seal"><svg viewBox="0 0 40 24" width="26" height="16"><path d="M4,20 C8,8 20,2 36,3 C34,13 24,20 4,20Z" fill="#F6F0E7"/><path d="M6,19 C14,14 24,9 33,5" fill="none" stroke="#56693F" stroke-width="1.2"/></svg></div>
+          </div>
           <p class="eyebrow eyebrow--light">Tudo o que você recebe</p>
           <ul class="offer__list">
             <li>14 treinos de 20 minutos para fazer em casa</li>
@@ -319,6 +341,15 @@
             <li><mark class="ph">[bônus 1, ex.: guia de alimentação simples]</mark></li>
             <li><mark class="ph">[bônus 2, ex.: grupo de apoio]</mark></li>
           </ul>
+          <div class="countdown" data-fx="contagem">
+            <p class="countdown__label">A próxima turma começa em <mark class="ph">[data de exemplo, a Lidia define]</mark></p>
+            <div class="countdown__clock" role="timer" aria-live="off">
+              <span><b data-cd="d">00</b><small>dias</small></span>
+              <span><b data-cd="h">00</b><small>horas</small></span>
+              <span><b data-cd="m">00</b><small>min</small></span>
+              <span><b data-cd="s">00</b><small>seg</small></span>
+            </div>
+          </div>
           <div class="price">
             <span class="price__label">Investimento único</span>
             <span class="price__value"><small>R$</small>47</span>
@@ -417,6 +448,9 @@
     // Troque pelo link real do checkout (Hotmart, Kiwify, Eduzz...)
     window.CHECKOUT_URL = "";
 
+    // Data de início da próxima turma (contagem regressiva). EXEMPLO: a Lidia define.
+    window.MEU_RITU_TURMA = "2026-10-20T08:00:00-03:00";
+
     // Liga/desliga cada animação (true = ligada, false = desligada)
     window.MEU_RITU_FX = {
       respiracao: true,     // abertura: a foto se afasta devagar, como quem inspira
@@ -434,7 +468,12 @@
       folhasLista: true,    // folhas que brotam na lista "É para você se…"
       folhaSeca: true,      // folha seca que cai nos marcadores de "Não é para você se…"
       folhaFaq: true,       // folhinha que se abre ao lado da pergunta aberta
-      folhaBotao: true      // folhinha que brota no botão ao passar o mouse
+      folhaBotao: true,     // folhinha que brota no botão ao passar o mouse
+      contagem: true,       // contagem regressiva para a próxima turma (no card da oferta)
+      presente: true,       // card da oferta chega embrulhado e se abre
+      orvalho: true,        // gotinha de orvalho ao tocar/passar o mouse nas folhas
+      ramos: true,          // ramos que se desenham entre algumas seções
+      cursorFolha: true     // cursor de folhinha no computador
     };
   </script>
   <script src="scroll-kit.js" defer></script>

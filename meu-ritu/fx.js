@@ -781,9 +781,8 @@
   })();
 
   /* 6b. VARAL DE FOTOS: balançam com a rolagem, com a brisa e ao toque ---- */
-  (function clothesline() {
-    var track = document.querySelector(".clothesline__track");
-    if (!track) return;
+  document.querySelectorAll(".clothesline__track").forEach(function (track) {
+    var withButterfly = !track.closest(".clothesline--notes");
     var pins = Array.prototype.slice.call(track.querySelectorAll(".pin"));
     var path = track.querySelector(".clothesline__string path");
     var svgEl = track.querySelector(".clothesline__string");
@@ -806,7 +805,7 @@
     layout();
     window.addEventListener("resize", function () { layout(); if (bf) bf.relayout(); });
     if (!on("varal") || reduced) return;
-    var bf = clotheslineButterfly();
+    var bf = withButterfly ? clotheslineButterfly() : null;
 
 
     // Borboleta que mora no varal: pousa no barbante ou num pregador e voa
@@ -919,7 +918,7 @@
         kick(28, i);
       });
     });
-  })();
+  });
 
   /* 8b. FOLHA SECA QUE CAI nos marcadores de "Não é para você se…" ------- */
   (function dryLeaves() {
@@ -953,6 +952,137 @@
     }, { threshold: 1, rootMargin: "0px 0px -12% 0px" });
     items.forEach(function (li) { io.observe(li); });
   })();
+
+  /* 9. CONTAGEM REGRESSIVA PARA A PRÓXIMA TURMA ---------------------------- */
+  (function countdown() {
+    var box = document.querySelector(".countdown");
+    if (!box) return;
+    var end = new Date(window.MEU_RITU_TURMA || "").getTime();
+    if (!end || isNaN(end)) { box.remove(); return; }
+    var els = {};
+    box.querySelectorAll("[data-cd]").forEach(function (b) { els[b.getAttribute("data-cd")] = b; });
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    function tick() {
+      var left = Math.max(0, end - Date.now());
+      if (!left) { box.classList.add("is-done"); box.querySelector(".countdown__label").textContent = "Turma começando agora: ainda dá tempo de entrar"; return; }
+      var s = Math.floor(left / 1000);
+      els.d.textContent = pad(Math.floor(s / 86400));
+      els.h.textContent = pad(Math.floor(s % 86400 / 3600));
+      els.m.textContent = pad(Math.floor(s % 3600 / 60));
+      els.s.textContent = pad(s % 60);
+      setTimeout(tick, 1000 - (Date.now() % 1000));
+    }
+    tick();
+  })();
+
+  /* 10. O CARD DA OFERTA CHEGA EMBRULHADO E SE ABRE ------------------------ */
+  (function gift() {
+    var g = document.querySelector(".gift");
+    if (!g) return;
+    if (reduced) { g.remove(); return; }
+    var card = g.parentElement;
+    card.classList.add("is-wrapped");
+    onceVisible(card, function () {
+      setTimeout(function () {
+        card.classList.add("is-opening");
+        setTimeout(function () { card.classList.remove("is-wrapped"); g.remove(); }, 1700);
+      }, 350);
+    }, 0.45);
+  })();
+
+  /* 11. GOTINHAS DE ORVALHO: tocar ou passar o mouse numa folha ------------ */
+  (function dew() {
+    if (!on("orvalho") || reduced) return;
+    root.classList.add("fx-dew");
+    var last = new WeakMap();
+    function drip(leaf) {
+      var now = performance.now();
+      if (now - (last.get(leaf) || 0) < 1200) return;
+      last.set(leaf, now);
+      leaf.classList.remove("is-dew"); void leaf.getBBox(); leaf.classList.add("is-dew");
+      var svgRoot = leaf.ownerSVGElement;
+      var m = leaf.getScreenCTM(), rm = svgRoot.getScreenCTM();
+      if (!m || !rm) return;
+      var p = svgRoot.createSVGPoint(); p.x = 27; p.y = 0;
+      var tip = p.matrixTransform(m).matrixTransform(rm.inverse());
+      var drop = el("g", { "class": "dew", transform: "translate(" + tip.x.toFixed(1) + "," + tip.y.toFixed(1) + ")" }, svgRoot);
+      var inner = el("g", { "class": "dew__fall" }, drop);
+      el("path", { "class": "dew__drop", d: "M0,-3.2 C1.6,-0.8 2.2,0.6 2.2,1.4 C2.2,2.8 1.2,3.6 0,3.6 C-1.2,3.6 -2.2,2.8 -2.2,1.4 C-2.2,0.6 -1.6,-0.8 0,-3.2 Z" }, inner);
+      el("circle", { "class": "dew__shine", cx: -0.7, cy: 1, r: 0.6 }, inner);
+      setTimeout(function () { drop.remove(); }, 1500);
+    }
+    function bind(scope) {
+      document.querySelectorAll(scope).forEach(function (svgEl) {
+        svgEl.addEventListener("pointerover", function (e) {
+          var leaf = e.target.closest && e.target.closest(".leaf");
+          if (leaf && leaf.classList.contains("is-on")) drip(leaf);
+        });
+        svgEl.addEventListener("pointerdown", function (e) {
+          var leaf = e.target.closest && e.target.closest(".leaf");
+          if (leaf) drip(leaf);
+        });
+      });
+    }
+    // as folhas são criadas depois (resize recria): liga nos contêineres
+    bind(".journey__stem");
+    bind(".vine");
+  })();
+
+  /* 12. RAMOS QUE SE DESENHAM ENTRE AS SEÇÕES ------------------------------ */
+  (function sprigs() {
+    var list = document.querySelectorAll(".sprig");
+    if (!list.length) return;
+    var R = function (seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; };
+    var items = [];
+    list.forEach(function (box, n) {
+      var s = svg("0 0 560 60", box);
+      var rnd = R(31 + n * 7);
+      var d = "M10,34 C90," + (20 + rnd() * 12).toFixed(0) + " 160," + (44 + rnd() * 8).toFixed(0) + " 280,32 S470," + (20 + rnd() * 10).toFixed(0) + " 550,30";
+      var stem = el("path", { "class": "sprig__line", d: d }, s);
+      var len = stem.getTotalLength();
+      stem.style.strokeDasharray = len; stem.style.strokeDashoffset = len;
+      var bits = [];
+      for (var k = 0; k < 9; k++) {
+        var f = 0.08 + k * 0.105 + (rnd() - 0.5) * 0.04;
+        var lf = leafAt(s, stem, f, k % 2 ? 1 : -1, 15 + rnd() * 6, "leaf leaf--grow");
+        bits.push({ f: f, node: lf });
+      }
+      var mid = stem.getPointAtLength(len * 0.5);
+      bits.push({ f: 0.5, node: flower(s, mid.x, mid.y - 2, 6, 0) });
+      var fall = null;
+      if (!reduced) {
+        // uma folhinha que se solta e cai, uma vez
+        var fp = stem.getPointAtLength(len * 0.72);
+        var fo = el("g", { transform: "translate(" + fp.x.toFixed(1) + "," + fp.y.toFixed(1) + ")" }, s);
+        fall = el("g", { "class": "sprig__fall" }, fo);
+        el("path", { "class": "leaf__shape", d: LEAF, transform: "rotate(30) scale(0.5)" }, fall);
+      }
+      items.push({ box: box, stem: stem, len: len, bits: bits, fall: fall, p: 0, t: 0, dropped: false });
+    });
+    var raf = 0;
+    function tick() {
+      raf = 0;
+      var again = false;
+      items.forEach(function (it) {
+        it.p += (it.t - it.p) * 0.08;
+        if (Math.abs(it.t - it.p) > 0.001) again = true; else it.p = it.t;
+        it.stem.style.strokeDashoffset = (it.len * (1 - it.p)).toFixed(1);
+        it.bits.forEach(function (b) { b.node.classList.toggle("is-on", it.p >= b.f); });
+        if (it.fall && !it.dropped && it.p > 0.98) { it.dropped = true; it.fall.classList.add("is-falling"); }
+      });
+      if (again) raf = requestAnimationFrame(tick);
+    }
+    scrollers.push(function (vh) {
+      items.forEach(function (it) {
+        var r = it.box.getBoundingClientRect();
+        it.t = reduced ? 1 : clamp((vh * 0.95 - r.top) / (vh * 0.4), 0, 1);
+      });
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+  })();
+
+  /* 13. CURSOR DE FOLHINHA (só em computador com mouse) ------------------- */
+  if (on("cursorFolha") && window.matchMedia("(pointer: fine)").matches) root.classList.add("fx-leaf-cursor");
 
   runScroll();
 })();

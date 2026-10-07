@@ -32,7 +32,10 @@ b) Quem terminar o desafio ganha alguma condição especial (desconto, bônus)? 
 *8. Referências*
 No formulário você respondeu "Ok" sobre os sites de referência. Tem 1 ou 2 perfis ou sites que você gosta (ou concorrentes)? E tem algo que você NÃO quer de jeito nenhum?
 
-*9. Extras (se tiver)*
+*9. Próxima turma*
+Qual a data e o horário de início da próxima turma? Coloquei uma contagem regressiva com uma data de exemplo. Se o desafio não tiver turma (a pessoa começa quando quiser), podemos usar outra coisa: por exemplo, "preço de lançamento até dia X".
+
+*10. Extras (se tiver)*
 Tem vídeo seu (apresentação ou trecho de treino) para colocar na página? Tem domínio próprio (ex.: meuritu.com.br)?
 
 Obrigada! 💛
