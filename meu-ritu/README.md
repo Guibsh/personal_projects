@@ -12,7 +12,7 @@ HTML + CSS + JS puro, sem build.
 | `assets/img/`, `assets/fonts/` | Fotos (otimizadas), logos transparentes e fontes locais |
 | `design.md` | Diretriz visual (cores, fontes, regras) |
 | `esboco-meu-ritu.html` | Versão em arquivo único para enviar à cliente (gerada) |
-| `build-esboco.py` | Gera o arquivo único: `python3 build-esboco.py` |
+| `build-esboco.py` + `prerender.js` | Geram o arquivo único: `python3 build-esboco.py && node prerender.js` (o segundo coloca os desenhos prontos no arquivo, para aparecerem mesmo com script bloqueado) |
 | `perguntas-lidia.md` | Pendências para a cliente responder |
 
 ## Abrir

@@ -221,7 +221,7 @@
     if (!items.length) return;
     section.classList.add("is-foggy");
     var last = items[items.length - 1];
-    if (reduced) { section.style.setProperty("--warm", 1); section.classList.add("is-clear"); return; }
+    if (reduced) { section.classList.remove("is-foggy"); return; }
 
     var lastY = window.scrollY, kept = items.map(function () { return 0; }), keptWarm = 0;
     // Frase que aparece inteira na tela clareia sozinha em poucos instantes
@@ -527,6 +527,7 @@
     var sec = document.querySelector(".minutes");
     if (!sec) return;
     var ticks = sec.querySelector(".minutes__ticks");
+    ticks.innerHTML = "";
     var tickEls = [];
     for (var h = 0; h < 24; h++) {
       var a = h / 24 * Math.PI * 2;
@@ -574,6 +575,7 @@
   (function nest() {
     var btn = document.querySelector(".nest");
     if (!btn) return;
+    btn.innerHTML = "";
     var s = svg("0 0 220 130", btn);
     el("path", { "class": "nest__branch", d: "M0,104 C50,96 90,100 130,96 S200,86 220,80" }, s);
     leafAt(s, s.lastChild, 0.88, -1, 20, "leaf");

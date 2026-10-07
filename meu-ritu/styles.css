@@ -533,9 +533,9 @@ p { text-wrap: pretty; }
   content: ""; position: absolute; z-index: 0; pointer-events: none;
   left: 0; right: 0; top: 0; aspect-ratio: 3 / 4;
   border-radius: var(--arch);
-  background: linear-gradient(160deg, rgba(58, 37, 25, 0.12), rgba(58, 37, 25, 0.34) 70%);
-  filter: blur(16px);
-  transform: translate(26px, 22px) skewX(-9deg);
+  background: rgba(58, 37, 25, 0.22);
+  filter: blur(18px);
+  transform: translateY(16px) scale(0.96);
   transform-origin: 50% 100%;
 }
 .story__media .nest { z-index: 3; }
@@ -831,6 +831,11 @@ p { text-wrap: pretty; }
 html:not(.js) .minutes { --swap: 1; --line2: 1; --line3: 1; }
 html:not(.js) .minutes__track { stroke-dashoffset: 0; }
 html:not(.js) .minutes__slice { stroke-dasharray: 20 1440; opacity: 1; }
-html:not(.js) .clothesline__track::before { content: ""; position: absolute; left: 0; right: 0; top: 14px; height: 1.4px; background: #8A6A52; }
-html:not(.js) .journey__stem { border-left: 2px solid #7A5A43; width: 0; left: 21px; }
-@media (min-width: 900px) { html:not(.js) .journey__stem { left: 50%; } }
+
+/* Varal no celular: as 3 fotos cabem na tela, sem precisar arrastar */
+@media (max-width: 699px) {
+  .gallery .clothesline__track { width: 100%; gap: 10px; padding-inline: 12px; }
+  .gallery .pin { width: calc((100% - 20px) / 3); padding: 5px 5px 14px; }
+  .gallery .pin__peg { width: 8px; height: 22px; top: -10px; }
+}
+html:not(.js) .chick { transform: none; }
