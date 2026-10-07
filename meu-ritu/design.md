@@ -47,10 +47,11 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 
 ## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
 
-- **Abertura "respiração":** a foto se afasta devagar (6,5s, como quem inspira) e depois respira de leve em loop; o título entra palavra por palavra, saindo do desfoque, no mesmo ritmo; sombra de folhas surge aos poucos. CTA visível em ~2s.
-- **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura fica nítida, as já lidas ficam claras; quando a última frase passa, a neblina some e a luz quente da janela esquenta o fundo.
+- **Abertura "respiração":** a foto já nasce ampliada (classe ligada no `<head>`, antes da primeira pintura, sem "travadinha") e se afasta devagar (6,5s, como quem inspira) e depois respira de leve em loop; o título entra palavra por palavra, saindo do desfoque, no mesmo ritmo; sombra de folhas surge aos poucos. CTA visível em ~2s.
+- **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura fica nítida e, descendo, nada volta a desfocar (só se a pessoa subir); quando a última frase passa, a neblina some e a luz quente da janela esquenta o fundo.
 - **Luz de janela em arco** só na seção do cansaço: é a luz que esquenta quando a neblina some (saiu de "para quem é" e "dúvidas", onde no celular parecia uma mancha).
 - **20 dos 1.440 minutos:** animação contínua de ~8s que toca uma vez quando o relógio aparece (desenha o dia até 1.440 → troca para "para você" → fatia verde cresce até 20 → frases). Curvas suaves, sem depender da rolagem.
+- **Luz do dia na foto do "Quem conduz":** a foto em arco é uma janela; com a rolagem o "dia passa": uma faixa de sol atravessa a foto da esquerda para a direita, a luz da janela é projetada na parede, a sombra da foto muda de lado e se alonga nas pontas do dia, e a cor vai do creme da manhã ao dourado do fim de tarde.
 - **Ninho com 3 filhotes** (história), traço suave.
 - **Caminho de 14 dias** vertical; folhas variadas e 12 enfeites espalhados pelo galho (flor solta, par de flores ou botão com folhinha), em posições e lados variados, que brotam quando o galho chega neles.
 - **Visitantes:** depois que a pessoa passa da primeira tela, de vez em quando (a cada 14–26s, até 7 vezes) cruza o meio da tela uma borboleta (asas em degradê rosé, batidas em série e planeio, sobe a cada batida), um passarinho (bate asas e plana) ou uma abelhinha (paira no ar e vira de lado suavemente). Voo por "direção que muda aos poucos", sem trajetos em zigue-zague.

@@ -124,8 +124,9 @@
           }
         });
       })(title);
+      title.classList.add("is-split");
     }
-    if (on("respiracao") && !reduced) root.classList.add("fx-breath");
+    if (!on("respiracao") || reduced) root.classList.remove("fx-breath");
     requestAnimationFrame(function () { root.classList.add("hero-in"); });
 
     var shadows = document.querySelector(".hero__shadows");
@@ -163,23 +164,76 @@
     var last = items[items.length - 1];
     if (reduced) { section.style.setProperty("--warm", 1); section.classList.add("is-clear"); return; }
 
+    var lastY = window.scrollY, kept = items.map(function () { return 0; }), keptWarm = 0;
     scrollers.push(function (vh) {
       var r = section.getBoundingClientRect();
+      var goingDown = window.scrollY >= lastY;
+      lastY = window.scrollY;
       if (r.bottom < -100 || r.top > vh + 100) return;
       var line = vh * 0.42;                       // linha de leitura
       var lr = last.getBoundingClientRect();
       // A luz esquenta quando a última frase passa pela linha de leitura
       var warm = clamp((line + vh * 0.12 - (lr.top + lr.height / 2)) / (vh * 0.22), 0, 1);
+      // Descendo, nada volta a desfocar; só subindo a neblina pode voltar
+      warm = goingDown ? Math.max(warm, keptWarm) : warm;
+      keptWarm = warm;
       section.style.setProperty("--warm", warm.toFixed(3));
-      items.forEach(function (li) {
+      items.forEach(function (li, i) {
         var b = li.getBoundingClientRect();
         var sdist = (b.top + b.height / 2 - line) / (vh * 0.32);
         // Já lida (acima): fica clara. Por ler (abaixo): na neblina.
-        var clarity = sdist < 0 ? Math.max(0.7, 1 + sdist * 0.6) : 1 - Math.min(1, sdist);
+        var clarity = sdist < 0 ? 1 : 1 - Math.min(1, sdist);
         clarity = Math.max(clarity, warm);
+        if (goingDown) clarity = Math.max(clarity, kept[i]);
+        kept[i] = clarity;
         li.style.setProperty("--clarity", clarity.toFixed(3));
       });
     });
+  })();
+
+  /* 1d. LUZ DO DIA NA FOTO DO "QUEM CONDUZ" -------------------------------
+     A foto em arco é uma janela: o sol atravessa de um lado para o outro,
+     projeta a luz da janela na parede e move a sombra, como o dia passando. */
+  (function daylight() {
+    var fig = document.querySelector(".story__media");
+    var patch = fig && fig.querySelector(".daylight__patch");
+    if (!patch) return;
+    var s = svg("0 0 200 320", patch);
+    var mask = el("mask", { id: "daymask" }, el("defs", {}, s));
+    el("path", { d: "M0,320 L0,100 A100,100 0 0 1 200,100 L200,320 Z", fill: "#fff" }, mask);
+    el("rect", { x: 96, y: 0, width: 8, height: 320, fill: "#000" }, mask);
+    el("rect", { x: 0, y: 150, width: 200, height: 7, fill: "#000" }, mask);
+    el("path", { d: "M34,100 A66,66 0 0 1 166,100", fill: "none", stroke: "#000", "stroke-width": 6 }, mask);
+    el("rect", { x: 0, y: 0, width: 200, height: 320, fill: "currentColor", mask: "url(#daymask)" }, s);
+
+    var MORNING = [255, 244, 224], EVENING = [255, 208, 156];
+    function mix(a, b, t) { return a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(","); }
+    function apply(d) {
+      var side = 0.5 - d;                                      // +: sol à esquerda (manhã)
+      var len = Math.abs(side) * 2;                            // sombra mais longa nas pontas do dia
+      fig.style.setProperty("--sx", (side * 90).toFixed(1) + "px");
+      fig.style.setProperty("--sblur", (14 + len * 12).toFixed(1) + "px");
+      fig.style.setProperty("--sskew", (-side * 16).toFixed(1) + "deg");
+      fig.style.setProperty("--px", (-side * 105).toFixed(1) + "%");
+      fig.style.setProperty("--pskew", (side * 34).toFixed(1) + "deg");
+      fig.style.setProperty("--gx", (170 - d * 260).toFixed(1) + "%");
+      fig.style.setProperty("--warm", (d * d).toFixed(3));
+      fig.style.setProperty("--sun", mix(MORNING, EVENING, d));
+    }
+    if (reduced) { apply(0.35); return; }
+    var target = 0, cur = 0, raf = 0;
+    function tick() {
+      cur += (target - cur) * 0.08;
+      if (Math.abs(target - cur) < 0.0006) { cur = target; raf = 0; } else raf = requestAnimationFrame(tick);
+      apply(cur);
+    }
+    scrollers.push(function (vh) {
+      var r = fig.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      target = clamp((vh * 0.95 - r.top) / (vh * 0.95 + r.height * 0.35), 0, 1);
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+    apply(0);
   })();
 
   /* 1c. SOMBRA DE JANELA EM ARCO (o sol muda de lado com a rolagem) -------- */

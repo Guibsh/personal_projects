@@ -11,6 +11,13 @@
   <meta name="theme-color" content="#F6F0E7">
   <link rel="icon" href="assets/img/logo-escuro.png">
   <link rel="preload" href="assets/fonts/playfair.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    // Liga a abertura antes da primeira pintura: sem "travadinha" na foto
+    (function (h) {
+      h.classList.add("js");
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) h.classList.add("fx-breath");
+    })(document.documentElement);
+  </script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -93,7 +100,9 @@
     <section class="section story">
       <div class="container story__grid">
         <figure class="story__media" data-reveal>
-          <div class="arch"><img src="assets/img/porta-bracos-cima.jpg" alt="Lidia em frente a uma porta de madeira antiga" width="900" height="1200" loading="lazy"></div>
+          <div class="daylight__patch" data-fx="luzDoDia" aria-hidden="true"></div>
+          <div class="daylight__shadow" data-fx="luzDoDia" aria-hidden="true"></div>
+          <div class="arch"><img src="assets/img/porta-bracos-cima.jpg" alt="Lidia em frente a uma porta de madeira antiga" width="900" height="1200" loading="lazy"><div class="daylight__glare" data-fx="luzDoDia" aria-hidden="true"></div></div>
           <button type="button" class="nest" data-fx="ninho" aria-label="Ninho com três filhotes, como os três filhos da Lidia"></button>
         </figure>
         <div class="story__text">
@@ -404,6 +413,7 @@
       passarosTopo: true,   // passarinhos cruzando a primeira tela
       neblina: true,        // neblina que some na seção do cansaço
       sombraJanela: true,   // luz de janela em arco que esquenta no fim da seção do cansaço
+      luzDoDia: true,       // luz de janela passando pela foto do "Quem conduz"
       minutos: true,        // círculo "20 dos seus 1.440 minutos"
       ninho: true,          // ninho com 3 filhotes na história
       jardim14: true,       // jardim de 14 dias em "Como funciona"
