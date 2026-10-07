@@ -700,26 +700,9 @@ p { text-wrap: pretty; }
 .sunwin svg { width: 100%; height: auto; display: block; }
 .sunwin__light { fill: rgba(255, 226, 178, 0.75); }
 
-/* Visitantes: borboleta, passarinho, abelhinha */
-.visitors { position: fixed; inset: 0; pointer-events: none; z-index: 35; overflow: hidden; }
-.visitor { position: absolute; top: 0; left: 0; will-change: transform; }
-.visitor svg { width: 100%; height: 100%; overflow: visible; display: block; }
-.visitor--bfly { width: 28px; height: 28px; margin: -18px 0 0 -14px; }
-.visitor--bee { width: 22px; height: 18px; margin: -9px 0 0 -11px; }
-.visitor--bird { width: 30px; height: 15px; margin: -7px 0 0 -15px; }
-.bf-wing { stroke: #A07467; stroke-width: 0.55; stroke-linejoin: round; }
-.bf-line { fill: none; stroke: #B48A7D; stroke-width: 0.4; opacity: 0.7; stroke-linecap: round; }
-.bf-dot { fill: #B98376; opacity: 0.75; }
-.bf-edge { fill: none; stroke: #A9786B; stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
-.bf-body { fill: #5A4232; }
-.bf-ant { fill: none; stroke: #5A4232; stroke-width: 0.55; stroke-linecap: round; }
-.bee-body { fill: #E2B85C; stroke: #5A4232; stroke-width: 0.7; }
-.bee-stripe { fill: none; stroke: #5A4232; stroke-width: 1.1; }
-.bee-head { fill: #5A4232; }
-.bee-sting { stroke: #5A4232; stroke-width: 0.8; stroke-linecap: round; }
-.bee-wing { fill: rgba(255, 255, 255, 0.7); stroke: #9A7B66; stroke-width: 0.45; transform-box: fill-box; transform-origin: 50% 100%; animation: buzz 0.07s ease-in-out infinite alternate; }
-@keyframes buzz { to { transform: scaleY(0.45); } }
-.bird-line { fill: none; stroke: #6B4A35; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+/* Borboleta do varal */
+.clothesline__bfly { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 3; opacity: 0; transition: opacity 600ms; }
+.clothesline__bfly.is-on { opacity: 1; }
 
 /* Caminho de 14 dias: flores em alguns dias */
 .journey__stalk { fill: none; stroke: var(--color-twig); stroke-width: 1.2; stroke-linecap: round; }

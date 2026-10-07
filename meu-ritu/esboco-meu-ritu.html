@@ -720,26 +720,9 @@ p { text-wrap: pretty; }
 .sunwin svg { width: 100%; height: auto; display: block; }
 .sunwin__light { fill: rgba(255, 226, 178, 0.75); }
 
-/* Visitantes: borboleta, passarinho, abelhinha */
-.visitors { position: fixed; inset: 0; pointer-events: none; z-index: 35; overflow: hidden; }
-.visitor { position: absolute; top: 0; left: 0; will-change: transform; }
-.visitor svg { width: 100%; height: 100%; overflow: visible; display: block; }
-.visitor--bfly { width: 28px; height: 28px; margin: -18px 0 0 -14px; }
-.visitor--bee { width: 22px; height: 18px; margin: -9px 0 0 -11px; }
-.visitor--bird { width: 30px; height: 15px; margin: -7px 0 0 -15px; }
-.bf-wing { stroke: #A07467; stroke-width: 0.55; stroke-linejoin: round; }
-.bf-line { fill: none; stroke: #B48A7D; stroke-width: 0.4; opacity: 0.7; stroke-linecap: round; }
-.bf-dot { fill: #B98376; opacity: 0.75; }
-.bf-edge { fill: none; stroke: #A9786B; stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
-.bf-body { fill: #5A4232; }
-.bf-ant { fill: none; stroke: #5A4232; stroke-width: 0.55; stroke-linecap: round; }
-.bee-body { fill: #E2B85C; stroke: #5A4232; stroke-width: 0.7; }
-.bee-stripe { fill: none; stroke: #5A4232; stroke-width: 1.1; }
-.bee-head { fill: #5A4232; }
-.bee-sting { stroke: #5A4232; stroke-width: 0.8; stroke-linecap: round; }
-.bee-wing { fill: rgba(255, 255, 255, 0.7); stroke: #9A7B66; stroke-width: 0.45; transform-box: fill-box; transform-origin: 50% 100%; animation: buzz 0.07s ease-in-out infinite alternate; }
-@keyframes buzz { to { transform: scaleY(0.45); } }
-.bird-line { fill: none; stroke: #6B4A35; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+/* Borboleta do varal */
+.clothesline__bfly { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 3; opacity: 0; transition: opacity 600ms; }
+.clothesline__bfly.is-on { opacity: 1; }
 
 /* Caminho de 14 dias: flores em alguns dias */
 .journey__stalk { fill: none; stroke: var(--color-twig); stroke-width: 1.2; stroke-linecap: round; }
@@ -1170,7 +1153,7 @@ p { text-wrap: pretty; }
       sombraFolhas: true,   // sombra de folhas balançando na primeira tela
       passarosTopo: true,   // passarinhos cruzando a primeira tela
       neblina: true,        // neblina que some na seção do cansaço
-      varal: true,          // fotos no varal balançando com a rolagem e ao toque
+      varal: true,          // fotos no varal balançando (com a borboleta que mora nele)
       sombraJanela: true,   // luz de janela em arco que esquenta no fim da seção do cansaço
       trepadeira: true,     // ramos que florescem em volta da foto do "Quem conduz"
       minutos: true,        // círculo "20 dos seus 1.440 minutos"
@@ -1178,7 +1161,6 @@ p { text-wrap: pretty; }
       jardim14: true,       // jardim de 14 dias em "Como funciona"
       passarosFinal: true,  // pássaros levantando voo no final
       petalas: true,        // pétalas caindo na oferta
-      visitantes: true,     // borboletas, passarinho e abelhinha cruzando a tela às vezes
       folhasLista: true,    // folhas que brotam na lista "É para você se…"
       folhaSeca: true,      // folha seca que cai nos marcadores de "Não é para você se…"
       folhaFaq: true,       // folhinha que se abre ao lado da pergunta aberta
@@ -2220,12 +2202,91 @@ p { text-wrap: pretty; }
       });
     }
     layout();
-    window.addEventListener("resize", layout);
+    window.addEventListener("resize", function () { layout(); if (bf) bf.relayout(); });
     if (!on("varal") || reduced) return;
+    var bf = clotheslineButterfly();
+
+
+    // Borboleta que mora no varal: pousa no barbante ou num pregador e voa
+    // para outro lugar quando as fotos balançam forte ou alguém toca nelas.
+    function clotheslineButterfly() {
+      var layer = svg("0 0 10 10", track, "clothesline__bfly");
+      var spots = [];
+      function relayout() {
+        var W = track.scrollWidth, H = track.offsetHeight;
+        layer.setAttribute("viewBox", "0 0 " + W + " " + H);
+        layer.style.width = W + "px"; layer.style.height = H + "px";
+        spots = [];
+        pins.forEach(function (p, i) {
+          spots.push({ x: p.offsetLeft + p.offsetWidth / 2 + 1, y: p.offsetTop - 15, pin: i });   // em cima do pregador
+        });
+        var len = path.getTotalLength();
+        [0.2, 0.38, 0.62, 0.8].forEach(function (f) {
+          var pt = path.getPointAtLength(len * f);
+          spots.push({ x: pt.x, y: pt.y - 1, pin: null });                                   // no barbante
+        });
+      }
+      relayout();
+      var wrap = el("g", {}, layer), flip = el("g", {}, wrap);
+      var b = sideButterfly(flip, "sky");
+      var state = "away", x = 0, y = 0, face = -1, wing = 1, from, to, t0 = 0, dur = 0, spot = null, nextMove = 0, raf = 0, seen = false;
+      function place() {
+        wrap.setAttribute("transform", "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ") scale(1.2)");
+        flip.setAttribute("transform", "scale(" + face.toFixed(3) + ",1)");
+        b.setWings(wing);
+      }
+      function goTo(s) {
+        from = { x: x, y: y }; to = s; spot = s; t0 = performance.now();
+        dur = 1600 + Math.hypot(s.x - x, s.y - y) * 5; state = "flying";
+        run();
+      }
+      function pickSpot(avoidPin) {
+        var opts = spots.filter(function (s) { return s !== spot && (avoidPin == null || s.pin !== avoidPin); });
+        return opts[Math.floor(Math.random() * opts.length)];
+      }
+      function loop(now) {
+        raf = 0;
+        var t = now / 1000;
+        if (state === "flying") {
+          var u = clamp((now - t0) / dur, 0, 1), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+          var cx = (from.x + to.x) / 2, cy = Math.min(from.y, to.y) - 70;
+          var nx = (1 - e) * (1 - e) * from.x + 2 * (1 - e) * e * cx + e * e * to.x;
+          var ny = (1 - e) * (1 - e) * from.y + 2 * (1 - e) * e * cy + e * e * to.y + Math.sin(u * Math.PI * 5) * 4 * (1 - e);
+          face += ((nx >= x ? 1 : -1) - face) * 0.08;
+          x = nx; y = ny;
+          wing = 0.2 + 0.8 * (0.5 + 0.5 * Math.cos(t * 2 * Math.PI * 5));
+          if (u >= 1) { state = "resting"; nextMove = now + 9000 + Math.random() * 6000; }
+        } else if (state === "resting") {
+          wing = 0.55 + 0.45 * (0.5 + 0.5 * Math.cos(t * 1.5));
+          if (now > nextMove) goTo(pickSpot());
+        }
+        place();
+        if (visibleB) run();
+      }
+      function run() { if (!raf) raf = requestAnimationFrame(loop); }
+      var visibleB = false;
+      new IntersectionObserver(function (e) {
+        visibleB = e[0].isIntersecting;
+        if (visibleB && !seen) {
+          seen = true;
+          x = track.scrollWidth + 40; y = 30; place();
+          layer.classList.add("is-on");
+          setTimeout(function () { goTo(pickSpot()); }, 900);
+        } else if (visibleB) run();
+      }, { threshold: 0.35 }).observe(track);
+      return {
+        relayout: relayout,
+        startle: function (pinIndex) {
+          if (state !== "resting") return;
+          if (pinIndex == null || spot.pin === pinIndex || spot.pin === null) goTo(pickSpot(pinIndex));
+        }
+      };
+    }
 
     var lastY = window.scrollY, lastT = performance.now(), running = false, visible = false;
     function kick(amount, only) {
       st.forEach(function (s, i) { if (only == null || only === i) s.v += amount * (0.8 + i * 0.15) * (i % 2 ? -1 : 1); });
+      if (bf && (Math.abs(amount) > 9 || only != null)) bf.startle(only);
       start();
     }
     function start() { if (!running && visible) { running = true; lastT = performance.now(); requestAnimationFrame(step); } }
@@ -2256,153 +2317,6 @@ p { text-wrap: pretty; }
         kick(28, i);
       });
     });
-  })();
-
-  /* 7. VISITANTES: borboletas (3 espécies, de lado), passarinho ou abelhinha
-     Voo orgânico: direção e velocidade mudam sempre suavizadas (sem trancos). */
-  (function visitors() {
-    if (!on("visitantes") || reduced) return;
-    var layer = document.createElement("div");
-    layer.className = "visitors";
-    layer.setAttribute("aria-hidden", "true");
-    document.body.appendChild(layer);
-
-    function makeButterfly(species) {
-      var d = document.createElement("div");
-      d.className = "visitor visitor--bfly";
-      var s = svg("-16 -26 32 32", d);
-      var flip = el("g", {}, s);
-      d.__bf = sideButterfly(flip, species);
-      d.__flip = flip;
-      return d;
-    }
-    function makeBee() {
-      var d = document.createElement("div");
-      d.className = "visitor visitor--bee";
-      var s = svg("-12 -11 24 20", d);
-      var flip = el("g", {}, s);
-      el("ellipse", { "class": "bee-wing", cx: 1, cy: -5, rx: 4, ry: 3 }, flip);
-      el("ellipse", { "class": "bee-wing", cx: 3, cy: -4.5, rx: 3.4, ry: 2.6 }, flip);
-      el("ellipse", { "class": "bee-body", cx: 1, cy: 1, rx: 6.5, ry: 4.2 }, flip);
-      el("path", { "class": "bee-stripe", d: "M0,-3 Q-1,1 0,5 M3,-3 Q2,1 3,5" }, flip);
-      el("circle", { "class": "bee-head", cx: -6.2, cy: 0.5, r: 2.4 }, flip);
-      el("path", { "class": "bee-sting", d: "M7.4,1 L9.4,1.4" }, flip);
-      d.__flip = flip;
-      return d;
-    }
-    function makeBird() {
-      var d = document.createElement("div");
-      d.className = "visitor visitor--bird";
-      var s = svg("0 -2 24 12", d);
-      d.__wing = el("path", { "class": "bird-line", d: BIRD_UP }, s);
-      return d;
-    }
-    function angDiff(a, b) { var d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; }
-    function approach(cur, target, rate, dt) { return cur + (target - cur) * (1 - Math.exp(-rate * dt)); }
-
-    var KINDS = {
-      bfly: { speed: 58, wander: 0.9, turn: 1.3 },
-      bee:  { speed: 70, wander: 0.75, turn: 1.4 },
-      bird: { speed: 165, wander: 0.16, turn: 1.0 }
-    };
-    var order = [["bfly", "rose"], ["bird"], ["bfly", "sky"], ["bee"], ["bfly", "honey"], ["bird"], ["bee"], ["bfly", "rose"]];
-    var count = 0, busy = false, started = false;
-
-    function fly(kind, species) {
-      var K = KINDS[kind];
-      var node = kind === "bfly" ? makeButterfly(species) : kind === "bee" ? makeBee() : makeBird();
-      layer.appendChild(node);
-      busy = true;
-      var W = window.innerWidth, H = window.innerHeight;
-      var ltr = Math.random() > 0.5;
-      var x = ltr ? -40 : W + 40, y = H * (0.3 + Math.random() * 0.3);
-      var goalY = H * (0.25 + Math.random() * 0.4);
-      var heading = ltr ? 0 : Math.PI, spd = K.speed, wanderV = 0;
-      var seeds = [Math.random() * 9, Math.random() * 9, Math.random() * 9];
-      var flapPhase = 0, flapping = true, flapsLeft = 4, glideT = 0, wing = 0.6;
-      var hoverT = 0, nextHover = 2.5 + Math.random() * 2, facing = ltr ? 1 : -1, tilt = 0, bob = 0;
-      var birdWing = 0, glide = 0;
-      var last = performance.now(), born = last;
-
-      (function frame(now) {
-        var dt = Math.min(0.04, (now - last) / 1000); last = now;
-        var t = (now - born) / 1000;
-        var tx = ltr ? W + 200 : -200;
-        var toward = Math.atan2(goalY - y, tx - x);
-        var wTarget = K.wander * (0.6 * Math.sin(t * 0.55 + seeds[0]) + 0.3 * Math.sin(t * 1.3 + seeds[1]) + 0.1 * Math.sin(t * 2.9 + seeds[2]));
-        wanderV = approach(wanderV, wTarget, 2.5, dt);
-        heading += angDiff(toward + wanderV, heading) * (1 - Math.exp(-K.turn * dt));
-        var spdTarget = K.speed;
-
-        if (kind === "bfly") {
-          if (flapping) {
-            flapPhase += dt * 2 * Math.PI * 5.2;
-            if (flapPhase >= 2 * Math.PI) { flapPhase -= 2 * Math.PI; if (--flapsLeft <= 0) { flapping = false; glideT = 0.5 + Math.random() * 0.7; } }
-            var kTarget = 0.18 + 0.82 * (0.5 + 0.5 * Math.cos(flapPhase));
-            wing = approach(wing, kTarget, 40, dt);
-            spdTarget *= 1.1;
-          } else {
-            glideT -= dt;
-            wing = approach(wing, 0.42 + 0.04 * Math.sin(t * 6), 8, dt);
-            spdTarget *= 0.8;
-            if (glideT <= 0) { flapping = true; flapsLeft = 2 + Math.floor(Math.random() * 4); flapPhase = 0; }
-          }
-          node.__bf.setWings(wing);
-          bob = approach(bob, flapping ? -Math.sin(flapPhase) * 3 : 2, 6, dt);
-        }
-        if (kind === "bee") {
-          nextHover -= dt;
-          if (nextHover <= 0 && hoverT <= 0) { hoverT = 1.2 + Math.random() * 0.8; nextHover = 3 + Math.random() * 2.5; }
-          if (hoverT > 0) { hoverT -= dt; spdTarget *= 0.1; }
-          bob = Math.sin(t * 3.4 + seeds[0]) * 1.8 + Math.sin(t * 1.3) * 1.2;
-        }
-        if (kind === "bird") {
-          var cyc = Math.sin(t * 0.9 + seeds[0]);
-          glide = approach(glide, cyc > 0.3 ? 1 : 0, 3, dt);
-          birdWing += dt * 11 * (1 - glide * 0.85);
-          var kk = (1 + Math.sin(birdWing)) / 2 * (1 - glide) + 0.35 * glide;
-          var tips = 6 - 4 * kk, ctrl = -1 + 10 * kk;
-          node.__wing.setAttribute("d", "M0," + tips.toFixed(2) + " Q6," + ctrl.toFixed(2) + " 12,6 Q18," + ctrl.toFixed(2) + " 24," + tips.toFixed(2));
-        }
-
-        spd = approach(spd, spdTarget, kind === "bee" ? 2.2 : 3, dt);
-        x += Math.cos(heading) * spd * dt;
-        y += Math.sin(heading) * spd * dt;
-        if (y < H * 0.15) goalY = H * 0.45;
-        if (y > H * 0.8) goalY = H * 0.4;
-
-        var tf;
-        if (kind === "bird") {
-          tilt = approach(tilt, Math.sin(heading) * 25 * (ltr ? 1 : -1), 3, dt);
-          tf = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) rotate(" + tilt.toFixed(1) + "deg)";
-        } else {
-          // De lado: vira suavemente para onde está indo e inclina de leve
-          var vx = Math.cos(heading), dir = vx >= 0 ? 1 : -1;
-          var faceTarget = kind === "bee" ? -dir : dir;      // a abelha foi desenhada olhando para a esquerda
-          facing = approach(facing, faceTarget, 3.5, dt);
-          tilt = approach(tilt, Math.sin(heading) * (kind === "bee" ? 14 : 20) * dir, 4, dt);
-          node.__flip.setAttribute("transform", "scale(" + (Math.sign(facing) * Math.max(0.15, Math.abs(facing))).toFixed(3) + ",1)");
-          tf = "translate3d(" + x.toFixed(1) + "px," + (y + bob).toFixed(1) + "px,0) rotate(" + tilt.toFixed(1) + "deg)";
-        }
-        node.style.transform = tf;
-
-        var out = ltr ? x > W + 60 : x < -60;
-        if (!out && t < 45) requestAnimationFrame(frame);
-        else { node.remove(); busy = false; schedule(); }
-      })(last);
-    }
-
-    function schedule(first) {
-      if (count >= 8) return;
-      setTimeout(function tryFly() {
-        if (document.hidden || busy) return setTimeout(tryFly, 3000);
-        var o = order[count++ % order.length];
-        fly(o[0], o[1]);
-      }, first ? 2500 : 14000 + Math.random() * 12000);
-    }
-    window.addEventListener("scroll", function () {
-      if (!started && window.scrollY > window.innerHeight * 0.9) { started = true; schedule(true); }
-    }, { passive: true });
   })();
 
   /* 8b. FOLHA SECA QUE CAI nos marcadores de "Não é para você se…" ------- */

@@ -55,8 +55,8 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 - **Ninho com 3 filhotes** (história), traço suave.
 - **Caminho de 14 dias** vertical; folhas variadas e 12 enfeites espalhados pelo galho (flor solta, par de flores ou botão com folhinha), em posições e lados variados, que brotam quando o galho chega neles.
 - **Borboletas (vistas de lado), 3 espécies:** Rosé (rosé com olhinho na asa de trás), Céu (azul-lavanda com borda pontilhada) e Mel (laranja com nervuras escuras, tipo monarca). Asas animadas quadro a quadro (batidas em série e planeio).
-- **Visitantes:** depois da primeira tela, de vez em quando (a cada 14–26s, até 8 vezes) cruza o meio da tela uma borboleta (alternando as 3 espécies), um passarinho (bate asas e plana) ou uma abelhinha (paira e vira de lado suavemente). Direção, velocidade e inclinação sempre suavizadas.
-- **Varal de fotos:** as 3 fotos impressas presas com pregadores de madeira num barbante; balançam com a rolagem e com uma brisa leve; tocar traz a foto para frente e balança. No celular, o varal desliza para o lado.
+- **Varal de fotos:** as 3 fotos impressas presas com pregadores de madeira num barbante; balançam com a rolagem e com uma brisa leve; tocar traz a foto para frente e balança. No celular, o varal desliza para o lado. Uma borboleta (espécie Céu) mora no varal: chega voando, pousa no barbante ou num pregador e, quando as fotos balançam forte ou alguém toca nelas, se assusta e pousa em outro ponto; sozinha, muda de lugar a cada 9–15s.
+- **Borboletas só em dois lugares:** na trepadeira da foto do "Quem conduz" e no varal. Saíram os visitantes que cruzavam a tela (borboletas, passarinho e abelha).
 - **Folhas que brotam** nos marcadores de "É para você se…"; **folhas secas que caem balançando** nos de "Não é para você se…"; **folhinha que se abre** ao lado da pergunta aberta nas dúvidas.
 - **Bando no CTA final**, **pétalas** na oferta e **folhinha no botão**.
 - CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem visitantes nem loops.
