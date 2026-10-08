@@ -522,7 +522,7 @@
     });
   })();
 
-  /* 2. 20 DOS 1.440 MINUTOS: animação contínua, toca uma vez ao aparecer --- */
+  /* 2. 15 DOS 1.440 MINUTOS: animação contínua, toca uma vez ao aparecer --- */
   (function minutes() {
     var sec = document.querySelector(".minutes");
     if (!sec) return;
@@ -541,6 +541,7 @@
     var slice = sec.querySelector(".minutes__slice");
     var dayNum = sec.querySelector(".minutes__label--day .minutes__num");
     var youNum = sec.querySelector(".minutes__label--you .minutes__num");
+    var MINE = parseInt(youNum.textContent, 10) || 15;   // minutos "seus" (vem do HTML)
     // Curvas suaves (sem "trancos")
     function inOut(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
     function out(t) { return 1 - Math.pow(1 - t, 3); }
@@ -553,9 +554,9 @@
       dayNum.textContent = Math.round(1440 * day).toLocaleString("pt-BR");
       sec.style.setProperty("--swap", seg(ms, 3900, 5000).toFixed(3));
       var mine = seg(ms, 4300, 7300, out);
-      slice.style.strokeDasharray = (20 * mine).toFixed(2) + " 1440";
+      slice.style.strokeDasharray = (MINE * mine).toFixed(2) + " 1440";
       slice.style.opacity = Math.min(1, mine * 8).toFixed(2);
-      youNum.textContent = Math.round(20 * mine);
+      youNum.textContent = Math.round(MINE * mine);
       sec.style.setProperty("--line2", seg(ms, 4600, 6000).toFixed(3));
       sec.style.setProperty("--line3", seg(ms, 6800, 8200).toFixed(3));
     }
@@ -724,6 +725,22 @@
     window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(build, 150); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(build); else build();
     build();
+  })();
+
+  /* 4b. AS DUAS SEMANAS DO DESAFIO: uma folhinha brota em cada dia -------- */
+  (function weeks() {
+    var box = document.querySelector(".weeks");
+    if (!box) return;
+    var days = box.querySelectorAll(".weeks__days li");
+    days.forEach(function (li, i) {
+      li.style.setProperty("--i", i);
+      if (li.querySelector(".weeks__leaf")) return;          // já veio desenhada no arquivo
+      var s = svg("0 0 30 18", li, "weeks__leaf");
+      el("path", { "class": "leaf__shape", d: LEAF, transform: "translate(0,9)" }, s);
+      el("path", { "class": "leaf__vein", d: LEAF_VEIN, transform: "translate(0,9)" }, s);
+    });
+    if (reduced) { box.classList.add("is-on"); return; }
+    onceVisible(box, function () { box.classList.add("is-on"); }, 0.35);
   })();
 
   /* 5. PÁSSAROS NO CTA FINAL: um bando pequeno cruza a seção em curva ------- */

@@ -25,6 +25,7 @@ const file = path.join(__dirname, "esboco-meu-ritu.html");
       vine: get(".vine"),
       nest: get(".nest"),
       stem: get(".journey__stem"),
+      weeks: [...document.querySelectorAll(".weeks__days")].map((o) => o.outerHTML),
       strings: [...document.querySelectorAll(".clothesline__string")].map((s) => ({
         viewBox: s.getAttribute("viewBox"), width: s.style.width, d: s.querySelector("path").getAttribute("d"),
       })),
@@ -34,13 +35,16 @@ const file = path.join(__dirname, "esboco-meu-ritu.html");
 
   let html = fs.readFileSync(file, "utf8");
   const put = (open, close, inner) => {
-    if (!html.includes(open + close)) throw new Error("não achei: " + open);
+    if (!inner || !html.includes(open + close)) return;   // bloco que não existe nesta versão
     html = html.replace(open + close, open + inner + close);
   };
   put('<g class="minutes__ticks">', "</g>", parts.ticks);
   put('<div class="vine" data-fx="trepadeira" aria-hidden="true">', "</div>", parts.vine);
   html = html.replace(/(<button type="button" class="nest"[^>]*>)(<\/button>)/, (m, a, c) => a + parts.nest + c);
   put('<div class="journey__stem" aria-hidden="true">', "</div>", parts.stem);
+  let wk = 0;
+  html = html.replace(/<ol class="weeks__days">[\s\S]*?<\/ol>/g, (m) =>
+    wk < parts.weeks.length ? parts.weeks[wk++].replace(/ style="--i:\s*\d+;?"/g, "") : m);
   parts.strings.forEach((st) => {
     html = html.replace(
       '<svg class="clothesline__string" aria-hidden="true"><path d=""/></svg>',

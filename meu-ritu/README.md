@@ -13,7 +13,8 @@ HTML + CSS + JS puro, sem build.
 | `design.md` | Diretriz visual (cores, fontes, regras) |
 | `esboco-meu-ritu.html` | Versão em arquivo único para enviar à cliente (gerada) |
 | `build-esboco.py` + `prerender.js` | Geram o arquivo único: `python3 build-esboco.py && node prerender.js` (o segundo coloca os desenhos prontos no arquivo, para aparecerem mesmo com script bloqueado) |
-| `perguntas-lidia.md` | Pendências para a cliente responder |
+| `perguntas-lidia.md` | Perguntas da primeira rodada (já respondidas pela Lidia na v2) |
+| `prompt-v2.md` | Prompt com os ajustes pedidos pela Lidia para a versão 2 |
 
 ## Abrir
 
@@ -21,6 +22,7 @@ Abra `index.html` no navegador, ou `npx serve .` dentro desta pasta.
 
 ## Antes de publicar
 
-- Trocar `window.CHECKOUT_URL` no fim do `index.html` pelo link real do checkout.
-- Substituir todos os trechos `<mark class="ph">` pelo conteúdo real.
-- Remover a `.draft-bar` (faixa "Esboço para aprovação") do topo.
+- Confirmar na Kiwify o parcelamento e o prazo da garantia e trocar os dois trechos marcados.
+- Trocar o espaço do vídeo pelo vídeo da Lidia.
+- Preencher `MEU_RITU_TRACK` (ID do Meta Pixel e do GA4) e configurar o pixel também na Kiwify, para a compra ser registrada.
+- Remover a linha `<meta name="robots" content="noindex, nofollow">` quando a página for para o domínio oficial.

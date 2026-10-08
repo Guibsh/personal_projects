@@ -5,8 +5,10 @@
 ## 1. Identidade
 
 - **Projeto:** Meu Ritú — Desafio De Volta Pra Mim
-- **O que é:** desafio de 14 dias de treinos curtos em casa para mães 30+ (porta de entrada para o programa Meu Ritú 1.0)
-- **Público:** mães cansadas, sedentárias, sem autoestima, que querem sair do ciclo
+- **O que é:** desafio de 14 dias, com 7 treinos de cerca de 15 minutos (repetidos na 2ª semana), em casa e com o peso do corpo; inclui o Meu Ritú Tracker e o bônus O Poder da Postura (4 aulas); acesso por 30 dias; R$ 47 na Kiwify
+- **Público:** mulheres, especialmente mães, que querem voltar a cuidar de si mas não conseguem manter a constância
+- **Ideia central:** sair do ciclo de começar, parar e se culpar. Frases da marca: "O resultado mora na constância. Não no excesso." e "Decisão vale mais que motivação."
+- **Nunca:** promessa de resultado físico em 14 dias, depoimentos inventados, acompanhamento individual/grupo, contagem regressiva, Meu Ritú 1.0
 - **Ação principal:** comprar o desafio (R$ 47)
 - **Direção visual:** orgânico / terroso, limpo, com muito respiro
 - **Palavras:** motivação · conexão comigo · confiança
@@ -47,21 +49,20 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 - Botões em pílula (999px). Nada de 16px genérico em tudo.
 - Sem sombras; separação por cor de fundo e borda 1px.
 
-## 5. Movimento (fx.js — cada efeito liga/desliga em `MEU_RITU_FX`)
+## 5. Estrutura (versão 2)
 
-- **Abertura "respiração":** a foto já nasce ampliada (classe ligada no `<head>`, antes da primeira pintura, sem "travadinha") e se afasta devagar (6,5s, como quem inspira) e depois respira de leve em loop; o título entra palavra por palavra, saindo do desfoque, no mesmo ritmo; sombra de folhas surge aos poucos. CTA visível em ~2s.
-- **Neblina que some** (cansaço): fundo acinzentado e frases embaçadas; a frase na linha de leitura (60% da tela) fica nítida, e toda frase que aparece inteira clareia sozinha em sequência (~0,5s cada), para o notebook não ficar desfocado; descendo, nada volta a desfocar. No fim, a neblina some (sem luz de janela nem brilho quente).
-- **20 dos 1.440 minutos:** animação contínua de ~8s que toca uma vez quando o relógio aparece (desenha o dia até 1.440 → troca para "para você" → fatia verde cresce até 20 → frases). Curvas suaves, sem depender da rolagem.
-- **Trepadeira na foto do "Quem conduz":** com a rolagem, dois pares de ramos entrelaçados nascem nos cantos de baixo e sobem contornando o arco, brotando folhas, gavinhas e flores variadas (rosé de 5 pétalas, margaridinha, sininho lilás, miosótis azul, botão), sempre para fora da foto e mais concentradas no alto. Quando fecha o arco, uma borboleta sai de uma flor de baixo, voa até o topo e fica visitando as flores (pousa abrindo e fechando as asas). Subindo, a trepadeira recolhe.
-- **Sombra diagonal** atrás da foto do "Quem conduz" (sol vindo do alto, à esquerda): sombra em arco, desfocada, deslocada para baixo e para a direita.
-- **Ninho com 3 filhotes** (história), traço suave.
-- **Caminho de 14 dias** vertical; folhas variadas e 12 enfeites espalhados pelo galho (flor solta, par de flores ou botão com folhinha), em posições e lados variados, que brotam quando o galho chega neles.
-- **Borboletas (vistas de lado), 3 espécies:** Rosé (rosé com olhinho na asa de trás), Céu (azul-lavanda com borda pontilhada) e Mel (laranja com nervuras escuras, tipo monarca). Asas animadas quadro a quadro (batidas em série e planeio).
-- **Varal de fotos:** as 3 fotos impressas presas com pregadores de madeira num barbante; balançam com a rolagem e com uma brisa leve; tocar traz a foto para frente e balança. No celular, o varal desliza para o lado. Uma borboleta (espécie Céu) mora no varal: chega voando, pousa no barbante ou num pregador e, quando as fotos balançam forte ou alguém toca nelas, se assusta e pousa em outro ponto; sozinha, muda de lugar a cada 9–15s. O varal tem 110px de folga invisível em cima para o voo dela não ser cortado.
-- **Borboletas só em dois lugares:** na trepadeira da foto do "Quem conduz" e no varal. Saíram os visitantes que cruzavam a tela (borboletas, passarinho e abelha).
-- **Folhas que brotam** nos marcadores de "É para você se…"; **folhas secas que caem balançando** nos de "Não é para você se…"; **folhinha que se abre** ao lado da pergunta aberta nas dúvidas.
-- **Depoimentos como bilhetes no varal:** papel pautado, print de WhatsApp (balões verdes) e papel kraft, com letra manuscrita (Caveat), presos com pregadores; balançam como o varal das fotos.
-- **Contagem regressiva** no card da oferta para a próxima turma (`MEU_RITU_TURMA` no `index.html`; data de EXEMPLO até a Lidia definir). Quando a data passa, troca para "Turma começando agora".
-- **Orvalho:** passar o mouse ou tocar numa folha do caminho de 14 dias ou da trepadeira faz a folha balançar e uma gotinha se formar na ponta e escorrer.
-- **CTA final** centralizado, sem foto, com o bando de passarinhos; **pétalas** na oferta e **folhinha no botão**.
-- CTA nunca espera animação. `prefers-reduced-motion` mostra o estado final, sem visitantes nem loops.
+1. Abertura (15 min por dia, botão para a Kiwify e link "Conhecer o desafio")
+2. Identificação (neblina que some)
+3. A descoberta (relógio 15 dos 1.440 minutos + frase da constância)
+4. Minha história (trepadeira, ninho, vídeo da Lidia, Instagram @meu.ritu) + varal de fotos
+5. O desafio (duas semanas de 7 treinos com folhinhas, Tracker, bônus Postura)
+6. Oferta (R$ 47, botão para a Kiwify; parcelamento e garantia a confirmar na Kiwify)
+7. Dúvidas e fechamento ("Decisão vale mais que motivação.")
+
+Todos os botões de compra têm o link da Kiwify no próprio HTML (funcionam sem script); o script repassa utm_*, src, sck, fbclid e gclid ao checkout e dispara ViewContent e InitiateCheckout quando `MEU_RITU_TRACK` tiver os IDs da Meta e do GA4. A compra (Purchase) se configura na própria Kiwify.
+
+## 6. Movimento (fx.js; cada efeito liga/desliga em `MEU_RITU_FX`)
+
+- Abertura "respiração", neblina na identificação, relógio de 15 minutos (~8s, uma vez), trepadeira com borboleta e ninho na história, varal de fotos com borboleta, folhinhas que brotam nas duas semanas do desafio, pétalas na oferta, folhinha nas dúvidas e no botão, passarinhos no fechamento.
+- Os desenhos vêm pré-prontos no arquivo único (`prerender.js`), então aparecem mesmo com script bloqueado.
+- `prefers-reduced-motion` mostra tudo no estado final.
