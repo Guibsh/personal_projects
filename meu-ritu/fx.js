@@ -789,6 +789,22 @@
   })();
 
   /* 6. PÉTALAS NA OFERTA ---------------------------------------------------- */
+  /* 4b. A DESCOBERTA: plantinhas que crescem (15 min → resultados) ---------- */
+  (function growth() {
+    var box = document.querySelector(".growth");
+    if (!box) return;
+    if (reduced || !on("crescer")) { box.classList.add("is-on"); return; }
+    onceVisible(box, function () { box.classList.add("is-on"); }, 0.5);
+  })();
+
+  /* 4c. VERÃO: o solzinho se desenha quando aparece ------------------------- */
+  (function sun() {
+    var s = document.querySelector(".summer__sun");
+    if (!s) return;
+    if (reduced) { s.classList.add("is-on"); return; }
+    onceVisible(s, function () { s.classList.add("is-on"); }, 0.6);
+  })();
+
   (function petals() {
     if (!on("petalas") || reduced) return;
     var offer = document.querySelector(".offer");

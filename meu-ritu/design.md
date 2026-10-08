@@ -5,10 +5,11 @@
 ## 1. Identidade
 
 - **Projeto:** Meu Ritú — Desafio De Volta Pra Mim
-- **O que é:** desafio de 14 dias, com 7 treinos de cerca de 15 minutos (repetidos na 2ª semana), em casa e com o peso do corpo; inclui o Meu Ritú Tracker e o bônus O Poder da Postura (4 aulas); acesso por 30 dias; R$ 47 na Kiwify
+- **O que é:** desafio de 14 dias, com 7 treinos de cerca de 15 minutos (repetidos na 2ª semana), em casa e com o peso do corpo; bônus Meu Ritú Tracker e minicurso O Poder da Postura (4 aulas); acesso por 30 dias; preço regular R$ 97, lançamento R$ 47 na Kiwify
 - **Público:** mulheres, especialmente mães, que querem voltar a cuidar de si mas não conseguem manter a constância
-- **Ideia central:** sair do ciclo de começar, parar e se culpar. Frases da marca: "O resultado mora na constância. Não no excesso." e "Decisão vale mais que motivação."
-- **Nunca:** promessa de resultado físico em 14 dias, depoimentos inventados, acompanhamento individual/grupo, contagem regressiva, Meu Ritú 1.0
+- **Ideia central:** 15 minutos por dia → rotina possível → constância → resultados. Frases da marca: "O resultado mora na constância. Não no excesso.", "Decisão vale mais que motivação." e "Você não precisa fazer muito para começar a ter resultados. Precisa conseguir continuar."
+- **Tom:** possibilidade, transformação, confiança e desejo de começar
+- **Nunca:** 20 minutos, 14 treinos diferentes, descrição de aula que não corresponda ao conteúdo real, depoimentos inventados, acompanhamento individual/grupo, contagem regressiva (o acesso é imediato), Meu Ritú 1.0, benefício ou condição que não exista no produto
 - **Ação principal:** comprar o desafio (R$ 47)
 - **Direção visual:** orgânico / terroso, limpo, com muito respiro
 - **Palavras:** motivação · conexão comigo · confiança
@@ -49,20 +50,22 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 - Botões em pílula (999px). Nada de 16px genérico em tudo.
 - Sem sombras; separação por cor de fundo e borda 1px.
 
-## 5. Estrutura (versão 2)
+## 5. Estrutura (versão 3)
 
-1. Abertura (15 min por dia, botão para a Kiwify e link "Conhecer o desafio")
-2. Identificação (neblina que some)
-3. A descoberta (relógio 15 dos 1.440 minutos + frase da constância)
-4. Minha história (trepadeira, ninho, vídeo da Lidia, Instagram @meu.ritu) + varal de fotos
-5. O desafio (duas semanas de 7 treinos com folhinhas, Tracker, bônus Postura)
-6. Oferta (de R$ 97 por R$ 47, até 11x de R$ 5,22 com acréscimo, Pix/boleto/cartão, canal de suporte; compra segura e 7 dias de arrependimento pelo CDC)
-7. Dúvidas e fechamento ("Decisão vale mais que motivação.")
+1. Abertura ("15 minutos por dia para começar a voltar pra você.", botão para a Kiwify e link "Conhecer o desafio")
+2. Identificação (três perguntas na neblina que some + "talvez você não precise de mais cobrança")
+3. A descoberta ("O resultado mora na constância", plantinhas 15 min → rotina possível → constância → resultados)
+4. Seu dia tem 1.440 minutos (relógio; 1.440 e 15 em destaque também no título)
+5. Minha história (trepadeira, ninho, vídeo opcional com a chamada "Você sabe que precisa cuidar de si…", Instagram @meu.ritu) + varal de fotos
+6. O desafio (duas semanas de 7 treinos com folhinhas, bônus Tracker, bônus Postura)
+7. O verão está chegando (foto, solzinho e botão de compra)
+8. Investimento + oferta (perguntas sobre o que ela já gastou ao lado do card; de R$ 97 por R$ 47 em destaque, até 11x de R$ 5,22 com acréscimo, Pix/boleto/cartão, canal de suporte; compra segura e 7 dias de arrependimento pelo CDC)
+9. Dúvidas e fechamento ("Decisão vale mais que motivação.")
 
-Todos os botões de compra têm o link da Kiwify no próprio HTML (funcionam sem script); o script repassa utm_*, src, sck, fbclid e gclid ao checkout e dispara ViewContent e InitiateCheckout quando `MEU_RITU_TRACK` tiver os IDs da Meta e do GA4. A compra (Purchase) se configura na própria Kiwify.
+Todos os botões de compra têm o link da Kiwify no próprio HTML (funcionam sem script) e um `data-checkout` com o local (topo, abertura, verao, oferta, fechamento, barra); o script repassa utm_*, src, sck, fbclid e gclid ao checkout e, quando `MEU_RITU_TRACK` tiver os IDs da Meta e do GA4, registra visita, ViewContent, InitiateCheckout (com o local do botão), cliques no Instagram e play no vídeo. A compra (Purchase) se configura na própria Kiwify.
 
 ## 6. Movimento (fx.js; cada efeito liga/desliga em `MEU_RITU_FX`)
 
-- Abertura "respiração", neblina na identificação, relógio de 15 minutos (~8s, uma vez), trepadeira com borboleta e ninho na história, varal de fotos com borboleta, folhinhas que brotam nas duas semanas do desafio, pétalas na oferta, folhinha nas dúvidas e no botão, passarinhos no fechamento.
+- Abertura "respiração", neblina na identificação, plantinhas que crescem na descoberta, relógio de 15 minutos (~8s, uma vez), trepadeira com borboleta e ninho na história, varal de fotos com borboleta, folhinhas que brotam nas duas semanas do desafio, solzinho que se desenha no verão, pétalas na oferta, folhinha nas dúvidas e no botão, passarinhos no fechamento.
 - Os desenhos vêm pré-prontos no arquivo único (`prerender.js`), então aparecem mesmo com script bloqueado.
 - `prefers-reduced-motion` mostra tudo no estado final.

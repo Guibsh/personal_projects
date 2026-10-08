@@ -920,3 +920,114 @@ html:not(.js) .chick { transform: none; }
 /* Preço "de R$ 97 por" */
 .price__from { font-size: var(--text-sm); color: var(--color-on-dark-muted); letter-spacing: 0.04em; }
 .price__from s { text-decoration-thickness: 1.5px; }
+
+/* ===================== Versão 3: pedidos novos da Lidia ===================== */
+
+/* Identificação: a virada depois das perguntas */
+.pain__list li.pain__turn { font-style: italic; color: var(--color-text-muted); }
+.pain__turn em { display: block; color: var(--color-brand); }
+
+/* A descoberta: 15 min → rotina possível → constância → resultados */
+.discovery { background: var(--color-sand); }
+.discovery__inner { max-width: 52rem; text-align: center; }
+.discovery h2 { max-width: 20ch; margin-inline: auto; }
+.growth {
+  position: relative;
+  display: grid; grid-template-columns: repeat(4, 1fr); align-items: end;
+  gap: clamp(0.25rem, 2vw, 1.5rem);
+  margin: var(--space-12) auto var(--space-8);
+  max-width: 44rem;
+}
+.growth { align-items: start; }
+.growth__ground { stroke: #9C7B60; stroke-width: 1.2; opacity: 0.55; }
+.growth li { position: relative; display: grid; justify-items: center; gap: var(--space-3); }
+.growth li:not(:last-child)::after {
+  content: "→"; position: absolute; right: -0.7rem; top: calc(100% - 2.2em);
+  font-size: var(--text-sm); color: var(--color-leaf);
+}
+.growth svg { width: clamp(70px, 20vw, 110px); overflow: visible; }
+.growth__stem { fill: none; stroke: #7A5A43; stroke-width: 1.6; stroke-linecap: round; }
+.growth span { display: block; min-height: 2.6em; font-family: var(--font-display); font-size: clamp(0.95rem, 3.2vw, 1.3rem); line-height: 1.25; text-wrap: balance; }
+.growth li:last-child span { color: var(--color-brand); font-style: italic; }
+.js .growth svg { transform: scaleY(0.2); opacity: 0; transform-origin: 50% 100%; transition: transform 900ms cubic-bezier(0.34, 1.4, 0.64, 1), opacity 500ms; transition-delay: calc(var(--i, 0) * 260ms); }
+.js .growth.is-on svg { transform: none; opacity: 1; }
+.growth li:nth-child(2) { --i: 1; } .growth li:nth-child(3) { --i: 2; } .growth li:nth-child(4) { --i: 3; }
+.discovery__line { font-family: var(--font-display); font-size: clamp(1.25rem, 2.8vw, 1.65rem); line-height: 1.4; max-width: 34rem; margin-inline: auto; }
+.discovery__line strong { display: block; font-weight: 400; font-style: italic; color: var(--color-brand); }
+@media (max-width: 520px) { .growth li:not(:last-child)::after { display: none; } }
+
+/* 1.440 minutos: os números em destaque também no título */
+.minutes__big { font-style: normal; font-size: 1.35em; line-height: 1; font-variant-numeric: lining-nums; }
+.minutes__line1 .minutes__big { color: var(--color-text); }
+.minutes__line2 .minutes__big { color: var(--color-brand); font-weight: 500; }
+.minutes__line3 strong { color: var(--color-text); font-weight: 600; }
+.minutes__text .minutes__line3 + .minutes__line3 { margin-top: var(--space-4); }
+
+/* Vídeo: chamada nova e player que só carrega ao tocar */
+.video-card__text small { font-size: var(--text-xs); letter-spacing: 0.06em; color: var(--color-text-muted); }
+.video-card.is-ready { cursor: pointer; transition: border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out); }
+.video-card.is-ready:hover { border-color: var(--color-leaf); transform: translateY(-1px); }
+.video-player { width: 100%; border-radius: 14px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; }
+.video-player--vertical { aspect-ratio: 9 / 16; max-width: 360px; max-height: 80svh; }
+.video-player video, .video-player iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+/* O verão está chegando */
+.summer {
+  position: relative; overflow: clip;
+  padding-block: var(--section-y);
+  background: linear-gradient(165deg, #F5DFC0 0%, #F7EAD8 45%, var(--color-bg) 100%);
+}
+.summer__grid { display: grid; gap: var(--space-8); align-items: center; }
+.summer__media { position: relative; width: 100%; max-width: 420px; justify-self: center; }
+.summer__media .arch img { aspect-ratio: 5 / 4; object-position: 50% 18%; }
+.summer__sun { position: absolute; top: -34px; right: -14px; width: 92px; pointer-events: none; }
+.summer__sun svg { width: 100%; overflow: visible; }
+.summer__disc { fill: rgba(232, 184, 96, 0.28); stroke: var(--color-mustard); stroke-width: 1.4; }
+.summer__rays path { stroke: var(--color-mustard); stroke-width: 1.4; stroke-linecap: round; }
+.js .summer__rays path { stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset 900ms var(--ease-out); }
+.js .summer__rays path:nth-child(n+5) { transition-delay: 250ms; }
+.js .summer__sun.is-on .summer__rays path { stroke-dashoffset: 0; }
+.js .summer__sun.is-on .summer__rays { animation: sun-turn 60s linear infinite; transform-origin: 60px 60px; }
+@keyframes sun-turn { to { transform: rotate(360deg); } }
+.summer__text { max-width: 34rem; }
+.summer__text > p:not(.eyebrow) { color: var(--color-text-muted); margin-top: var(--space-4); }
+.summer__text .summer__q { font-family: var(--font-display); font-style: italic; font-size: clamp(1.15rem, 2.4vw, 1.35rem); line-height: 1.45; color: var(--color-text); margin-top: var(--space-6); }
+.summer__text .summer__line { color: var(--color-text); }
+.summer__line strong { font-weight: 600; }
+.summer .btn { margin-top: var(--space-8); }
+@media (min-width: 900px) {
+  .summer__grid { grid-template-columns: 0.8fr 1.2fr; gap: var(--space-24); }
+  .summer__media .arch img { aspect-ratio: 3 / 4; }
+  .summer__sun { width: 120px; top: -44px; right: -40px; }
+}
+
+/* O investimento, ao lado do card de compra */
+.offer__grid { align-items: start; }
+.invest { max-width: 34rem; color: var(--color-on-dark-muted); }
+.invest h2 { color: var(--color-bg); font-size: var(--text-2xl); }
+.invest__qs { margin-top: var(--space-6); }
+.invest__qs li {
+  font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.1rem, 2.2vw, 1.3rem); line-height: 1.4; color: var(--color-on-dark);
+  padding-block: var(--space-4); border-top: 1px solid rgba(234, 219, 200, 0.14);
+}
+.invest__qs li:last-child { border-bottom: 1px solid rgba(234, 219, 200, 0.14); }
+.invest__turn { font-family: var(--font-display); font-size: clamp(1.35rem, 3vw, 1.75rem); line-height: 1.3; color: var(--color-bg); margin-top: var(--space-8); }
+.invest__without { color: var(--color-on-dark); margin-top: var(--space-4); }
+.invest > p:last-of-type { margin-top: var(--space-3); }
+.invest__quote {
+  margin-top: var(--space-8); padding-left: var(--space-4);
+  border-left: 2px solid var(--color-leaf);
+  font-family: var(--font-display); font-size: clamp(1.2rem, 2.6vw, 1.5rem); line-height: 1.4; color: var(--color-bg);
+}
+.invest__quote em { display: block; color: #D5DDB9; }
+.offer__title { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.1; color: var(--color-bg); margin-bottom: var(--space-6); }
+.offer__title em { font-style: italic; }
+
+/* Preço: os dois valores em destaque */
+.price__compare { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-2) var(--space-4); margin-top: var(--space-2); }
+.price__old { font-family: var(--font-display); font-size: clamp(1.9rem, 6vw, 2.5rem); line-height: 1; color: var(--color-on-dark-muted); }
+.price__old small { font-family: var(--font-body); font-size: var(--text-sm); }
+.price__old s { text-decoration-thickness: 2px; text-decoration-color: var(--color-blush); }
+.price__por { font-size: var(--text-sm); color: var(--color-on-dark-muted); }
+.price__note { font-size: var(--text-sm); line-height: 1.55; color: var(--color-on-dark); margin-block: var(--space-4) var(--space-3); padding-top: var(--space-4); border-top: 1px solid rgba(234, 219, 200, 0.14); }

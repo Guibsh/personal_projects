@@ -22,6 +22,7 @@ Abra `index.html` no navegador, ou `npx serve .` dentro desta pasta.
 
 ## Antes de publicar
 
-- Trocar o espaço do vídeo pelo vídeo da Lidia.
+- Vídeo da Lidia: colar o link em `MEU_RITU_VIDEO.src` no fim do `index.html` (YouTube "não listado" ou Vimeo é o melhor caminho para um vídeo de 11 minutos; um .mp4 dentro da pasta também funciona, mas pesa na hospedagem). O vídeo só carrega quando a pessoa toca no cartão. Se for em pé, `vertical: true`.
 - Preencher `MEU_RITU_TRACK` (ID do Meta Pixel e do GA4) e configurar o pixel também na Kiwify, para a compra ser registrada.
 - Remover a linha `<meta name="robots" content="noindex, nofollow">` quando a página for para o domínio oficial.
+- Depois que o verão começar (dezembro), trocar ou retirar a chamada "O verão está chegando".

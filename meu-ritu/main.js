@@ -56,6 +56,11 @@
     if (window.fbq) window.fbq("track", metaEvent, params || {});
     if (window.gtag) window.gtag("event", gaEvent, params || {});
   }
+  // Eventos que não são padrão da Meta (cliques no Instagram, play no vídeo)
+  function trackCustom(metaEvent, gaEvent, params) {
+    if (window.fbq) window.fbq("trackCustom", metaEvent, params || {});
+    if (window.gtag) window.gtag("event", gaEvent, params || {});
+  }
 
   // Quem chegou até a oferta (uma vez)
   if ("IntersectionObserver" in window && offer) {
@@ -81,7 +86,58 @@
     if (pass.length) url += (url.indexOf("?") > -1 ? "&" : "?") + pass.join("&");
     btn.href = url;
     btn.addEventListener("click", function () {
-      track("InitiateCheckout", "begin_checkout", { value: 47, currency: "BRL" });
+      // "local" diz qual botão foi clicado (topo, abertura, verao, oferta...)
+      track("InitiateCheckout", "begin_checkout", { value: 47, currency: "BRL", local: btn.getAttribute("data-checkout") || "botao" });
     });
   });
+
+  // Cliques no Instagram
+  document.querySelectorAll("[data-insta]").forEach(function (a) {
+    a.addEventListener("click", function () { trackCustom("CliqueInstagram", "click_instagram"); });
+  });
+
+  // Vídeo da Lidia: nada é baixado até a pessoa tocar no cartão
+  var VIDEO = window.MEU_RITU_VIDEO || {};
+  var card = document.querySelector(".video-card");
+  if (card && VIDEO.src) {
+    var mark = card.querySelector(".ph");
+    if (mark) mark.remove();
+    card.classList.add("is-ready");
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", "Assistir ao vídeo da Lidia");
+    var play = function () {
+      var box = document.createElement("div");
+      box.className = "video-player" + (VIDEO.vertical ? " video-player--vertical" : "");
+      var src = VIDEO.src, m, frame;
+      if ((m = src.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/))) {
+        frame = "https://www.youtube-nocookie.com/embed/" + m[1] + "?autoplay=1&rel=0&playsinline=1";
+      } else if ((m = src.match(/vimeo\.com\/(?:video\/)?(\d+)/))) {
+        frame = "https://player.vimeo.com/video/" + m[1] + "?autoplay=1";
+      }
+      if (frame) {
+        var f = document.createElement("iframe");
+        f.src = frame;
+        f.title = "Vídeo da Lidia";
+        f.allow = "autoplay; fullscreen; picture-in-picture";
+        f.allowFullscreen = true;
+        box.appendChild(f);
+      } else {
+        var v = document.createElement("video");
+        v.src = src;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        var thumb = card.querySelector("img");
+        if (thumb) v.poster = thumb.currentSrc || thumb.src;
+        box.appendChild(v);
+      }
+      card.replaceWith(box);
+      trackCustom("PlayVideo", "video_start");
+    };
+    card.addEventListener("click", play);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); play(); }
+    });
+  }
 })();
