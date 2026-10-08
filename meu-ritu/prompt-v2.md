@@ -34,7 +34,12 @@ Frases da marca, para usar com destaque:
 - Acesso ao conteúdo por 30 dias.
 - Valor de lançamento: R$ 47.
 - Checkout e entrega pela Kiwify: https://pay.kiwify.com.br/rp3XMR7
-- Bônus, prazo de acesso e condições de compra (parcelamento, garantia) devem ficar idênticos aos da Kiwify. O que não puder ser conferido fica marcado para confirmação.
+- Bônus, prazo de acesso e condições de compra devem ficar idênticos aos da Kiwify. Conferido nos prints do checkout:
+  - Valor de lançamento: de R$ 97,00 por R$ 47,00.
+  - Pagamento: Pix, boleto, cartão ou cartão + Pix; no cartão até 11x de R$ 5,22 (parcelamento com acréscimo).
+  - Itens: treinos em casa acompanhando a videoaula e usando o peso do próprio corpo; Meu Ritu Tracker ("uma ferramenta prática para te ajudar a ter constância"); bônus minicurso O Poder da Postura; canal de suporte.
+  - A Kiwify mostra só o selo "Segurança garantida", sem prazo de garantia: usar "compra segura" e o direito de arrependimento de 7 dias do Código de Defesa do Consumidor.
+  - A história da Lidia no checkout (aos 35, terceira gestação, 22 kg, "talvez fosse tarde demais", "não é sobre fazer muito, é sobre conseguir continuar") pode ser usada nas palavras dela.
 
 ## 4. Retirar ou corrigir
 

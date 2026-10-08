@@ -22,7 +22,6 @@ Abra `index.html` no navegador, ou `npx serve .` dentro desta pasta.
 
 ## Antes de publicar
 
-- Confirmar na Kiwify o parcelamento e o prazo da garantia e trocar os dois trechos marcados.
 - Trocar o espaço do vídeo pelo vídeo da Lidia.
 - Preencher `MEU_RITU_TRACK` (ID do Meta Pixel e do GA4) e configurar o pixel também na Kiwify, para a compra ser registrada.
 - Remover a linha `<meta name="robots" content="noindex, nofollow">` quando a página for para o domínio oficial.

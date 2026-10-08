@@ -56,7 +56,7 @@ Regras: verde só no CTA e em detalhes pequenos (folha, números). Uma única se
 3. A descoberta (relógio 15 dos 1.440 minutos + frase da constância)
 4. Minha história (trepadeira, ninho, vídeo da Lidia, Instagram @meu.ritu) + varal de fotos
 5. O desafio (duas semanas de 7 treinos com folhinhas, Tracker, bônus Postura)
-6. Oferta (R$ 47, botão para a Kiwify; parcelamento e garantia a confirmar na Kiwify)
+6. Oferta (de R$ 97 por R$ 47, até 11x de R$ 5,22 com acréscimo, Pix/boleto/cartão, canal de suporte; compra segura e 7 dias de arrependimento pelo CDC)
 7. Dúvidas e fechamento ("Decisão vale mais que motivação.")
 
 Todos os botões de compra têm o link da Kiwify no próprio HTML (funcionam sem script); o script repassa utm_*, src, sck, fbclid e gclid ao checkout e dispara ViewContent e InitiateCheckout quando `MEU_RITU_TRACK` tiver os IDs da Meta e do GA4. A compra (Purchase) se configura na própria Kiwify.

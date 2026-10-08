@@ -916,3 +916,7 @@ html:not(.js) .chick { transform: none; }
 
 /* Barra fixa: agora é um link de verdade */
 .mobile-cta .btn::after { display: none; }
+
+/* Preço "de R$ 97 por" */
+.price__from { font-size: var(--text-sm); color: var(--color-on-dark-muted); letter-spacing: 0.04em; }
+.price__from s { text-decoration-thickness: 1.5px; }

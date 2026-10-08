@@ -937,6 +937,10 @@ html:not(.js) .chick { transform: none; }
 /* Barra fixa: agora é um link de verdade */
 .mobile-cta .btn::after { display: none; }
 
+/* Preço "de R$ 97 por" */
+.price__from { font-size: var(--text-sm); color: var(--color-on-dark-muted); letter-spacing: 0.04em; }
+.price__from s { text-decoration-thickness: 1.5px; }
+
 </style>
 </head>
 <body>
@@ -970,7 +974,7 @@ html:not(.js) .chick { transform: none; }
           <p class="microcopy microcopy--light">R$ 47 · 14 dias · acesso por 30 dias</p>
         </div>
       </div>
-      <p class="hero__caption">Lidia Vicente · mãe de 3</p>
+      <p class="hero__caption">Lidia Vicente · 39 anos · mãe de 3</p>
     </section>
 
     <!-- 2. IDENTIFICAÇÃO -->
@@ -1007,7 +1011,7 @@ html:not(.js) .chick { transform: none; }
           <div class="minutes__text">
             <p class="eyebrow">A descoberta</p>
             <h2><span class="minutes__line1">Seu dia tem 1.440 minutos.</span> <em class="minutes__line2">15 são seus.</em></h2>
-            <p class="minutes__line3">Não é preciso fazer muito de vez em quando. É fazer pouco, todos os dias.</p>
+            <p class="minutes__line3">Você não precisa de horas nem de academia. Precisa de um treino possível de sustentar. Porque quando é possível, você consegue ter constância.</p>
             <p class="motto minutes__line3">O resultado mora na constância. Não no excesso.</p>
           </div>
         </div>
@@ -1026,8 +1030,9 @@ html:not(.js) .chick { transform: none; }
           <p class="eyebrow" data-reveal>Minha história</p>
           <h2 data-reveal>Sou a Lidia, mãe de três. E já estive exatamente aí.</h2>
           <div class="prose" data-reveal>
-            <p>Na terceira gestação, engordei 22 kg. Sem tempo e sem energia para academia, eu precisava de algo que coubesse na minha vida real.</p>
-            <p>Encontrei nos <strong>treinos curtos em casa</strong> um jeito de recuperar meu corpo e continuar evoluindo. Pouco tempo, todos os dias. Foi assim que o Meu Ritú nasceu.</p>
+            <p>Aos 35, depois da minha terceira gestação, em que engordei 22 kg, cheguei a pensar que talvez fosse tarde demais para recuperar meu corpo.</p>
+            <p>Sem tempo para passar horas treinando, comecei do jeito que conseguia: <strong>em casa, por poucos minutos, usando o peso do meu próprio corpo.</strong> Meu corpo respondeu, e continuo evoluindo até hoje.</p>
+            <p>Aquilo virou hábito. Virou o Meu Ritú. Não é sobre fazer muito. <strong>É sobre conseguir continuar.</strong></p>
           </div>
           <div class="story__links" data-reveal>
             <div class="video-card" id="video">
@@ -1092,18 +1097,18 @@ html:not(.js) .chick { transform: none; }
         <ul class="perks" data-reveal-stagger="90">
           <li>
             <span class="perks__tag">Treinos</span>
-            <h3>7 treinos de cerca de 15 minutos</h3>
-            <p>Você dá o play e faz junto, na sala ou no quarto.</p>
+            <h3>7 treinos em videoaula, de cerca de 15 minutos</h3>
+            <p>Você acompanha a videoaula em casa, com o peso do próprio corpo.</p>
           </li>
           <li>
             <span class="perks__tag">Incluso</span>
             <h3>Meu Ritú Tracker</h3>
-            <p>Material para acompanhar seus hábitos ao longo dos 14 dias.</p>
+            <p>Uma ferramenta prática para te ajudar a ter constância.</p>
           </li>
           <li>
             <span class="perks__tag">Bônus</span>
             <h3>Minicurso O Poder da Postura</h3>
-            <p>Quatro aulas para cuidar da sua postura no dia a dia.</p>
+            <p>Quatro aulas sobre o que a sua postura comunica. Mesmo corpo, outra presença.</p>
           </li>
         </ul>
       </div>
@@ -1119,21 +1124,23 @@ html:not(.js) .chick { transform: none; }
         <div class="offer__card" data-reveal data-reveal-delay="100">
           <p class="eyebrow eyebrow--light">O que você recebe</p>
           <ul class="offer__list">
-            <li>14 dias de desafio com 7 treinos de cerca de 15 minutos</li>
-            <li>Meu Ritú Tracker, para acompanhar seus hábitos</li>
+            <li>Treinos em casa, em videoaula, com o peso do próprio corpo</li>
+            <li>Meu Ritú Tracker, para te ajudar a ter constância</li>
             <li>Bônus: minicurso O Poder da Postura (4 aulas)</li>
+            <li>Canal de suporte</li>
             <li>Acesso ao conteúdo por 30 dias</li>
           </ul>
           <div class="price">
             <span class="price__label">Valor de lançamento</span>
+            <span class="price__from">de <s>R$ 97</s> por</span>
             <span class="price__value"><small>R$</small>47</span>
-            <span class="price__alt"><mark class="ph">[parcelamento: confirmar na Kiwify]</mark></span>
+            <span class="price__alt">ou até 11x de R$ 5,22 no cartão (com acréscimo). Pix, boleto ou cartão.</span>
           </div>
           <a href="https://pay.kiwify.com.br/rp3XMR7" class="btn btn--lg btn--block" data-checkout>Quero começar agora</a>
           <p class="microcopy microcopy--light">Pagamento seguro pela Kiwify · Acesso enviado para o seu e-mail</p>
           <div class="guarantee">
             <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor"/><text x="20" y="25" text-anchor="middle" font-size="14" fill="currentColor" font-family="Playfair Display, serif" font-weight="500">7</text></svg>
-            <p><strong>Garantia de 7 dias.</strong> Se não for para você, pode pedir o reembolso. <mark class="ph">[confirmar prazo na Kiwify]</mark></p>
+            <p><strong>Compra segura pela Kiwify.</strong> E você tem 7 dias para desistir da compra, como prevê o Código de Defesa do Consumidor.</p>
           </div>
         </div>
       </div>
@@ -1170,6 +1177,14 @@ html:not(.js) .chick { transform: none; }
           <details>
             <summary>Como recebo o acesso?</summary>
             <p>Depois da compra, a Kiwify envia o acesso para o seu e-mail.</p>
+          </details>
+          <details>
+            <summary>Quais as formas de pagamento?</summary>
+            <p>Pix, boleto ou cartão. No cartão, em até 11x de R$ 5,22 (com acréscimo).</p>
+          </details>
+          <details>
+            <summary>E se eu tiver dúvidas durante o desafio?</summary>
+            <p>O desafio tem um canal de suporte para você tirar suas dúvidas.</p>
           </details>
         </div>
       </div>
