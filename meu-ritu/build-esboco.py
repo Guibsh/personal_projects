@@ -16,10 +16,12 @@ def to_webp(path):
     out = tmp / (src.stem + ".webp")
     if src.suffix == ".png":
         args = ["-resize", "420x>", "-quality", "82", "-define", "webp:alpha-quality=90"]
-    elif src.name == "parede-quente.jpg":   # foto do topo: aparece grande no computador
-        args = ["-resize", "1000x>", "-quality", "84"]
+    elif src.name == "topo-lidia.jpg":      # foto do topo: aparece grande no computador
+        args = ["-resize", "1000x>", "-quality", "86"]
+    elif src.name.startswith("card-"):      # fotos dos cards aparecem pequenas
+        args = ["-resize", "700x>", "-quality", "80"]
     else:
-        args = ["-resize", "1000x>", "-quality", "72"]
+        args = ["-resize", "1000x>", "-quality", "80"]
     subprocess.run(["convert", str(src), *args, "-strip", str(out)], check=True)
     return out
 

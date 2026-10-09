@@ -98,7 +98,7 @@
 
   // Vídeo da Lidia: nada é baixado até a pessoa tocar no cartão
   var VIDEO = window.MEU_RITU_VIDEO || {};
-  var card = document.querySelector(".video-card");
+  var card = document.querySelector("[data-video]");
   if (card && VIDEO.src) {
     var mark = card.querySelector(".ph");
     if (mark) mark.remove();
