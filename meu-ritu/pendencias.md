@@ -14,10 +14,13 @@ Lista viva do que está esperando resposta. Nada daqui entra na página antes da
    - passarinhos na chamada final;
    - folhinha nas dúvidas e no botão.
    (A plantinha da descoberta e o sol do verão ficam: ela aprovou.)
-3. **Foto da praia:** o rosto das crianças pode aparecer normalmente, já que a página vai rodar em anúncio?
-4. **Card da postura:** confirmar que na montagem a pose da esquerda é "sem postura" e a da direita "com postura" (as etiquetas na foto seguem essa ordem).
-5. **Vídeo:** ainda não está pronto. Quando ficar: link (YouTube/Vimeo) ou MP4, e se é em pé ou deitado.
-6. **Checkout:** ela vai avaliar simplificar o checkout da Kiwify. Por enquanto todos os botões continuam em https://pay.kiwify.com.br/rp3XMR7.
+3. **Card da postura:** confirmar que na montagem a pose da esquerda é "sem postura" e a da direita "com postura" (as etiquetas na foto seguem essa ordem).
+4. **Vídeo:** ainda não está pronto. Quando ficar: link (YouTube/Vimeo) ou MP4, e se é em pé ou deitado.
+5. **Checkout:** ela vai avaliar simplificar o checkout da Kiwify. Por enquanto todos os botões continuam em https://pay.kiwify.com.br/rp3XMR7.
+
+## Próximos ajustes no site (pedidos do Gui)
+
+- **Sombra atrás das fotos**, como se estivessem um pouco afastadas da página. Hoje já existe uma sombra leve nas fotos em arco, na da praia e no vídeo; a ideia é deixar o efeito mais visível e igual em todas (inclusive nos cards), sem mexer na foto do topo.
 
 ## Pendências do Gui (sempre lembrar)
 
@@ -30,6 +33,7 @@ Lista viva do que está esperando resposta. Nada daqui entra na página antes da
 ## Já decidido
 
 - Nome sem acento: **Lidia**.
+- Foto da praia: o rosto das crianças **pode aparecer** (autorizado, 13/10).
 - Paleta **C · Pôr do sol** (aplicada na versão 4).
 - Fotos, na ordem que ela pediu: 1 topo (em pé, olhando), 2 seção nova (de perfil), 3 história (praia com os filhos), 4 card do desafio (treino de calça rosa), 5 card do Tracker, 6 card da postura (montagem sem/com postura), 7 verão (mãos no queixo, perna levantada).
 - Seção nova depois do topo **com botão de compra**.
